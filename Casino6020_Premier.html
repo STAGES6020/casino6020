@@ -23,7 +23,7 @@ const { useState, useEffect, useCallback, useRef, useMemo } = React;
 const BlackjackApp = (() => {
 
 // ===================== CONSTANTS =====================
-const BUILD_NUMBER = 58;
+const BUILD_NUMBER = 59;
 const BUILD_DATE = "2026-04-05";
 const AI_ICON = "data:image/jpeg;base64,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";
 const SUITS = ["♠", "♥", "♦", "♣"];
@@ -8052,70 +8052,34 @@ function PokerTableSign({ settings, handNumber }) {
   const subtitle = mp === 2 ? "HEADS-UP" : mp === 6 ? "6-MAX" : `${mp}-HANDED`;
   const fmtD = (n) => n >= 1000 ? "$" + n.toLocaleString() : "$" + n;
   return (
-    <div style={{ transform: "scale(0.82)", transformOrigin: "top left" }}>
-      <div style={{ transform: "rotateX(6deg) rotateY(-2deg)", transformStyle: "preserve-3d" }}>
-        <div style={{
-          width: 240, background: "#0a0a0a", borderRadius: 14,
-          border: `2px solid ${neon}44`,
-          boxShadow: `0 8px 30px rgba(0,0,0,0.85), 0 0 30px ${neon}33, inset 0 0 40px ${neon}08`,
-          padding: 0, position: "relative", overflow: "hidden",
-        }}>
-          {/* Neon glow accent line top */}
-          <div style={{ position: "absolute", top: 0, left: 16, right: 16, height: 2, background: neon, boxShadow: `0 0 10px ${neon}, 0 0 20px ${neon}88`, borderRadius: 2 }} />
-
-          {/* Casino 6020 Crest */}
-          <div style={{ textAlign: "center", padding: "14px 0 4px" }}>
-            <div style={{
-              display: "inline-flex", alignItems: "center", justifyContent: "center",
-              width: 32, height: 32, border: "2px solid #C9A84C", borderRadius: "50%",
-              boxShadow: "0 0 10px rgba(201,168,76,0.3), inset 0 0 6px rgba(201,168,76,0.1)",
-            }}>
-              <span style={{ fontFamily: "'Rye',serif", fontSize: 15, color: "#C9A84C" }}>C</span>
-            </div>
-          </div>
-          <div style={{ textAlign: "center", fontFamily: "'Rye',serif", fontSize: 11, color: "#d4b65c", letterSpacing: 3, paddingBottom: 8 }}>CASINO 6020</div>
-
-          {/* Game Title */}
-          <div style={{
-            background: `linear-gradient(180deg, ${neon}0a, ${neon}15, ${neon}0a)`,
-            borderTop: `1px solid ${neon}33`, borderBottom: `1px solid ${neon}33`,
-            padding: "10px 12px", textAlign: "center",
-          }}>
-            <div style={{ fontSize: 10, letterSpacing: 8, color: neon, opacity: 0.35, marginBottom: 4 }}>{"\u2660 \u2665 \u2666 \u2663"}</div>
-            <div style={{ fontFamily: "'Rye',serif", fontSize: 11, color: neon, textShadow: `0 0 8px ${glow}`, letterSpacing: 3, lineHeight: 1.3 }}>
-              NO LIMIT
-            </div>
-            <div style={{ fontFamily: "'Rye',serif", fontSize: 14, color: neon, textShadow: `0 0 8px ${glow}`, letterSpacing: 2, lineHeight: 1.3, marginTop: 2 }}>
-              TEXAS HOLD 'EM
-            </div>
-            <div style={{ fontSize: 11, color: `${neon}bf`, letterSpacing: 3, marginTop: 4 }}>{subtitle}</div>
-          </div>
-
-          {/* Blinds / Buy-In */}
-          <div style={{ padding: "10px 16px 14px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "6px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-              <span style={{ fontFamily: "'Rye',serif", fontSize: 11, color: "#dcc566", letterSpacing: 2 }}>BLINDS</span>
-              <span style={{ fontFamily: "'Rye',serif", fontSize: 20, color: "#fff", textShadow: `0 0 8px ${glow}` }}>{fmtD(settings.smallBlind)}/{fmtD(settings.bigBlind)}</span>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "6px 0" }}>
-              <span style={{ fontFamily: "'Rye',serif", fontSize: 11, color: "#dcc566", letterSpacing: 2 }}>BUY-IN</span>
-              <span style={{ fontFamily: "'Rye',serif", fontSize: 20, color: "#fff", textShadow: `0 0 8px ${glow}` }}>{fmtD(settings.buyIn)}</span>
-            </div>
-          </div>
-
-          {/* Hand counter */}
-          <div style={{ borderTop: `1px solid ${neon}33`, padding: "8px 16px", textAlign: "center" }}>
-            <span style={{ fontFamily: "'Rye',serif", fontSize: 13, color: neon, letterSpacing: 2, textShadow: `0 0 8px ${glow}` }}>HAND #{handNumber}</span>
-          </div>
-
-          {/* Neon glow accent line bottom */}
-          <div style={{ position: "absolute", bottom: 0, left: 16, right: 16, height: 2, background: neon, boxShadow: `0 0 10px ${neon}, 0 0 20px ${neon}88`, borderRadius: 2 }} />
+    <div style={{ width: 156, background: "#0a0a0a", borderRadius: 12, border: `1.5px solid ${neon}40`, boxShadow: `0 6px 24px rgba(0,0,0,0.85), 0 0 16px ${neon}1f`, position: "relative", overflow: "hidden" }}>
+      {/* Neon top */}
+      <div style={{ position: "absolute", top: 0, left: 12, right: 12, height: 2, background: neon, boxShadow: `0 0 8px ${neon}`, borderRadius: 2 }} />
+      {/* Casino 6020 tiny */}
+      <div style={{ textAlign: "center", fontFamily: "'Rye',serif", fontSize: 7, color: "rgba(201,168,76,0.45)", letterSpacing: 2, padding: "10px 0 4px" }}>CASINO 6020</div>
+      {/* Game title band */}
+      <div style={{ background: `linear-gradient(180deg, ${neon}07, ${neon}15, ${neon}07)`, borderTop: `1px solid ${neon}33`, borderBottom: `1px solid ${neon}33`, padding: "8px 8px", textAlign: "center" }}>
+        <div style={{ fontFamily: "'Rye',serif", fontSize: 9, color: neon, textShadow: `0 0 6px ${glow}`, letterSpacing: 3, opacity: 0.8 }}>NO LIMIT</div>
+        <div style={{ fontFamily: "'Rye',serif", fontSize: 13, color: neon, textShadow: `0 0 8px ${glow}`, letterSpacing: 2, marginTop: 2 }}>TEXAS HOLD 'EM</div>
+        <div style={{ fontSize: 9, color: `${neon}99`, letterSpacing: 2, marginTop: 3 }}>{subtitle}</div>
+      </div>
+      {/* Blinds + Buy-in compact */}
+      <div style={{ padding: "8px 10px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "3px 0", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+          <span style={{ fontFamily: "'Rye',serif", fontSize: 7, color: "#dcc566", letterSpacing: 1 }}>BLINDS</span>
+          <span style={{ fontFamily: "'Rye',serif", fontSize: 14, color: "#fff", textShadow: `0 0 5px ${glow}` }}>{fmtD(settings.smallBlind)}/{fmtD(settings.bigBlind)}</span>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "3px 0" }}>
+          <span style={{ fontFamily: "'Rye',serif", fontSize: 7, color: "#dcc566", letterSpacing: 1 }}>BUY-IN</span>
+          <span style={{ fontFamily: "'Rye',serif", fontSize: 14, color: "#fff", textShadow: `0 0 5px ${glow}` }}>{fmtD(settings.buyIn)}</span>
         </div>
       </div>
-
-      {/* Chrome stand */}
-      <div style={{ width: 8, height: 28, margin: "0 auto", background: "linear-gradient(90deg, #333, #888, #333)", boxShadow: `2px 4px 8px rgba(0,0,0,0.6), 0 0 4px ${neon}11` }} />
-      <div style={{ width: 36, height: 5, margin: "0 auto", background: "linear-gradient(90deg, #222, #666, #222)", borderRadius: 3 }} />
+      {/* Hand # */}
+      <div style={{ borderTop: `1px solid ${neon}25`, padding: "6px 10px", textAlign: "center" }}>
+        <span style={{ fontFamily: "'Rye',serif", fontSize: 11, color: neon, letterSpacing: 2, textShadow: `0 0 6px ${glow}` }}>HAND #{handNumber}</span>
+      </div>
+      {/* Neon bottom */}
+      <div style={{ position: "absolute", bottom: 0, left: 12, right: 12, height: 2, background: neon, boxShadow: `0 0 8px ${neon}`, borderRadius: 2 }} />
     </div>
   );
 }
@@ -9693,21 +9657,23 @@ function CasinoLobby({ onSelectGame }) {
     {
       id: "blackjack",
       title: "BLACKJACK",
-      subtitle: "Standard \u2022 Free Bet \u2022 Double Deck",
+      subtitle: "STANDARD \u2022 FREE BET \u2022 DOUBLE DECK",
       desc: "Beat the dealer to 21",
-      icon: ["\u2660", "\u2665"],
-      gradient: "linear-gradient(135deg, #2e8b2e 0%, #1a6b1a 40%, #0f4f0f 100%)",
-      hoverGradient: "linear-gradient(135deg, #3da63d 0%, #238f23 40%, #176017 100%)",
+      icon: ["\u2660", "\u2665", "\u2666", "\u2663"],
+      watermark: "\u2660",
+      gradient: "linear-gradient(170deg, #2e8b2e 0%, #1a6b1a 25%, #145214 60%, #0d3d0d 100%)",
+      hoverGradient: "linear-gradient(170deg, #3da63d 0%, #238f23 25%, #1a6b1a 60%, #145214 100%)",
       accent: "#4caf50",
     },
     {
       id: "holdem",
       title: "TEXAS HOLD'EM",
-      subtitle: "6-Max No Limit",
+      subtitle: "6-MAX NO LIMIT",
       desc: "Outplay 5 AI opponents",
-      icon: ["\u2666", "\u2663"],
-      gradient: "linear-gradient(135deg, #2a2a7a 0%, #1e1e5c 40%, #12123d 100%)",
-      hoverGradient: "linear-gradient(135deg, #3535a0 0%, #282878 40%, #1a1a5c 100%)",
+      icon: ["\u2666", "\u2663", "\u2660", "\u2665"],
+      watermark: "\u2666",
+      gradient: "linear-gradient(170deg, #2a2a7a 0%, #1e1e5c 25%, #181850 60%, #12123d 100%)",
+      hoverGradient: "linear-gradient(170deg, #3535a0 0%, #282878 25%, #1e1e5c 60%, #181850 100%)",
       accent: "#7986cb",
     },
   ];
@@ -9820,42 +9786,55 @@ function CasinoLobby({ onSelectGame }) {
             onMouseEnter={() => setHovered(game.id)}
             onMouseLeave={() => setHovered(null)}
             style={{
-              width: 280, padding: "36px 28px", borderRadius: 16,
+              width: 310, padding: 0, borderRadius: 20,
               background: hovered === game.id ? game.hoverGradient : game.gradient,
-              border: `2px solid ${hovered === game.id ? "rgba(255,215,0,0.5)" : "rgba(255,215,0,0.15)"}`,
+              border: `3px solid ${hovered === game.id ? "rgba(255,215,0,0.5)" : "rgba(255,215,0,0.25)"}`,
               cursor: "pointer",
               transform: hovered === game.id ? "translateY(-6px) scale(1.02)" : "translateY(0) scale(1)",
               transition: "all 0.3s ease",
               boxShadow: hovered === game.id
                 ? `0 12px 40px rgba(0,0,0,0.6), 0 0 30px ${game.accent}40`
-                : "0 4px 20px rgba(0,0,0,0.4)",
-              textAlign: "center",
+                : "0 6px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)",
+              textAlign: "center", overflow: "hidden", position: "relative",
             }}
           >
-            <div style={{
-              fontSize: 42, marginBottom: 12, letterSpacing: 8,
-              filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
-            }}>{game.icon.map((s, i) => (
-              <span key={i} style={{ color: (s === "\u2665" || s === "\u2666") ? "#c41e3a" : "#1a1a2e" }}>{s}</span>
-            ))}</div>
-            <h2 style={{
-              color: "#ffd700", fontSize: 22, fontWeight: "normal",
-              fontFamily: "'Rye', serif", letterSpacing: 3, margin: "0 0 6px",
-            }}>{game.title}</h2>
-            <div style={{
-              color: "rgba(255,255,255,0.5)", fontSize: 11,
-              letterSpacing: 1.5, marginBottom: 14,
-            }}>{game.subtitle}</div>
-            <div style={{
-              color: "rgba(255,255,255,0.7)", fontSize: 15,
-              lineHeight: 1.4,
-            }}>{game.desc}</div>
-            <div style={{
-              marginTop: 20, padding: "8px 0",
-              color: hovered === game.id ? "#ffd700" : "rgba(255,215,0,0.4)",
-              fontSize: 13, fontFamily: "'Rye', serif", letterSpacing: 2,
-              transition: "color 0.3s ease",
-            }}>PLAY NOW {"\u25B6"}</div>
+            {/* Suit watermark */}
+            <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", fontSize: 180, color: "rgba(255,255,255,0.02)", pointerEvents: "none", fontFamily: "serif" }}>{game.watermark}</div>
+            {/* Velvet overlay */}
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "radial-gradient(ellipse 80% 60% at 50% 30%, rgba(255,255,255,0.04) 0%, transparent 70%)", pointerEvents: "none" }} />
+            {/* Dashed chip ring */}
+            <div style={{ position: "absolute", top: 8, left: 8, right: 8, bottom: 8, borderRadius: 14, border: "2px dashed rgba(255,215,0,0.08)", pointerEvents: "none" }} />
+
+            <div style={{ padding: "30px 28px 32px", position: "relative" }}>
+              {/* 4 suits with glow */}
+              <div style={{ fontSize: 40, marginBottom: 14, display: "flex", justifyContent: "center", gap: 6 }}>
+                {game.icon.map((s, i) => (
+                  <span key={i} style={{ color: (s === "\u2665" || s === "\u2666") ? "#c41e3a" : "#1a1a2e", filter: (s === "\u2665" || s === "\u2666") ? "drop-shadow(0 0 6px rgba(196,30,58,0.5))" : "drop-shadow(0 0 6px rgba(26,26,46,0.5))" }}>{s}</span>
+                ))}
+              </div>
+              <h2 style={{
+                color: "#ffd700", fontSize: 26, fontWeight: "normal",
+                fontFamily: "'Rye', serif", letterSpacing: 4, margin: "0 0 8px",
+                textShadow: "0 0 16px rgba(255,215,0,0.2)",
+              }}>{game.title}</h2>
+              <div style={{
+                color: "rgba(255,215,0,0.4)", fontSize: 11,
+                letterSpacing: 2, marginBottom: 16, fontFamily: "'Rye', serif",
+              }}>{game.subtitle}</div>
+              <div style={{
+                color: "rgba(255,255,255,0.55)", fontSize: 15,
+                fontFamily: "'Rye', serif", fontWeight: "normal", letterSpacing: 1,
+              }}>{game.desc}</div>
+              {/* Chip-style button */}
+              <div style={{
+                marginTop: 24, display: "inline-block", padding: "14px 42px", borderRadius: 30,
+                background: hovered === game.id ? "linear-gradient(135deg, rgba(255,215,0,0.22), rgba(255,215,0,0.08))" : "linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,215,0,0.05))",
+                border: `2px solid ${hovered === game.id ? "rgba(255,215,0,0.6)" : "rgba(255,215,0,0.4)"}`,
+                color: "#ffd700", fontFamily: "'Rye', serif", fontSize: 13, letterSpacing: 3,
+                boxShadow: hovered === game.id ? "0 0 18px rgba(255,215,0,0.2), inset 0 0 10px rgba(255,215,0,0.08)" : "0 0 12px rgba(255,215,0,0.1), inset 0 0 8px rgba(255,215,0,0.05)",
+                transition: "all 0.3s ease",
+              }}>PLAY NOW {"\u25B6"}</div>
+            </div>
           </div>
         ))}
       </div>
