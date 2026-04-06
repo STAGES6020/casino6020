@@ -31,8 +31,8 @@
 const { useState, useEffect, useCallback, useRef, useMemo } = React;
 
 // ===================== CONSTANTS =====================
-const BUILD_NUMBER = 35;
-const BUILD_DATE = "2026-03-30";
+const BUILD_NUMBER = 57;
+const BUILD_DATE = "2026-04-05";
 const AI_ICON = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCABQAFADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3WiiigAoorG1nxDb6NLHFMqbpBlPMmWPd64z1qZSUVdjSbdkZPxB1jUtM0m3i0qYw3dzKR5iruKqB/iRXHQ/EfxHoGn/8Te3gvpSCUY5RsDqTjr0pvjrxY11fWAgjVVjVi+JN2ST6jtgV5/4m19ZkhdfNilRtwdSCMYxxXM5zlNcmx0KMVH3tz0Xwh8XtQ8ReK7bSrnTIoIZyQHR8lTjPIr12vBfBOvaQJ7bV762hSWNQpuEQBg+QDnnpgj9a93jljmGYpEceqsDW9Nt3uYzSWw+jPI5opAOc960IFPeiimu4jUselADqp6lptjqtk9tqFvHPAecOPu+4PY+9cDq3xRmt7ye0sNLZmjcrvlDHGOuVHT6Zrjdd8da7rrWSxXLW6icMYkQorbTk+7DAIIPFYutDY6I4ee70J9dtI9Avb0wQTXemQS7dyKHKoQDuPTIySOPSubmXwlqeZbm58iIfeIRwQfQAcZrpLfUrm4vLlryVXkkYb1YYjCngKAOwI6CsLxLZ6bHqEf2a1RMlmd0G2OQ9sAdDzXFGreTSv8jveFTS1NjwvceGIZY9N0bTZ7tLiZY3luYW8sE92LHH8OeB2r2Gw0axhm3CWKWVMHbFhQPTgEmvnW51qXS7Wyt7WUoXP2m6QcdGKovsNoJ/4FUOmeNdb0zWpLm1mVllO6eJxhZCfccg47g10Qp68zV/VnLVUV7kWfVNFYHg3Wpde8NwXs0bJIxYYYgkjPBrfrqTurnG1Z2CvO/iH4o+zSppEEqbDGXuWSQbgeQE/wBk5wc1peN/Gg0GFrGyTzNQmQhHDKRET3I659vpXht/eW9vuG/fM+TKW5yx61z1qn2I7nZhqF/3ktuhvtfW6QPfzu0glkAw33iTjO705/Wse1uPtnjC4lcjybVPJjGcYHc/XANc5Dqjg7HO6KI+YM9wo4H54pYr+60yKRociWcCRpJFyefSslh2k7bs3da9r7I9L01s6XrVwViVraKCaMOdpLbn4B9SCR9cVyOo6hHqN+kllDMHIO7zW3hR+XA/Gn+D5GuLrfdo91CHWSZJ2OJCcgY9Mc+1dJqUdlouparpWkR/NdFjcTFeUQ8rCp9u59eB7JU1B+ZPtm27dTg9alsprq3VHDSCEpO4bduOchs9M4PT2FZ0fySoqnLHsO+Kuy+HZbZHm81GtolJeTpyB0x9Ril8MRRS64klxkRREZOOldCnFQbTvYy5Jc6TVmz2z4Sa4LjT/wCypXcywR5+bgHLE4HOeM46V6dXhmhavcaJ4maWCaNLW5ZWdZk4YezAEr9a9vgnjuIY5o2DI4ypHelh6nPEjF0uSd+54HrugbdRumurqZ/mKKU2hpG+hzj1P4etUYfAU+rwP9luFAgyHaZQFVv7u4c59QAevNUtb15bfU7mCB3M4kMXmbfkgGcEg92647CvTVubU2tvZ2TBLOJBHEyOCuccMSOuT3+tcs5TprmO3mU3yL5nld14PvNP0xLmGKG6mHmi6XzeFwRsCjueCT9QK5uWZ7qJN2S7qF5+p4r2C5vG/tBYpF2Q3ieXISeBIPT1yeMVzWr+E7e7toLvTEaC9+0ETQyMFjAHVl4znOMj3Na0Kzn8RnWgoLQXwXZ3UOt3UgtJpIFjADGNtnyp8vOMdTW/dact3avptjcR/akkQzmQHazcn734ng1qfa9Q0jwXZ6fNcJLKlv5OLaXeHfedgHHoRn6Yrl9RabT0bToJiJWPmXMwPVyOefQdBWVST5rRLpUlJc0ia48Mwy28ej6tfyWK3D7klQK6Sc8qTn5ecevarb+EtL8Hwq8zPMhJJlXJfsDlfTkdM1l6jqssujxW08ZmmgfeuCqt5YXHIP4fpTk119U05HuLpTsgNv8AM23aexBPXoOaqnGUo2exFd8krp6l92gFylxp08Or2ZfbJbspWaIeg65x6Yz9a6rwD4jik1KTTPs5gWQsFUZ+SReqnsMgZGMd68q8QXupR6hDeuWjmECCS5tUIWT/AHj0J96734caZd3uqWes7QUZA1w6j5SwzhvqRwce9axg6bTRk6iqQakdP4l8K6ZaRtd2WiaXLLK7PPJdsQSevHI5J965S7sr1rOKSx021s1RWV0tjuRuckvzle/OTg4969jI61H9nhBQ+THlPu/KPl+ldDgm9UrHGpNa3d/U8G8qabyhHMjyrO0vlId7o2OhXHHTOOajuv7cF99qTSrwW5YF0EDbd23JbLAEnuR6V7+saKxZUVWPcKAaybzw1p+oX7Xk7XvnEY+S7kQD6AHislQSVju+twk7yVv1/Q8iivLiztBcX6yGVcGPcPu7hgHGBx1AOOtQad4O8V6ukdzBCsMFxiRZw6sPbnPGPbp9a9zudPsrwL9rs4LjaAB58Yc/mQayV8MNFfrcwa1qkMani2jdRGOc4C7cAdulNUIRtyoh4uc3K7t/Wx5XrXhlPD4giubeW4utoVn8x3D5zjB6c/N1rpfC2mJp9g11deDPMEkpMMpZWdkwNuVOcEnPXFen5NJVU6XJfW9+5hUqqaVlZrfzPJo/Duu2muW+sWtsrLHnCv0GQwBKcZ+9x+Veg6BLqL28iahFFGyt8nlRbFYeuM+ue1bGT70VokZK0Y8qP//Z";
 const SUITS = ["♠", "♥", "♦", "♣"];
 const RANKS = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
@@ -1012,7 +1012,7 @@ function BetChipSelector({ value, onChange, min, max, bankroll, warning, onPillC
           <span style={{ color: pillGlow ? "#ffd700" : value === 0 ? "#888" : "#ffd700", fontSize: 11, fontWeight: "bold", letterSpacing: 1, marginRight: value > 0 ? 6 : 0 }}>
             {value === 0 ? "NO BET" : "BET"}
           </span>
-          {value > 0 && <span style={{ color: "#fff", fontSize: 20, fontWeight: "bold", textShadow: "0 1px 3px rgba(0,0,0,0.7)" }}>
+          {value > 0 && <span style={{ color: "#fff", fontSize: 20, fontWeight: "bold", textShadow: "0 1px 3px rgba(0,0,0,0.7)", fontFamily: "'Rye', serif" }}>
             ${value.toLocaleString()}
           </span>}
         </div>
@@ -1061,7 +1061,7 @@ function CashierOverlay({ playerName, bankroll, tableMin, mode, onModeChange, on
       </div>
       <div style={{ color: "#aaa", fontSize: 12, marginBottom: 6 }}>{playerName}</div>
       <div style={{ color: "#fff", fontSize: 20, fontWeight: "bold", marginBottom: 14 }}>
-        Balance: <span style={{ color: "#4caf50" }}>${bankroll.toLocaleString()}</span>
+        Balance: <span style={{ color: "#4caf50", fontFamily: "'Rye', serif" }}>${bankroll.toLocaleString()}</span>
       </div>
 
       {/* Tabs */}
@@ -1084,22 +1084,22 @@ function CashierOverlay({ playerName, bankroll, tableMin, mode, onModeChange, on
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", marginBottom: 10 }}>
             {addQuickAmounts.map(v => (
               <button key={v} onClick={() => onAddFunds(v)} style={{
-                padding: "8px 16px", borderRadius: 8, fontSize: 14, fontWeight: "bold", cursor: "pointer",
+                padding: "8px 16px", borderRadius: 8, fontSize: 14, fontWeight: "bold", cursor: "pointer", fontFamily: "'Rye', serif",
                 background: "linear-gradient(135deg, #2e7d32, #1b5e20)", color: "#fff",
                 border: "1px solid rgba(255,255,255,0.2)", boxShadow: "0 2px 6px rgba(0,0,0,0.4)",
               }}>+${v.toLocaleString()}</button>
             ))}
           </div>
           <div style={{ display: "flex", gap: 6, alignItems: "center", justifyContent: "center" }}>
-            <span style={{ color: "#aaa", fontSize: 13 }}>$</span>
+            <span style={{ color: "#aaa", fontSize: 13, fontFamily: "'Rye', serif" }}>$</span>
             <input type="number" value={customAmt} onChange={e => setCustomAmt(e.target.value)}
               placeholder="Custom" min={1} style={{
                 width: 100, padding: "6px 8px", borderRadius: 6, border: "1px solid #555",
-                background: "rgba(0,0,0,0.3)", color: "#fff", fontSize: 14, textAlign: "center",
+                background: "rgba(0,0,0,0.3)", color: "#fff", fontSize: 14, textAlign: "center", fontFamily: "'Rye', serif",
               }} />
             <button onClick={() => { const v = parseInt(customAmt); if (v > 0) { onAddFunds(v); setCustomAmt(""); } }}
               style={{
-                padding: "6px 14px", borderRadius: 6, fontSize: 13, fontWeight: "bold", cursor: "pointer",
+                padding: "6px 14px", borderRadius: 6, fontSize: 13, fontWeight: "bold", cursor: "pointer", fontFamily: "'Rye', serif",
                 background: "linear-gradient(135deg, #1565c0, #0d47a1)", color: "#fff",
                 border: "none",
               }}>Add</button>
@@ -1117,7 +1117,7 @@ function CashierOverlay({ playerName, bankroll, tableMin, mode, onModeChange, on
                   onCashOut(v);
                 }
               }} style={{
-                padding: "8px 16px", borderRadius: 8, fontSize: 14, fontWeight: "bold", cursor: bankroll - v >= tableMin ? "pointer" : "not-allowed",
+                padding: "8px 16px", borderRadius: 8, fontSize: 14, fontWeight: "bold", cursor: bankroll - v >= tableMin ? "pointer" : "not-allowed", fontFamily: "'Rye', serif",
                 background: bankroll - v >= tableMin ? "linear-gradient(135deg, #c62828, #8b0000)" : "rgba(200,40,40,0.3)", color: "#fff",
                 border: "1px solid rgba(255,255,255,0.2)", boxShadow: "0 2px 6px rgba(0,0,0,0.4)",
                 opacity: bankroll - v >= tableMin ? 1 : 0.5,
@@ -1125,27 +1125,27 @@ function CashierOverlay({ playerName, bankroll, tableMin, mode, onModeChange, on
             ))}
           </div>
           <div style={{ display: "flex", gap: 6, alignItems: "center", justifyContent: "center", marginBottom: 8 }}>
-            <span style={{ color: "#aaa", fontSize: 13 }}>$</span>
+            <span style={{ color: "#aaa", fontSize: 13, fontFamily: "'Rye', serif" }}>$</span>
             <input type="number" value={customAmt} onChange={e => setCustomAmt(e.target.value)}
-              placeholder="Custom" min={1} style={{
+              placeholder="Custom" min={0.50} step={0.50} style={{
                 width: 100, padding: "6px 8px", borderRadius: 6, border: "1px solid #555",
-                background: "rgba(0,0,0,0.3)", color: "#fff", fontSize: 14, textAlign: "center",
+                background: "rgba(0,0,0,0.3)", color: "#fff", fontSize: 14, textAlign: "center", fontFamily: "'Rye', serif",
               }} />
             <button onClick={() => {
-              const v = parseInt(customAmt);
+              const v = parseFloat(customAmt);
               if (v > 0 && bankroll - v >= tableMin) {
                 onCashOut(v);
                 setCustomAmt("");
               }
             }} style={{
-              padding: "6px 14px", borderRadius: 6, fontSize: 13, fontWeight: "bold", cursor: "pointer",
+              padding: "6px 14px", borderRadius: 6, fontSize: 13, fontWeight: "bold", cursor: "pointer", fontFamily: "'Rye', serif",
               background: "linear-gradient(135deg, #c62828, #8b0000)", color: "#fff",
               border: "none",
             }}>Withdraw</button>
           </div>
           {bankroll - parseInt(customAmt || 0) < tableMin && customAmt && (
             <div style={{ color: "#ff9800", fontSize: 12, textAlign: "center" }}>
-              Min balance after withdrawal: ${tableMin.toLocaleString()}
+              Min balance after withdrawal: <span style={{ fontFamily: "'Rye', serif" }}>${tableMin.toLocaleString()}</span>
             </div>
           )}
         </>
@@ -1182,7 +1182,7 @@ function StatsPanel({ players, runningCount, trueCount, cardsRemaining, totalCar
       </h3>
       {players.map((p, i) => (
         <div key={i} style={{ marginBottom: 6, padding: "5px 0", borderBottom: i < players.length - 1 ? "1px solid #333" : "none" }}>
-          <div style={{ fontWeight: "bold", color: p.isHuman ? "#ffd700" : "#8fc9ff", marginBottom: 2, fontSize: 12 }}>
+          <div style={{ fontWeight: "bold", color: p.isHuman ? "#ffd700" : "#ce93d8", marginBottom: 2, fontSize: 12 }}>
             {p.name} {p.isHost ? "(You)" : p.isHuman ? "" : p.isRealPlayer ? "" : "(AI)"}
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px 8px", fontSize: 11 }}>
@@ -1211,217 +1211,293 @@ function StatsPanel({ players, runningCount, trueCount, cardsRemaining, totalCar
 }
 
 // ===================== SETTINGS SCREEN =====================
-function SettingsScreen({ settings, onUpdate, onStart, onDataCenter, onExitToLobby, onChooseSeats }) {
+function SettingsScreen({ settings, onUpdate, onStart, onDataCenter, onExitToLobby, onChooseSeats, initialStep }) {
   const s = settings;
   const set = (k, v) => onUpdate({ ...s, [k]: v });
+  const [step, setStep] = useState(initialStep || 1);
+  const [tableChosen, setTableChosen] = useState((initialStep || 1) >= 2);
+  const [showCounting, setShowCounting] = useState(false);
   const countSys = COUNTING_SYSTEMS[s.countingSystem] || s.customCounts;
-  const sel = { padding: "6px 10px", borderRadius: 6, border: "1px solid #666", backgroundColor: "#f8f8f8", fontSize: 14, cursor: "pointer" };
-  const row = { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 16px", borderBottom: "1px solid #ddd", minHeight: 44 };
-  const sec = { fontWeight: "bold", fontSize: 13, color: "#666", padding: "6px 16px", backgroundColor: "#eee" };
+
+  // Inject throb animation
+  useEffect(() => {
+    if (!document.getElementById("settings-throb-style")) {
+      const style = document.createElement("style");
+      style.id = "settings-throb-style";
+      style.textContent = `
+        @keyframes settingsThrob { 0%,100% { box-shadow: 0 0 18px rgba(255,215,0,0.1), inset 0 0 30px rgba(255,215,0,0.03); } 50% { box-shadow: 0 0 28px rgba(255,215,0,0.22), inset 0 0 30px rgba(255,215,0,0.05); border-color: rgba(255,215,0,0.7) !important; } }
+        @keyframes dealPulse { 0%,100% { box-shadow: 0 4px 20px rgba(196,30,58,0.35), 0 0 16px rgba(255,215,0,0.08); } 50% { box-shadow: 0 4px 28px rgba(196,30,58,0.5), 0 0 24px rgba(255,215,0,0.15); } }
+      `;
+      document.head.appendChild(style);
+    }
+  }, []);
+
+  const selectTable = (gId) => {
+    if (gId === "doubleDeck") {
+      onUpdate({ ...s, gameType: gId, deckCount: 2, penetration: 75, surrender: "none", dealerHitsSoft17: true, shuffleType: "asm" });
+    } else {
+      onUpdate({ ...s, gameType: gId, deckCount: 6, penetration: 85 });
+    }
+    setTableChosen(true);
+  };
+
+  // ── Shared styles ──
+  const casinoBg = { background: "linear-gradient(160deg, #0a1f0d 0%, #122a15 40%, #0a1a0d 100%)", position: "relative" };
+  const sel = { padding: "8px 14px", borderRadius: 8, fontSize: 13, cursor: "pointer", background: "rgba(255,255,255,0.06)", color: "#fff", border: "1px solid rgba(255,255,255,0.12)", appearance: "none", WebkitAppearance: "none", backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%23ffd700' stroke-width='1.5'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 10px center", paddingRight: 30, transition: "all 0.15s" };
+  const row = { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.04)", minHeight: 48 };
+  const ruleLabel = { fontSize: 14, color: "rgba(255,255,255,0.7)" };
+  const ruleGroupTitle = { fontFamily: "'Rye', serif", fontSize: 11, color: "rgba(255,215,0,0.4)", letterSpacing: 3, padding: "14px 0 8px", textTransform: "uppercase", borderBottom: "1px solid rgba(255,215,0,0.06)", marginBottom: 4 };
+  const conn = { color: "rgba(255,255,255,0.25)", fontSize: 12 };
+
+  // ── Header ──
+  const Header = () => (
+    <div style={{ textAlign: "center", padding: "28px 20px 16px" }}>
+      <div style={{ width: 44, height: 44, border: "2px solid #C9A84C", borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 12px rgba(201,168,76,0.25)", marginBottom: 8 }}>
+        <span style={{ fontFamily: "'Rye', serif", fontSize: 20, color: "#C9A84C" }}>C</span>
+      </div>
+      <h1 style={{ fontFamily: "'Rye', serif", fontSize: 22, color: "#ffd700", letterSpacing: 4, margin: "0 0 2px" }}>CASINO 6020</h1>
+      <h2 style={{ fontFamily: "'Rye', serif", fontSize: 14, color: "rgba(255,215,0,0.6)", letterSpacing: 2, fontWeight: "normal", margin: 0 }}>Blackjack Table</h2>
+    </div>
+  );
+
+  // ── Decorative separator ──
+  const DecoSeparator = () => (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "0 40px 18px", gap: 12 }}>
+      <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, transparent, rgba(255,215,0,0.3), rgba(255,215,0,0.3), transparent)" }} />
+      <div style={{ width: 8, height: 8, background: "rgba(255,215,0,0.4)", transform: "rotate(45deg)", flexShrink: 0, boxShadow: "0 0 6px rgba(255,215,0,0.2)" }} />
+      <span style={{ fontSize: 10, letterSpacing: 6, color: "rgba(255,215,0,0.25)", flexShrink: 0 }}>{"\u2660 \u2665 \u2666 \u2663"}</span>
+      <div style={{ width: 8, height: 8, background: "rgba(255,215,0,0.4)", transform: "rotate(45deg)", flexShrink: 0, boxShadow: "0 0 6px rgba(255,215,0,0.2)" }} />
+      <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, transparent, rgba(255,215,0,0.3), rgba(255,215,0,0.3), transparent)" }} />
+    </div>
+  );
+
+  // ── Step indicator (bottom) ──
+  const StepIndicator = ({ current }) => (
+    <div style={{ borderTop: "1px solid rgba(255,215,0,0.06)", background: "rgba(0,0,0,0.15)", paddingTop: 4 }}>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "16px 40px 6px" }}>
+        {[{ n: 1, label: "Table" }, { n: 2, label: "Rules" }, { n: 3, label: "Seats" }].map((s, i) => (
+          <React.Fragment key={s.n}>
+            {i > 0 && <div style={{ flex: 1, height: 2, margin: "0 -8px", alignSelf: "center", marginBottom: 18, background: s.n <= current ? "rgba(255,215,0,0.2)" : "rgba(255,255,255,0.05)" }} />}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: 1, zIndex: 1 }}>
+              <div style={{
+                width: 30, height: 30, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+                fontFamily: "'Rye', serif", fontSize: 12, fontWeight: "bold",
+                ...(s.n === current ? { background: "linear-gradient(135deg, #ffd700, #f9a825)", color: "#1a3a1a", boxShadow: "0 0 14px rgba(255,215,0,0.35)" } :
+                   s.n < current ? { background: "linear-gradient(135deg, #2e7d32, #1b5e20)", color: "#ffd700", border: "2px solid rgba(255,215,0,0.3)" } :
+                   { background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.2)", border: "1.5px solid rgba(255,255,255,0.08)" }),
+              }}>{s.n < current ? "\u2713" : s.n}</div>
+              <div style={{ fontSize: 9, letterSpacing: 1, textTransform: "uppercase", ...(s.n === current ? { color: "#ffd700", fontWeight: "bold" } : s.n < current ? { color: "rgba(255,215,0,0.45)" } : { color: "rgba(255,255,255,0.15)" }) }}>{s.label}</div>
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div style={{ height: "100vh", overflow: "auto", background: "linear-gradient(135deg, #0d5016 0%, #1a7a2a 50%, #052a0a 100%)", padding: "20px 10px" }}>
-    <div style={{ maxWidth: 700, margin: "0 auto", fontFamily: "'Segoe UI', sans-serif", backgroundColor: "#fff", borderRadius: 12, boxShadow: "0 4px 20px rgba(0,0,0,0.15)", overflow: "hidden" }}>
-      <div style={{ background: "linear-gradient(135deg, #0d5016 0%, #1a7a2a 100%)", padding: "24px 20px", textAlign: "center" }}>
-        <h1 style={{ color: "#ffd700", fontSize: 30, margin: 0, textShadow: "2px 2px 4px rgba(0,0,0,0.5)", fontFamily: "'Rye', 'Georgia', serif", letterSpacing: 3 }}>Casino 6020</h1>
-        <h2 style={{ color: "#ffd700", fontSize: 20, margin: "4px 0 0", fontFamily: "'Rye', 'Georgia', serif", letterSpacing: 2, fontWeight: "normal", opacity: 0.85 }}>Blackjack Table</h2>
-        <p style={{ color: "#cce5cc", margin: "8px 0 0", fontSize: 13, letterSpacing: 1 }}>Set your house rules, then take a seat</p>
-        {onExitToLobby && <button onClick={onExitToLobby} style={{
-          marginTop: 10, padding: "8px 24px", fontSize: 14, fontWeight: "bold",
-          background: "linear-gradient(135deg, #c41e3a, #8b0000)", color: "#ffd700",
-          border: "1px solid rgba(255,215,0,0.3)", borderRadius: 8, cursor: "pointer",
-          fontFamily: "'Rye', serif", letterSpacing: 1,
-        }}>Back to Casino Lobby</button>}
-      </div>
-      {/* ── CHOOSE YOUR TABLE ── */}
-      <div style={{ padding: "16px 16px 12px", background: "linear-gradient(180deg, #f5f5f0 0%, #fff 100%)", borderBottom: "2px solid #ddd" }}>
-        <div style={{ textAlign: "center", marginBottom: 12 }}>
-          <span style={{ fontFamily: "'Rye', 'Georgia', serif", fontSize: 16, color: "#2e7d32", letterSpacing: 2 }}>CHOOSE YOUR TABLE</span>
-        </div>
-        <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+    <div style={{ maxWidth: 700, margin: "0 auto", fontFamily: "'Segoe UI', sans-serif", borderRadius: 16, overflow: "hidden", boxShadow: "0 8px 40px rgba(0,0,0,0.6), 0 0 60px rgba(26,122,42,0.15)", border: "1px solid rgba(255,215,0,0.1)" }}>
+    <div style={casinoBg}>
+
+      <Header />
+      <DecoSeparator />
+
+      {/* ═══════════ STEP 1: CHOOSE YOUR TABLE ═══════════ */}
+      {step === 1 && (<>
+        <div style={{ fontFamily: "'Rye', serif", fontSize: 18, color: "#ffd700", letterSpacing: 3, textAlign: "center", padding: "8px 20px 10px", textShadow: "0 0 10px rgba(255,215,0,0.15)" }}>CHOOSE YOUR TABLE</div>
+        <div style={{ textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: -4, marginBottom: 16, letterSpacing: 1 }}>Select a blackjack variant to play</div>
+
+        <div style={{ display: "flex", gap: 14, justifyContent: "center", padding: "0 20px 24px" }}>
           {[
-            { id: "standard", label: "Standard", desc: "Classic 6-deck rules" },
-            { id: "freeBet", label: "Free Bet", desc: "Free doubles & splits" },
-            { id: "doubleDeck", label: "Double Deck", desc: "2 decks, tighter game" },
-          ].map(g => (
-            <div key={g.id} onClick={() => {
-              if (g.id === "doubleDeck") {
-                onUpdate({ ...s, gameType: g.id, deckCount: 2, penetration: 75, surrender: "none", dealerHitsSoft17: true, shuffleType: "asm" });
-              } else {
-                onUpdate({ ...s, gameType: g.id, deckCount: 6, penetration: 85 });
-              }
-            }} style={{
-              flex: 1, padding: "14px 8px", borderRadius: 10, textAlign: "center", cursor: "pointer",
-              background: s.gameType === g.id ? "linear-gradient(135deg, #1a7a2a, #0d5016)" : "#fff",
-              border: s.gameType === g.id ? "2px solid #ffd700" : "2px solid #ccc",
-              color: s.gameType === g.id ? "#ffd700" : "#333",
-              boxShadow: s.gameType === g.id ? "0 4px 12px rgba(26,122,42,0.3)" : "0 1px 4px rgba(0,0,0,0.1)",
-              transition: "all 0.2s ease",
-              transform: s.gameType === g.id ? "scale(1.03)" : "scale(1)",
-            }}>
-              <div style={{ fontFamily: "'Rye', 'Georgia', serif", fontSize: 14, fontWeight: "bold", marginBottom: 4, letterSpacing: 1 }}>{g.label}</div>
-              <div style={{ fontSize: 11, opacity: 0.7, color: s.gameType === g.id ? "#cce5cc" : "#666" }}>{g.desc}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-      {s.gameType === "freeBet" && (
-        <div style={{ padding: "8px 16px", borderBottom: "1px solid #ddd", background: "#fff8e1", fontSize: 12, color: "#5d4037", lineHeight: 1.5 }}>
-          <strong>Free Bet Rules:</strong> Free doubles on hard 9-11. Free splits on all pairs except 10s. Dealer 22 pushes all non-BJ hands. Pot of Gold side bet available ($1-$100).
-        </div>
-      )}
-      {s.gameType === "doubleDeck" && (
-        <div style={{ padding: "8px 16px", borderBottom: "1px solid #ddd", background: "#e3f2fd", fontSize: 12, color: "#1a237e", lineHeight: 1.5 }}>
-          <strong>Double Deck Rules:</strong> 2 decks, cut at 25% (75% penetration). Dealer hits soft 17. No surrender. All other rules same as standard.
-        </div>
-      )}
-      <div style={sec}>TABLE RULES</div>
-      <div style={row}><span>Shoe</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <select style={{ ...sel, ...(s.gameType === "doubleDeck" ? { opacity: 0.5, pointerEvents: "none" } : {}) }} value={s.deckCount} onChange={e => set("deckCount", +e.target.value)}>
-            {[1,2,4,6,8].map(n => <option key={n} value={n}>{n} deck{n>1?"s":""}</option>)}
-          </select><span>dealt</span>
-          <select style={{ ...sel, ...(s.gameType === "doubleDeck" ? { opacity: 0.5, pointerEvents: "none" } : {}) }} value={s.penetration} onChange={e => set("penetration", +e.target.value)}>
-            {[50,65,75,85,90].map(n => <option key={n} value={n}>{n}%</option>)}
-          </select><span>deep</span>
-        </div>
-      </div>
-      {s.gameType !== "doubleDeck" && (
-        <div style={row}><span>Shuffle</span>
-          <select style={sel} value={s.shuffleType || "asm"} onChange={e => set("shuffleType", e.target.value)}>
-            <option value="asm">Automatic (ASM)</option>
-            <option value="csm">Continuous (CSM)</option>
-          </select>
-        </div>
-      )}
-      <div style={row}><span>Dealer</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <select style={sel} value={s.dealerPeeks?"peek":"nopeek"} onChange={e => set("dealerPeeks", e.target.value==="peek")}>
-            <option value="peek">peeks for blackjack</option><option value="nopeek">no peek</option>
-          </select><span>and</span>
-          <select style={sel} value={s.dealerHitsSoft17?"h17":"s17"} onChange={e => set("dealerHitsSoft17", e.target.value==="h17")}>
-            <option value="h17">hits soft 17</option><option value="s17">stands on all 17</option>
-          </select>
-        </div>
-      </div>
-      <div style={row}><span>Player Blackjack</span>
-        <select style={sel} value={s.blackjackPays} onChange={e => set("blackjackPays", +e.target.value)}>
-          <option value={1.5}>pays 3 to 2</option><option value={1.2}>pays 6 to 5</option><option value={1}>even money</option>
-        </select>
-      </div>
-      <div style={row}><span>Pairs 2s-10s</span>
-        <select style={sel} value={s.maxSplits2to10} onChange={e => set("maxSplits2to10", +e.target.value)}>
-          <option value={0}>no splitting</option><option value={1}>split once</option>
-          <option value={2}>split up to 2</option><option value={3}>split up to 3</option>
-        </select>
-      </div>
-      <div style={row}><span>Aces</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <select style={sel} value={s.aceSplitLimit} onChange={e => set("aceSplitLimit", +e.target.value)}>
-            <option value={1}>split once</option><option value={2}>split twice</option>
-          </select><span>and</span>
-          <select style={sel} value={s.aceReceiveOneCard?"one":"full"} onChange={e => set("aceReceiveOneCard", e.target.value==="one")}>
-            <option value="one">one card only</option><option value="full">full play</option>
-          </select>
-        </div>
-      </div>
-      <div style={row}><span>Double Down</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <select style={sel} value={s.doubleOn} onChange={e => set("doubleOn", e.target.value)}>
-            <option value="any">any two cards</option><option value="9-11">9, 10, or 11</option><option value="10-11">10 or 11</option>
-          </select>
-          <select style={sel} value={s.doubleAfterSplit?"yes":"no"} onChange={e => set("doubleAfterSplit", e.target.value==="yes")}>
-            <option value="yes">incl. after split</option><option value="no">not after split</option>
-          </select>
-        </div>
-      </div>
-      <div style={row}><span>Surrender</span>
-        <select style={{ ...sel, ...(s.gameType === "doubleDeck" ? { opacity: 0.5, pointerEvents: "none" } : {}) }} value={s.surrender} onChange={e => set("surrender", e.target.value)}>
-          <option value="any">vs any card</option><option value="10+A">vs 10 & Ace</option><option value="none">not allowed</option>
-        </select>
-      </div>
-      <div style={row}><span>Table Limits</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <select style={sel} value={s.tableMin} onChange={e => set("tableMin", +e.target.value)}>
-            {[5,10,15,25,50,100].map(n => <option key={n} value={n}>${n}</option>)}
-          </select><span>to</span>
-          <select style={sel} value={s.tableMax} onChange={e => set("tableMax", +e.target.value)}>
-            {[500,1000,1500,2000,2500,3000,3500,4000,4500,5000,10000,50000,100000].map(n => <option key={n} value={n}>${n.toLocaleString()}</option>)}
-          </select>
-        </div>
-      </div>
-      <div style={row}><span>Buy-in</span>
-        <select style={sel} value={s.buyIn} onChange={e => set("buyIn", +e.target.value)}>
-          {[...Array.from({length: 20}, (_, i) => (i+1)*100),
-            ...Array.from({length: 16}, (_, i) => 2500 + i*500),
-            ...([15000,20000,25000,50000,100000])
-          ].filter((v,i,a) => a.indexOf(v)===i).sort((a,b)=>a-b).map(n => <option key={n} value={n}>${n.toLocaleString()}</option>)}
-        </select>
-      </div>
-      <div style={sec}>TABLE SEATS</div>
-      <div style={{ padding: "16px", borderBottom: "1px solid #ddd", textAlign: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, flexWrap: "wrap", marginBottom: 10 }}>
-          {s.seatConfig.map((seat, i) => (
-            <div key={i} style={{ textAlign: "center", width: 50 }}>
-              <div style={{
-                width: 40, height: 40, borderRadius: "50%", margin: "0 auto 3px",
-                border: seat.type === "empty" ? "1.5px dashed #ccc" : seat.type === "human" ? "2px solid #b8860b" : "2px solid #4a78a8",
-                background: seat.type === "empty" ? "#f0f0f0" : seat.type === "human" ? "#fff8e1" : "#e3f2fd",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 16,
+            { id: "standard", icon: "\uD83C\uDCCF", label: "Standard", desc: "Classic 6-deck shoe\nFull rules control" },
+            { id: "freeBet", icon: "\uD83C\uDFB0", label: "Free Bet", desc: "Free doubles & splits\nDealer 22 pushes" },
+            { id: "doubleDeck", icon: "\uD83C\uDCA1", label: "Double Deck", desc: "2 decks, tighter game\n75% penetration" },
+          ].map(g => {
+            const isSel = tableChosen && s.gameType === g.id;
+            const isDimmed = tableChosen && s.gameType !== g.id;
+            return (
+              <div key={g.id} onClick={() => selectTable(g.id)} style={{
+                flex: 1, maxWidth: 200, borderRadius: 14, padding: "20px 14px", textAlign: "center",
+                cursor: "pointer", transition: "all 0.25s", position: "relative", overflow: "hidden",
+                background: isSel ? "linear-gradient(135deg, rgba(255,215,0,0.1), rgba(26,122,42,0.18))" : isDimmed ? "rgba(255,255,255,0.02)" : "linear-gradient(135deg, rgba(255,215,0,0.06), rgba(26,122,42,0.1))",
+                border: isSel ? "2px solid rgba(255,215,0,0.55)" : isDimmed ? "2px solid rgba(255,255,255,0.06)" : "2px solid rgba(255,215,0,0.35)",
+                boxShadow: isSel ? "0 0 22px rgba(255,215,0,0.12), inset 0 0 30px rgba(255,215,0,0.03)" : isDimmed ? "none" : "0 0 14px rgba(255,215,0,0.06)",
+                animation: isSel ? "settingsThrob 1.5s ease-in-out infinite" : "none",
               }}>
-                {seat.type === "human" && "⭐"}
-                {seat.type === "ai" && <img src={AI_ICON} alt="AI" style={{ width: 16, height: 16, borderRadius: "50%" }} />}
-                {seat.type === "empty" && <span style={{ color: "#ccc", fontSize: 14 }}>+</span>}
+                {isSel && <div style={{ position: "absolute", top: 10, right: 10, width: 22, height: 22, borderRadius: "50%", background: "linear-gradient(135deg, #ffd700, #f9a825)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, color: "#1a3a1a", fontWeight: "bold", boxShadow: "0 0 8px rgba(255,215,0,0.3)" }}>{"\u2713"}</div>}
+                <div style={{ fontSize: 32, marginBottom: 10 }}>{g.icon}</div>
+                <div style={{ fontFamily: "'Rye', serif", fontSize: 15, letterSpacing: 1.5, marginBottom: 6, color: isDimmed ? "rgba(255,255,255,0.35)" : "#ffd700" }}>{g.label}</div>
+                <div style={{ fontSize: 11, lineHeight: 1.5, color: isSel ? "rgba(255,255,255,0.5)" : isDimmed ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.4)", whiteSpace: "pre-line" }}>{g.desc}</div>
               </div>
-              <div style={{ fontSize: 9, color: "#999" }}>Seat {i + 1}</div>
-              <div style={{ fontSize: 9, color: seat.type === "human" ? "#b8860b" : seat.type === "ai" ? "#4a78a8" : "#ccc", fontWeight: "bold" }}>
-                {seat.type === "human" ? (seat.name || "Player") : seat.type === "ai" ? AI_NAMES[i % AI_NAMES.length] : "Empty"}
-              </div>
+            );
+          })}
+        </div>
+
+        {/* Nav: DC left, Lobby + Next right */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "20px 24px 8px" }}>
+          <div style={{ marginRight: "auto", paddingLeft: 16 }}>
+            <button onClick={onDataCenter} style={{ padding: "10px 18px", borderRadius: 8, fontSize: 11, fontWeight: "bold", fontFamily: "'Rye', serif", letterSpacing: 1.5, cursor: "pointer", background: "linear-gradient(135deg, #1a3d5c, #0d2948)", color: "#64b5f6", border: "1.5px solid rgba(100,181,246,0.2)", boxShadow: "0 2px 8px rgba(13,41,72,0.4)", display: "inline-flex", alignItems: "center", gap: 6 }}>{"\uD83D\uDCCA"} Data Center</button>
+          </div>
+          <div style={{ display: "flex", gap: 14, marginRight: 16 }}>
+            {onExitToLobby && <button onClick={onExitToLobby} style={{ padding: "14px 36px", borderRadius: 10, fontSize: 15, fontWeight: "bold", fontFamily: "'Rye', serif", letterSpacing: 1, cursor: "pointer", background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de", border: "1.5px solid rgba(176,196,222,0.3)" }}>Lobby</button>}
+            <button onClick={() => { if (tableChosen) setStep(2); }} style={{ padding: "14px 36px", borderRadius: 10, fontSize: 15, fontWeight: "bold", fontFamily: "'Rye', serif", letterSpacing: 2, cursor: tableChosen ? "pointer" : "default", background: "linear-gradient(135deg, #c41e3a, #8b0000)", color: "#ffd700", border: "1.5px solid rgba(255,215,0,0.3)", boxShadow: tableChosen ? "0 4px 16px rgba(196,30,58,0.3)" : "none", opacity: tableChosen ? 1 : 0.4 }}>{`NEXT \u2192`}</button>
+          </div>
+        </div>
+
+        <StepIndicator current={1} />
+      </>)}
+
+      {/* ═══════════ STEP 2: TABLE RULES ═══════════ */}
+      {step === 2 && (<>
+        <div style={{ fontFamily: "'Rye', serif", fontSize: 18, color: "#ffd700", letterSpacing: 3, textAlign: "center", padding: "8px 20px 10px", textShadow: "0 0 10px rgba(255,215,0,0.15)" }}>TABLE RULES</div>
+        <div style={{ textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: -4, marginBottom: 16, letterSpacing: 1 }}>
+          {s.gameType === "freeBet" ? "Free Bet Blackjack" : s.gameType === "doubleDeck" ? "Double Deck Blackjack" : "Standard Blackjack"} — customize the house edge
+        </div>
+
+        {/* Card Counting overlay */}
+        {showCounting && (
+          <div style={{ margin: "0 20px 20px", borderRadius: 14, overflow: "hidden", border: "1px solid rgba(255,215,0,0.15)", background: "linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.6))", boxShadow: "inset 0 0 20px rgba(0,0,0,0.3)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 18px", borderBottom: "1px solid rgba(255,215,0,0.08)" }}>
+              <span style={{ fontFamily: "'Rye', serif", fontSize: 14, color: "#ffd700", letterSpacing: 2 }}>CARD COUNTING</span>
+              <div onClick={() => setShowCounting(false)} style={{ width: 28, height: 28, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 14 }}>{"\u2715"}</div>
             </div>
-          ))}
-        </div>
-        <div style={{ fontSize: 12, color: "#888", marginBottom: 10 }}>
-          {s.seatConfig.filter(sc => sc.type !== "empty").length} of 6 seats — {s.seatConfig.filter(sc => sc.type === "human").length} player{s.seatConfig.filter(sc => sc.type === "human").length !== 1 ? "s" : ""}, {s.seatConfig.filter(sc => sc.type === "ai").length} AI
-        </div>
-        <button onClick={onChooseSeats} style={{
-          padding: "12px 40px", fontSize: 15, fontWeight: "bold",
-          background: "linear-gradient(135deg, #0d5016, #1a7a2a)", color: "#ffd700",
-          border: "1px solid rgba(255,215,0,0.3)", borderRadius: 8, cursor: "pointer",
-          boxShadow: "0 3px 10px rgba(0,0,0,0.2)", letterSpacing: 1,
-        }}>Choose Seats</button>
-      </div>
-      <div style={sec}>CARD COUNTING SYSTEM</div>
-      <div style={row}><span>Preset</span>
-        <select style={sel} value={s.countingSystem} onChange={e => {
-          const sys = e.target.value;
-          if (COUNTING_SYSTEMS[sys]) onUpdate({...s, countingSystem: sys, customCounts: {...COUNTING_SYSTEMS[sys]}});
-          else set("countingSystem", sys);
-        }}>
-          {Object.keys(COUNTING_SYSTEMS).map(k => <option key={k} value={k}>{k}</option>)}
-          <option value="Custom">Custom</option>
-        </select>
-      </div>
-      <div style={{ padding: "10px 16px", borderBottom: "1px solid #ddd" }}>
-        <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
-          {["2","3","4","5","6","7","8","9","10","A"].map(r => (
-            <div key={r} style={{ textAlign: "center" }}>
-              <div style={{ fontWeight: "bold", fontSize: 13, marginBottom: 4 }}>{r}</div>
-              <input type="number" style={{ width: 44, textAlign: "center", padding: 4, borderRadius: 4, border: "1px solid #aaa", fontSize: 14 }}
-                value={countSys[r] ?? 0}
-                onChange={e => { const nc = {...s.customCounts, [r]: parseFloat(e.target.value)||0}; onUpdate({...s, countingSystem: "Custom", customCounts: nc}); }}
-              />
+            <div style={{ textAlign: "center", padding: "8px 0 0", fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: 1 }}>Choose a system or create your own</div>
+            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 8, padding: "14px 16px" }}>
+              {[...Object.keys(COUNTING_SYSTEMS), "Custom"].map(sys => {
+                const isActive = s.countingSystem === sys;
+                return (
+                  <div key={sys} onClick={() => {
+                    if (COUNTING_SYSTEMS[sys]) onUpdate({...s, countingSystem: sys, customCounts: {...COUNTING_SYSTEMS[sys]}});
+                    else set("countingSystem", sys);
+                  }} style={{
+                    padding: "7px 14px", borderRadius: 20, fontSize: 11, fontWeight: "bold", cursor: "pointer", letterSpacing: 0.5,
+                    background: isActive ? "linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,215,0,0.05))" : "rgba(255,255,255,0.03)",
+                    border: isActive ? "1.5px solid rgba(255,215,0,0.4)" : "1px solid rgba(255,255,255,0.08)",
+                    color: isActive ? "#ffd700" : "rgba(255,255,255,0.35)",
+                  }}>{sys}</div>
+                );
+              })}
             </div>
-          ))}
+            <div style={{ textAlign: "center", fontSize: 10, color: "rgba(255,255,255,0.2)", letterSpacing: 2, paddingBottom: 4 }}>CARD VALUES</div>
+            <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", padding: "8px 14px 16px" }}>
+              {["2","3","4","5","6","7","8","9","10","A"].map(r => {
+                const val = countSys[r] ?? 0;
+                return (
+                  <div key={r} style={{ textAlign: "center", width: 52 }}>
+                    <div style={{ fontFamily: "'Rye', serif", fontSize: 14, color: r === "A" ? "#ef5350" : "#fff", width: 38, height: 48, borderRadius: 6, margin: "0 auto 5px", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #1a3a1a, #0d2a0d)", border: "1px solid rgba(255,215,0,0.15)", boxShadow: "0 2px 6px rgba(0,0,0,0.3)" }}>{r}</div>
+                    <input type="number" value={val} onChange={e => { const nc = {...s.customCounts, [r]: parseFloat(e.target.value)||0}; onUpdate({...s, countingSystem: "Custom", customCounts: nc}); }}
+                      style={{ width: 42, textAlign: "center", padding: "4px 3px", borderRadius: 5, fontSize: 13, fontWeight: "bold", background: "rgba(0,0,0,0.3)", border: "1px solid " + (val > 0 ? "rgba(76,175,80,0.3)" : val < 0 ? "rgba(239,83,80,0.3)" : "rgba(255,255,255,0.1)"), color: val > 0 ? "#4caf50" : val < 0 ? "#ef5350" : "rgba(255,255,255,0.3)" }} />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Rules rows */}
+        {!showCounting && (
+        <div style={{ padding: "0 20px 10px" }}>
+          <div style={ruleGroupTitle}>Shoe & Dealer</div>
+          <div style={row}><span style={ruleLabel}>Shoe Size</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <select style={{ ...sel, ...(s.gameType === "doubleDeck" ? { opacity: 0.5, pointerEvents: "none" } : {}) }} value={s.deckCount} onChange={e => set("deckCount", +e.target.value)}>
+                {[1,2,4,6,8].map(n => <option key={n} value={n}>{n} deck{n>1?"s":""}</option>)}
+              </select><span style={conn}>dealt</span>
+              <select style={{ ...sel, ...(s.gameType === "doubleDeck" ? { opacity: 0.5, pointerEvents: "none" } : {}) }} value={s.penetration} onChange={e => set("penetration", +e.target.value)}>
+                {[50,65,75,85,90].map(n => <option key={n} value={n}>{n}%</option>)}
+              </select><span style={conn}>deep</span>
+            </div>
+          </div>
+          {s.gameType !== "doubleDeck" && (
+            <div style={row}><span style={ruleLabel}>Shuffle Type</span>
+              <select style={sel} value={s.shuffleType || "asm"} onChange={e => set("shuffleType", e.target.value)}>
+                <option value="asm">Automatic (ASM)</option><option value="csm">Continuous (CSM)</option>
+              </select>
+            </div>
+          )}
+          <div style={row}><span style={ruleLabel}>Dealer</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <select style={sel} value={s.dealerPeeks?"peek":"nopeek"} onChange={e => set("dealerPeeks", e.target.value==="peek")}>
+                <option value="peek">Peeks for BJ</option><option value="nopeek">No peek</option>
+              </select><span style={conn}>and</span>
+              <select style={sel} value={s.dealerHitsSoft17?"h17":"s17"} onChange={e => set("dealerHitsSoft17", e.target.value==="h17")}>
+                <option value="h17">Hits soft 17</option><option value="s17">Stands all 17</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={ruleGroupTitle}>Payouts & Actions</div>
+          <div style={row}><span style={ruleLabel}>Blackjack Pays</span>
+            <select style={sel} value={s.blackjackPays} onChange={e => set("blackjackPays", +e.target.value)}>
+              <option value={1.5}>3 to 2</option><option value={1.2}>6 to 5</option><option value={1}>Even money</option>
+            </select>
+          </div>
+          <div style={row}><span style={ruleLabel}>Double Down</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <select style={sel} value={s.doubleOn} onChange={e => set("doubleOn", e.target.value)}>
+                <option value="any">Any two cards</option><option value="9-11">9, 10, or 11</option><option value="10-11">10 or 11</option>
+              </select>
+              <select style={sel} value={s.doubleAfterSplit?"yes":"no"} onChange={e => set("doubleAfterSplit", e.target.value==="yes")}>
+                <option value="yes">Incl. after split</option><option value="no">Not after split</option>
+              </select>
+            </div>
+          </div>
+          <div style={row}><span style={ruleLabel}>Surrender</span>
+            <select style={{ ...sel, ...(s.gameType === "doubleDeck" ? { opacity: 0.5, pointerEvents: "none" } : {}) }} value={s.surrender} onChange={e => set("surrender", e.target.value)}>
+              <option value="any">vs Any Card</option><option value="10+A">vs 10 & Ace</option><option value="none">Not allowed</option>
+            </select>
+          </div>
+
+          <div style={ruleGroupTitle}>Splitting</div>
+          <div style={row}><span style={ruleLabel}>Pairs 2s-10s</span>
+            <select style={sel} value={s.maxSplits2to10} onChange={e => set("maxSplits2to10", +e.target.value)}>
+              <option value={0}>No splitting</option><option value={1}>Split once</option><option value={2}>Split up to 2</option><option value={3}>Split up to 3</option>
+            </select>
+          </div>
+          <div style={row}><span style={ruleLabel}>Aces</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <select style={sel} value={s.aceSplitLimit} onChange={e => set("aceSplitLimit", +e.target.value)}>
+                <option value={1}>Split once</option><option value={2}>Split twice</option>
+              </select><span style={conn}>and</span>
+              <select style={sel} value={s.aceReceiveOneCard?"one":"full"} onChange={e => set("aceReceiveOneCard", e.target.value==="one")}>
+                <option value="one">One card only</option><option value="full">Full play</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={ruleGroupTitle}>Table Limits</div>
+          <div style={row}><span style={ruleLabel}>Bet Range</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <select style={sel} value={s.tableMin} onChange={e => set("tableMin", +e.target.value)}>
+                {[5,10,15,25,50,100].map(n => <option key={n} value={n}>${n}</option>)}
+              </select><span style={conn}>to</span>
+              <select style={sel} value={s.tableMax} onChange={e => set("tableMax", +e.target.value)}>
+                {[500,1000,1500,2000,2500,3000,3500,4000,4500,5000,10000,50000,100000].map(n => <option key={n} value={n}>${n.toLocaleString()}</option>)}
+              </select>
+            </div>
+          </div>
         </div>
-      </div>
-      <div style={{ padding: 20, textAlign: "center" }}>
-        <button onClick={onDataCenter} style={{
-          padding: "14px 40px", fontSize: 14, fontWeight: "bold",
-          background: "linear-gradient(135deg, #1565c0, #0d47a1)", color: "#fff",
-          border: "none", borderRadius: 8, cursor: "pointer", boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-        }}>Data Center</button>
-        <div style={{ marginTop: 10, color: "#999", fontSize: 10, letterSpacing: 2 }}>Build {BUILD_NUMBER} &middot; {BUILD_DATE}</div>
-      </div>
+        )}
+
+        {/* Card Counting link */}
+        {!showCounting && (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "18px 20px", borderTop: "1px solid rgba(255,215,0,0.06)" }}>
+            <button onClick={() => setShowCounting(true)} style={{ padding: "10px 24px", borderRadius: 8, fontSize: 12, fontWeight: "bold", fontFamily: "'Rye', serif", letterSpacing: 1.5, cursor: "pointer", background: "rgba(255,255,255,0.03)", color: "rgba(255,215,0,0.5)", border: "1px solid rgba(255,215,0,0.12)", display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 16 }}>{"\uD83D\uDD22"}</span><span>CARD COUNTING SETUP</span>
+            </button>
+          </div>
+        )}
+
+        {/* Nav */}
+        <div style={{ display: "flex", justifyContent: "center", gap: 14, padding: "20px 20px 8px" }}>
+          <button onClick={() => setStep(1)} style={{ padding: "14px 36px", borderRadius: 10, fontSize: 15, fontWeight: "bold", fontFamily: "'Rye', serif", letterSpacing: 1, cursor: "pointer", background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de", border: "1.5px solid rgba(176,196,222,0.3)" }}>{"\u2190 BACK"}</button>
+          <button onClick={() => { setShowCounting(false); onChooseSeats(); }} style={{ padding: "14px 36px", borderRadius: 10, fontSize: 15, fontWeight: "bold", fontFamily: "'Rye', serif", letterSpacing: 2, cursor: "pointer", background: "linear-gradient(135deg, #c41e3a, #8b0000)", color: "#ffd700", border: "1.5px solid rgba(255,215,0,0.3)", boxShadow: "0 4px 16px rgba(196,30,58,0.3)" }}>{`NEXT \u2192`}</button>
+        </div>
+
+        <StepIndicator current={2} />
+      </>)}
+
+    </div>
     </div>
     </div>
   );
@@ -1526,12 +1602,13 @@ const REAL_PLAYER_NAMES = ["Player 2", "Player 3", "Player 4", "Player 5", "Play
 function createPlayer(name, bankroll, isHuman, seat, isHost = false) {
   return {
     name, bankroll, startBankroll: bankroll, totalInvested: bankroll, isHuman, seat, isHost, isAutoPlay: !isHuman,
-    isRealPlayer: false, personality: isHuman ? null : randomPersonality(),
+    isRealPlayer: false, playerSessionId: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), personality: isHuman ? null : randomPersonality(),
     hands: [{ cards: [], bet: 0, status: "active", result: null, isDoubled: false, isSplit: false, freeBet: 0 }],
     splitCount: 0, insurance: 0, freeBetTokens: 0, potOfGoldBet: 0, sideBet9x: 0,
     consecLosses: 0, consecWins: 0, pendingBet: 0, lastBet: 0, rpBetConfirmed: false,
     stats: { hands: 0, wins: 0, losses: 0, pushes: 0, blackjacks: 0, surrenders: 0 },
     bankrollHistory: [bankroll],
+    pocketBank: 0,
   };
 }
 
@@ -1638,6 +1715,9 @@ function GameTable({ settings, onBack }) {
   const pendingDealRef = useRef(false);
   const [newSeatConfig, setNewSeatConfig] = useState(null); // { seatIdx, name, buyIn, type }
   const [removeSeatIdx, setRemoveSeatIdx] = useState(null); // seat index pending removal confirmation
+  const [hostRemovalWarning, setHostRemovalWarning] = useState(null);
+  const [hostReturnPopup, setHostReturnPopup] = useState(null);
+  const hostAbsentRef = useRef(false);
 
   // =============== DATA TRACKING ===============
   const [gameLog, setGameLog] = useState(() => {
@@ -1652,8 +1732,11 @@ function GameTable({ settings, onBack }) {
   const [showDataCenter, setShowDataCenter] = useState(false);
   const handActionsRef = useRef([]); // actions taken in current hand: [{action, handIdx, timestamp}]
   const handStartBankrollRef = useRef(0); // bankroll at start of hand
+  const [dealerBustHistory, setDealerBustHistory] = useState([]);
+  const [showBustHistory, setShowBustHistory] = useState(false);
   const rpHandStartBankrollRef = useRef({}); // real player start bankrolls by seat
   const midHandRebuyRef = useRef(0); // tracks money added mid-hand (for P&L accuracy)
+  const rpMidHandRebuyRef = useRef({}); // per-player mid-hand rebuys { playerIdx: amount }
   const sessionRebuysRef = useRef(0); // total rebuys this session (both mid-hand and between-hand)
   const handSettledRef = useRef(false); // prevent double-settlement per hand
   const dealInProgressRef = useRef(false); // prevent double-deal (e.g., safety effect race)
@@ -1732,7 +1815,9 @@ function GameTable({ settings, onBack }) {
     const rpStartsN = {};
     players.forEach((p, i) => { if (p.isRealPlayer) rpStartsN[i] = p.bankroll; });
     rpHandStartBankrollRef.current = rpStartsN;
-    midHandRebuyRef.current = 0; // reset mid-hand rebuy tracker
+    midHandRebuyRef.current = 0;
+    rpMidHandRebuyRef.current = {}; // reset mid-hand rebuy tracker
+    rpMidHandRebuyRef.current = {};
     handSettledRef.current = false; // allow settlement for this new hand
     const sitOut = humanSitOut || forceSitOut;
     if (sitOut) setHumanSitOut(false); // reset after use
@@ -1831,6 +1916,7 @@ function GameTable({ settings, onBack }) {
     ps.forEach((p, i) => { if (p.isRealPlayer) rpStartsN[i] = p.bankroll; });
     rpHandStartBankrollRef.current = rpStartsN;
     midHandRebuyRef.current = 0;
+    rpMidHandRebuyRef.current = {};
     handSettledRef.current = false;
 
     const newPlayers = ps.map((p, idx) => {
@@ -1918,17 +2004,23 @@ function GameTable({ settings, onBack }) {
 
   // Confirm a seat's bet and advance to next
   const confirmSeatBet = useCallback((seatIdx, betAmount, sitOut = false) => {
+    // Guard against rapid clicks: ignore if betting is already complete or seat doesn't match
+    if (bettingSeatIdxRef.current === -1 || seatIdx !== bettingSeatIdxRef.current) return;
+    // Mark this seat as consumed immediately so rapid double-clicks can't sneak through
+    bettingSeatIdxRef.current = -2; // Temporary value — will be updated by advanceBettingSeat
     // Enforce minimum bet — reject if below table min (unless sitting out or bankroll < min)
     if (!sitOut && betAmount > 0 && betAmount < settings.tableMin) {
       const p = playersRef.current[seatIdx];
       // If player can't even afford the min, they must sit out or add funds — don't block
       if (p && p.bankroll >= settings.tableMin) {
+        bettingSeatIdxRef.current = seatIdx; // Restore ref — bet rejected
         setBetWarning(`Minimum bet is $${settings.tableMin.toLocaleString()}!`);
         return; // Don't advance — player must fix their bet
       }
     }
     // Enforce minimum bet for zero/empty bets too (player clicked Place Bet with $0)
     if (!sitOut && betAmount <= 0) {
+      bettingSeatIdxRef.current = seatIdx; // Restore ref — bet rejected
       setBetWarning(`Place a bet! Minimum is $${settings.tableMin.toLocaleString()}.`);
       return;
     }
@@ -2156,11 +2248,24 @@ function GameTable({ settings, onBack }) {
   }, [settings.buyIn]);
 
   // Remove a player mid-game
-  const removeMidGamePlayer = useCallback((seatIdx) => {
+  const removeMidGamePlayer = useCallback((seatIdx, forceHost = false) => {
+    const p = playersRef.current.find(pl => pl.seat === seatIdx);
+    if (!p) return;
+    if (p.isHost && !forceHost) {
+      const hostIdx = playersRef.current.findIndex(pl => pl.seat === seatIdx);
+      if (phase !== PHASES.BETTING) {
+        setHostRemovalWarning("The Host can only leave between hands, during the betting phase. Wait for the current hand to finish, then remove the Host before the next hand is dealt.");
+        return;
+      }
+      if (bettingSeatIdxRef.current === hostIdx) {
+        setHostRemovalWarning("The Host is currently being asked to bet. Wait until it's another player's turn to bet, then remove the Host.");
+        return;
+      }
+    }
     setPlayers(prev => {
-      const p = prev.find(pl => pl.seat === seatIdx);
-      if (!p) return prev;
-      if (p.isHost) return prev;
+      const player = prev.find(pl => pl.seat === seatIdx);
+      if (!player) return prev;
+      if (player.isHost) hostAbsentRef.current = true;
       const removedIdx = prev.findIndex(pl => pl.seat === seatIdx);
       const newPlayers = prev.filter(pl => pl.seat !== seatIdx);
       setBettingBets(oldBets => {
@@ -2176,7 +2281,7 @@ function GameTable({ settings, onBack }) {
       return newPlayers;
     });
     setRemoveSeatIdx(null);
-  }, []);
+  }, [phase]);
 
 
 
@@ -2481,7 +2586,12 @@ function GameTable({ settings, onBack }) {
     const updatedPlayers = np.map((p, i) => {
       if (p.hands[0]?.status === "sitting_out") return p;
       if (newDecisions[i]) {
-        const insBet = Math.min(p.hands[0].bet / 2, p.bankroll);
+        const hand = p.hands[0];
+        // Even Money: if player has BJ, settle immediately at 1:1 — no insurance bet needed
+        if (isBlackjack(hand.cards)) {
+          return { ...p, insurance: 0, bankroll: p.bankroll + hand.bet * 2, hands: [{ ...hand, status: "even_money", result: "even_money" }] };
+        }
+        const insBet = Math.min(hand.bet / 2, p.bankroll);
         return { ...p, insurance: insBet, bankroll: p.bankroll - insBet };
       }
       return { ...p, insurance: 0 };
@@ -2742,6 +2852,14 @@ function GameTable({ settings, onBack }) {
 
     console.log(`[SETTLE] Dealer: ${dealerCards.map(c=>c.rank+c.suit).join(",")} val=${dVal} BJ=${dBJ} bust=${dBust} d22push=${dealer22Push}`);
 
+    // Record dealer bust/stand for bust history panel
+    if (!dBJ) {
+      setDealerBustHistory(prev => {
+        const updated = [...prev, dBust];
+        return updated.length > 50 ? updated.slice(-50) : updated;
+      });
+    }
+
     // ═══════════════════════════════════════════════════════════
     // SETTLE EACH PLAYER'S HANDS
     // ═══════════════════════════════════════════════════════════
@@ -2751,6 +2869,11 @@ function GameTable({ settings, onBack }) {
       for (const hand of pp.hands) {
         // ── Skip hands that don't need settlement ──
         if (hand.status === "sitting_out") continue;
+
+        // Even money: already settled at 1:1 during insurance phase
+        if (hand.result === "even_money") {
+          continue;
+        }
 
         // Surrendered hands: already half-refunded, just count stats
         if (hand.result === "surrender") {
@@ -2889,7 +3012,7 @@ function GameTable({ settings, onBack }) {
       return pp;
     });
     // =============== LOG HAND DATA ===============
-    const humanP = np.find(p => p.isHost) || np.find(p => p.isHuman);
+    const humanP = np.find(p => p.isHost) || (!hostAbsentRef.current && np.find(p => p.isHuman));
     if (humanP && humanP.hands[0]?.status !== "sitting_out") {
       const bankBefore = handStartBankrollRef.current;
       const bankAfter = humanP.bankroll;
@@ -2898,7 +3021,7 @@ function GameTable({ settings, onBack }) {
 
       // Update streaks
       const allResults = humanP.hands.map(h => h.result);
-      const anyWin = allResults.some(r => r === "win" || r === "blackjack");
+      const anyWin = allResults.some(r => r === "win" || r === "blackjack" || r === "even_money");
       const allLost = allResults.every(r => r === "loss" || r === "busted" || r === "surrender");
 
       if (anyWin) {
@@ -2915,10 +3038,11 @@ function GameTable({ settings, onBack }) {
       // Overall balance now computed automatically from session P&L (bankroll - buyIn - rebuys)
       // No per-hand accumulation needed — can't drift
 
+      const hostPlayer = np.find(p => p.isHost);
       const handRecord = {
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
         timestamp: new Date().toISOString(),
-        sessionId,
+        sessionId: hostPlayer?.playerSessionId || sessionId,
         playerName: "Host",
         gameType: settings.gameType,
         handNumber: 0, // set in setGameLog updater below
@@ -3029,12 +3153,12 @@ function GameTable({ settings, onBack }) {
         const rpBankAfter = rp.bankroll;
         const rpNetResult = rpBankAfter - rpBankBefore;
         const rpAllResults = rp.hands.map(h => h.result);
-        const rpAnyWin = rpAllResults.some(r => r === "win" || r === "blackjack");
+        const rpAnyWin = rpAllResults.some(r => r === "win" || r === "blackjack" || r === "even_money");
         const rpAllLost = rpAllResults.every(r => r === "loss" || r === "busted" || r === "surrender");
         return {
           id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
           timestamp: new Date().toISOString(),
-          sessionId,
+          sessionId: rp.playerSessionId || sessionId,
           playerName: rp.name,
           gameType: settings.gameType,
           handNumber: 0,
@@ -3106,7 +3230,7 @@ function GameTable({ settings, onBack }) {
           handResults: rpAllResults,
           totalBet: rp.hands.reduce((s, h) => s + h.bet, 0),
           netResult: rpNetResult,
-          midHandRebuy: 0,
+          midHandRebuy: rpMidHandRebuyRef.current[rpIdx] || 0,
           bankrollBefore: rpBankBefore,
           bankrollAfter: rpBankAfter,
           runningCount: rc,
@@ -3328,12 +3452,12 @@ function GameTable({ settings, onBack }) {
     return actions;
   };
   const avail = getActions();
-  const resultColors = { win: "#4caf50", loss: "#ef5350", push: "#ffa726", blackjack: "#ffd700", surrender: "#78909c" };
-  const resultLabels = { win: "WIN", loss: "LOSS", push: "PUSH", blackjack: "BLACKJACK!", surrender: "SURRENDER" };
+  const resultColors = { win: "#4caf50", loss: "#ef5350", push: "#ffa726", blackjack: "#ffd700", surrender: "#78909c", even_money: "#4caf50" };
+  const resultLabels = { win: "WIN", loss: "LOSS", push: "PUSH", blackjack: "BLACKJACK!", surrender: "SURRENDER", even_money: "EVEN MONEY" };
   const actionBtnStyle = (bg) => ({
     padding: "10px 22px", fontSize: 15, fontWeight: "bold", color: "#fff",
     background: bg, border: "none", borderRadius: 8, cursor: "pointer",
-    boxShadow: "0 3px 10px rgba(0,0,0,0.35)", minWidth: 85,
+    boxShadow: "0 3px 10px rgba(0,0,0,0.35)", minWidth: 85, fontFamily: "'Rye', serif",
   });
 
   return (
@@ -3686,6 +3810,63 @@ function GameTable({ settings, onBack }) {
                     <div style={{ color: "#fff", fontSize: 15, fontWeight: "bold", marginTop: 3 }}>{isBlackjack(dealer.cards) ? "Blackjack!" : handValue(dealer.cards)}</div>
                   )}
                 </div>
+                {/* Bust History pill — to the right of dealer cards */}
+                <div style={{ position: "relative", alignSelf: "center" }}>
+                  <div onClick={() => setShowBustHistory(prev => !prev)} style={{
+                    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                    background: showBustHistory ? "rgba(0,0,0,0.6)" : "rgba(0,0,0,0.35)",
+                    border: showBustHistory ? "1px solid rgba(255,215,0,0.5)" : "1px solid rgba(255,215,0,0.2)",
+                    borderRadius: 16, padding: "6px 8px", cursor: "pointer", minWidth: 40,
+                    transition: "all 0.2s",
+                    boxShadow: showBustHistory ? "0 0 10px rgba(255,215,0,0.2)" : "none",
+                  }}>
+                    <span style={{ fontFamily: "'Rye', 'Georgia', serif", fontSize: 8, color: "#ffd700", letterSpacing: 0.5, lineHeight: 1.3 }}>Bust</span>
+                    <span style={{ fontFamily: "'Rye', 'Georgia', serif", fontSize: 8, color: "#ffd700", letterSpacing: 0.5, lineHeight: 1.3 }}>History</span>
+                  </div>
+                  {/* Bust History overlay — opens to the right, away from cards */}
+                  {showBustHistory && dealerBustHistory.length > 0 && (() => {
+                    const streaks = [];
+                    for (let i = dealerBustHistory.length - 1; i >= 0; ) {
+                      const isBust = dealerBustHistory[i];
+                      let count = 0;
+                      while (i >= 0 && dealerBustHistory[i] === isBust) { count++; i--; }
+                      streaks.push({ bust: isBust, count });
+                    }
+                    const totalBusts = dealerBustHistory.filter(b => b).length;
+                    const totalHands = dealerBustHistory.length;
+                    const bustPct = totalHands > 0 ? ((totalBusts / totalHands) * 100).toFixed(0) : 0;
+                    return (
+                      <div style={{
+                        position: "absolute", left: "calc(100% + 8px)", top: -10,
+                        background: "linear-gradient(180deg, rgba(10,20,30,0.96), rgba(5,10,20,0.98))",
+                        border: "1px solid rgba(255,215,0,0.2)", borderRadius: 10,
+                        padding: "12px 16px", minWidth: 130, maxHeight: 280, overflowY: "auto",
+                        boxShadow: "0 8px 28px rgba(0,0,0,0.7)", zIndex: 50,
+                      }}>
+                        <div style={{ color: "#ffd700", fontFamily: "'Rye', 'Georgia', serif", fontSize: 10, letterSpacing: 2, textAlign: "center", marginBottom: 2 }}>BUST HISTORY</div>
+                        <div style={{ color: "#555", fontSize: 9, textAlign: "center", marginBottom: 8 }}>Last {totalHands} hands</div>
+                        {streaks.map((s, idx) => (
+                          <div key={idx}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "3px 0" }}>
+                              <div style={{
+                                width: 12, height: 12, borderRadius: "50%", flexShrink: 0,
+                                background: s.bust ? "#f44336" : "#4caf50",
+                                boxShadow: s.bust ? "0 0 5px rgba(244,67,54,0.4)" : "0 0 5px rgba(76,175,80,0.4)",
+                              }} />
+                              <span style={{ fontSize: 14, fontWeight: "bold", color: s.bust ? "#f44336" : "#4caf50" }}>{s.count}</span>
+                            </div>
+                            {idx < streaks.length - 1 && <hr style={{ border: "none", borderTop: "1px solid rgba(255,255,255,0.06)", margin: "1px 0" }} />}
+                          </div>
+                        ))}
+                        <div style={{ marginTop: 8, paddingTop: 6, borderTop: "1px solid rgba(255,255,255,0.1)", display: "flex", justifyContent: "space-between" }}>
+                          <div style={{ textAlign: "center" }}><div style={{ fontSize: 12, fontWeight: "bold", color: "#f44336" }}>{totalBusts}</div><div style={{ fontSize: 7, color: "#666" }}>BUSTS</div></div>
+                          <div style={{ textAlign: "center" }}><div style={{ fontSize: 12, fontWeight: "bold", color: "#f44336" }}>{bustPct}%</div><div style={{ fontSize: 7, color: "#666" }}>RATE</div></div>
+                          <div style={{ textAlign: "center" }}><div style={{ fontSize: 12, fontWeight: "bold", color: "#4caf50" }}>{totalHands - totalBusts}</div><div style={{ fontSize: 7, color: "#666" }}>STAND</div></div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
               </div>
             </div>
             {/* Felt text — centered, full width, below dealer */}
@@ -3794,7 +3975,7 @@ function GameTable({ settings, onBack }) {
                             />
                           ) : (
                             <span
-                              style={{ color: p.isHuman || p.isRealPlayer ? "#ffd700" : "#8fc9ff", fontWeight: "bold", fontSize: n <= 2 ? 22 : n === 3 ? 19 : n === 4 ? 16 : 13, cursor: (p.isHuman || p.isRealPlayer) ? "pointer" : "default" }}
+                              style={{ color: p.isHuman || p.isRealPlayer ? "#ffd700" : "#ce93d8", fontWeight: "bold", fontSize: n <= 2 ? 22 : n === 3 ? 19 : n === 4 ? 16 : 13, cursor: (p.isHuman || p.isRealPlayer) ? "pointer" : "default" }}
                               onClick={() => { if (p.isHuman || p.isRealPlayer) setEditingName(pi); }}
                               title={(p.isHuman || p.isRealPlayer) ? "Click to edit name" : ""}
                             >{p.name}</span>
@@ -3806,31 +3987,34 @@ function GameTable({ settings, onBack }) {
                               </label>
                             )}
                             {(p.isHuman || p.isRealPlayer) && (
-                              <label style={{ color: p.isAutoPlay ? "#8fc9ff" : "rgba(255,255,255,0.5)", fontSize: n <= 2 ? 16 : 14, cursor: "pointer", display: "flex", alignItems: "center", gap: 4, padding: "2px 6px", borderRadius: 4, background: p.isAutoPlay ? "rgba(143,201,255,0.1)" : "transparent" }}>
-                                <input type="checkbox" checked={p.isAutoPlay} onChange={() => toggleAutoPlay(pi)} style={{ width: 18, height: 18, cursor: "pointer", accentColor: "#8fc9ff" }} />Auto
+                              <label style={{ color: p.isAutoPlay ? "#ce93d8" : "rgba(255,255,255,0.5)", fontSize: n <= 2 ? 16 : 14, cursor: "pointer", display: "flex", alignItems: "center", gap: 4, padding: "2px 6px", borderRadius: 4, background: p.isAutoPlay ? "rgba(206,147,216,0.1)" : "transparent" }}>
+                                <input type="checkbox" checked={p.isAutoPlay} onChange={() => toggleAutoPlay(pi)} style={{ width: 18, height: 18, cursor: "pointer", accentColor: "#ce93d8" }} />Auto
                               </label>
                             )}
                           </div>
                         </div>
                         {/* W/L Streak Indicator — real players only, above cards */}
-                        {(p.isHuman || p.isRealPlayer) && (p.consecWins > 0 || p.consecLosses > 0) && (
-                          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 3, marginBottom: 2 }}>
-                            <span style={{
-                              width: Math.round((n <= 2 ? 22 : n === 3 ? 19 : n === 4 ? 16 : 13) * 0.9),
-                              height: Math.round((n <= 2 ? 22 : n === 3 ? 19 : n === 4 ? 16 : 13) * 0.9),
-                              borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center",
-                              fontSize: Math.round((n <= 2 ? 22 : n === 3 ? 19 : n === 4 ? 16 : 13) * 0.45),
-                              fontWeight: "bold", color: "#fff",
-                              background: p.consecWins > 0 ? "rgba(76,175,80,0.5)" : "rgba(244,67,54,0.5)",
-                              border: `1px solid ${p.consecWins > 0 ? "rgba(76,175,80,0.5)" : "rgba(244,67,54,0.5)"}`,
-                              boxShadow: "0 0 4px rgba(255,255,255,0.1)",
-                            }}>{p.consecWins > 0 ? "W" : "L"}</span>
-                            <span style={{
-                              fontSize: Math.round((n <= 2 ? 22 : n === 3 ? 19 : n === 4 ? 16 : 13) * 0.45),
-                              fontWeight: "bold", color: "#d4af37",
-                            }}>{p.consecWins > 0 ? p.consecWins : p.consecLosses}</span>
-                          </div>
-                        )}
+                        {(p.isHuman || p.isRealPlayer) && (p.consecWins > 0 || p.consecLosses > 0) && (() => {
+                          const nameSize = n <= 2 ? 22 : n === 3 ? 19 : n === 4 ? 16 : 13;
+                          return (
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 3, marginBottom: 2 }}>
+                              <span style={{
+                                width: Math.round(nameSize * 1.2),
+                                height: Math.round(nameSize * 1.2),
+                                borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center",
+                                fontSize: Math.round(nameSize * 0.65),
+                                fontWeight: "bold", color: "#fff",
+                                background: p.consecWins > 0 ? "rgba(76,175,80,0.5)" : "rgba(244,67,54,0.5)",
+                                border: `1px solid ${p.consecWins > 0 ? "rgba(76,175,80,0.5)" : "rgba(244,67,54,0.5)"}`,
+                                boxShadow: "0 0 4px rgba(255,255,255,0.1)",
+                              }}>{p.consecWins > 0 ? "W" : "L"}</span>
+                              <span style={{
+                                fontSize: nameSize,
+                                fontWeight: "bold", color: "#d4af37",
+                              }}>{p.consecWins > 0 ? p.consecWins : p.consecLosses}</span>
+                            </div>
+                          );
+                        })()}
                         {hasCards && (() => {
                           const numHands = p.hands.length;
                           const isSplit = numHands > 1;
@@ -3871,7 +4055,7 @@ function GameTable({ settings, onBack }) {
                                     })}
                                   </div>
                                   {hand.cards.length > 0 && dealingComplete && (
-                                    <div style={{ marginTop: 2, display: "flex", alignItems: "center", justifyContent: "center", gap: 3, flexWrap: "wrap" }}>
+                                    <div style={{ marginTop: 6, display: "flex", alignItems: "center", justifyContent: "center", gap: 3, flexWrap: "wrap" }}>
                                       <span style={{ color: "#fff", fontSize: n <= 2 ? 20 : n === 3 ? 17 : n === 4 ? 15 : 13, fontWeight: "bold" }}>
                                         {isBlackjack(hand.cards) ? "Blackjack!" : `${handValue(hand.cards)}${isSoft(hand.cards) && handValue(hand.cards) < 21 ? " soft" : ""}`}
                                       </span>
@@ -4134,9 +4318,11 @@ function GameTable({ settings, onBack }) {
                             pillGlow={hasSideBet && !sideBetFocus}
                             renderAfterPill={() => (
                               <button onClick={() => { setSideBetFocus(null); confirmSeatBet(bettingSeatIdx, humanBet); }} style={{
-                                padding: "10px 28px", fontSize: 15, fontWeight: "bold",
-                                background: "linear-gradient(135deg, #4caf50, #2e7d32)", color: "#fff",
-                                border: "none", borderRadius: 8, cursor: "pointer", boxShadow: "0 3px 10px rgba(0,0,0,0.4)",
+                                padding: "4px 20px", fontSize: 20, fontWeight: "bold",
+                                background: "radial-gradient(ellipse at 45% 40%, #2e7d32, #1b5e20 60%, #0d3810)", color: "#fff",
+                                border: "3px solid #ffd700", borderRadius: 30, cursor: "pointer",
+                                boxShadow: "0 2px 8px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.15)",
+                                textShadow: "0 1px 3px rgba(0,0,0,0.7)", letterSpacing: 1, minHeight: 36,
                               }}>Place Bet</button>
                             )} />
                           {/* Bottom buttons: Add Funds, Cash Out, Sit Out */}
@@ -4334,9 +4520,11 @@ function GameTable({ settings, onBack }) {
                               pillGlow={rpHasSideBet && !sideBetFocus}
                               renderAfterPill={() => (
                                 <button onClick={() => { setSideBetFocus(null); confirmSeatBet(bettingSeatIdx, rpBet || settings.tableMin); }} style={{
-                                  padding: "10px 28px", fontSize: 15, fontWeight: "bold",
-                                  background: "linear-gradient(135deg, #4caf50, #2e7d32)", color: "#fff",
-                                  border: "none", borderRadius: 8, cursor: "pointer", boxShadow: "0 3px 10px rgba(0,0,0,0.4)",
+                                  padding: "4px 20px", fontSize: 20, fontWeight: "bold",
+                                  background: "radial-gradient(ellipse at 45% 40%, #2e7d32, #1b5e20 60%, #0d3810)", color: "#fff",
+                                  border: "3px solid #ffd700", borderRadius: 30, cursor: "pointer",
+                                  boxShadow: "0 2px 8px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.15)",
+                                  textShadow: "0 1px 3px rgba(0,0,0,0.7)", letterSpacing: 1, minHeight: 36,
                                 }}>Place Bet</button>
                               )} />
                             {/* Bottom buttons row */}
@@ -4468,10 +4656,13 @@ function GameTable({ settings, onBack }) {
               </div>
             )}
             {phase === PHASES.PLAYER_TURN && avail.length > 0 && (() => {
+              const n = players.length;
               const curP = players[activePlayer];
               const curH = curP?.hands[activeHand];
               const showFreeDouble = curH && isFreeBetDouble(curH.cards, settings);
               const showFreeSplit = curH && isFreeBetSplit(curH.cards, settings);
+              const playerSlotWidth = n <= 2 ? 400 : n === 3 ? 320 : n === 4 ? 260 : 220;
+              const containerMaxWidth = Math.min(n * playerSlotWidth + 20, window.innerWidth - 20);
               const actionButtons = (
                 <div style={{ display: "flex", justifyContent: "center", gap: 8, flexWrap: "wrap" }}>
                   {avail.includes("hit") && <button onClick={() => handleHumanAction("hit")} style={actionBtnStyle("#2196f3")}>Hit</button>}
@@ -4499,9 +4690,9 @@ function GameTable({ settings, onBack }) {
               );
               // Position buttons dynamically under the active player
               return (
-                <div style={{ display: "flex", flexDirection: "row-reverse", gap: 5, padding: "0 10px" }}>
+                <div style={{ display: "flex", flexDirection: "row-reverse", gap: 5, padding: "0 10px", maxWidth: containerMaxWidth, margin: "0 auto", width: "100%" }}>
                   {players.map((p, pi) => (
-                    <div key={`act-${pi}`} style={{ flex: "1 1 0", minWidth: 70, display: "flex", justifyContent: "center" }}>
+                    <div key={`act-${pi}`} style={{ flex: "1 1 0", minWidth: 70, display: "flex", justifyContent: "center", maxWidth: playerSlotWidth }}>
                       {pi === activePlayer ? actionButtons : null}
                     </div>
                   ))}
@@ -4513,6 +4704,7 @@ function GameTable({ settings, onBack }) {
                 <div style={{ display: "flex", flexDirection: "row-reverse", justifyContent: "center", gap: 12, marginBottom: 10, flexWrap: "wrap" }}>
                   {players.filter(p => p.hands[0]?.status !== "sitting_out").map((p, i) => {
                     const netThisHand = p.hands.reduce((sum, h) => {
+                      if (h.result === "even_money") return sum + h.bet; // 1:1 payout
                       if (h.result === "win") return sum + h.bet + (h.freeBet || 0);
                       if (h.result === "blackjack") return sum + h.bet * settings.blackjackPays + (h.freeBet || 0);
                       if (h.result === "loss" || h.result === "busted") return sum - h.bet;
@@ -4590,7 +4782,7 @@ function GameTable({ settings, onBack }) {
                 <div key={i} style={{ background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: 12 }}>
                   <div style={{
                     fontWeight: "bold", fontSize: 15, marginBottom: 8,
-                    color: p.isHuman || p.isRealPlayer ? "#ffd700" : "#8fc9ff",
+                    color: p.isHuman || p.isRealPlayer ? "#ffd700" : "#ce93d8",
                     borderBottom: "1px solid rgba(255,255,255,0.15)", paddingBottom: 6,
                   }}>{p.name} {p.isHost ? "(You)" : p.isHuman ? "" : p.isRealPlayer ? "" : "(AI)"}</div>
                   <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "4px 12px", fontSize: 13 }}>
@@ -4669,7 +4861,7 @@ function GameTable({ settings, onBack }) {
                   )}
                   {insCost > 0 && (
                     <p style={{ marginBottom: 12, fontSize: 14, color: "#ccc" }}>
-                      Bet: <strong style={{ color: "#fff" }}>${askingPlayer.hands[0]?.bet.toLocaleString()}</strong> — {hasBlackjack ? "Even Money: " : "Insurance: "}<strong style={{ color: "#ff9800" }}>${insCost.toLocaleString()}</strong>
+                      Bet: <strong style={{ color: "#fff", fontFamily: "'Rye', serif" }}>${askingPlayer.hands[0]?.bet.toLocaleString()}</strong> — {hasBlackjack ? "Even Money: " : "Insurance: "}<strong style={{ color: "#ff9800", fontFamily: "'Rye', serif" }}>${insCost.toLocaleString()}</strong>
                     </p>
                   )}
                   <p style={{ marginBottom: 16, fontSize: 11, color: "#666" }}>
@@ -4733,7 +4925,7 @@ function GameTable({ settings, onBack }) {
               </h2>
               <div style={{ marginBottom: 14 }}>
                 <p style={{ marginBottom: 6, fontSize: 14, color: "#aaa" }}>
-                  Current bankroll: ${bal.toLocaleString()} — Minimum bet: ${settings.tableMin}
+                  Current bankroll: <span style={{ fontFamily: "'Rye', serif" }}>${bal.toLocaleString()}</span> — Minimum bet: <span style={{ fontFamily: "'Rye', serif" }}>${settings.tableMin}</span>
                 </p>
                 <p style={{ fontSize: 16 }}>Would you like to add more chips?</p>
               </div>
@@ -4742,13 +4934,13 @@ function GameTable({ settings, onBack }) {
                   <button key={amt} onClick={() => setRebuyAmount(String(amt))} style={{
                     padding: "8px 16px", borderRadius: 6, border: rebuyAmount === String(amt) ? "2px solid #ffd700" : "1px solid #555",
                     background: rebuyAmount === String(amt) ? "rgba(255,215,0,0.15)" : "rgba(255,255,255,0.05)",
-                    color: "#fff", fontSize: 14, cursor: "pointer", fontWeight: "bold",
+                    color: "#fff", fontSize: 14, cursor: "pointer", fontWeight: "bold", fontFamily: "'Rye', serif",
                   }}>${amt.toLocaleString()}</button>
                 ))}
               </div>
               <div style={{ marginBottom: 16 }}>
                 <input type="number" placeholder="Or enter custom amount" value={rebuyAmount} onChange={e => setRebuyAmount(e.target.value)}
-                  style={{ width: "80%", padding: "10px 14px", borderRadius: 6, border: "1px solid #555", background: "#2a2a4e", color: "#fff", fontSize: 16, textAlign: "center" }} />
+                  style={{ width: "80%", padding: "10px 14px", borderRadius: 6, border: "1px solid #555", background: "#2a2a4e", color: "#fff", fontSize: 16, textAlign: "center", fontFamily: "'Rye', serif" }} />
               </div>
               <div style={{ display: "flex", gap: 10 }}>
                 <button onClick={() => {
@@ -4760,7 +4952,10 @@ function GameTable({ settings, onBack }) {
                     // Add chips to the correct player (human by default, or specific real player)
                     setPlayers(prev => prev.map((p, i) => {
                       if (targetIdx != null ? i === targetIdx : p.isHuman) {
-                        return { ...p, bankroll: p.bankroll + amt, totalInvested: (p.totalInvested || p.startBankroll) + amt };
+                        const pocket = p.pocketBank || 0;
+                        const fromPocket = Math.min(pocket, amt);
+                        const newMoney = amt - fromPocket;
+                        return { ...p, bankroll: p.bankroll + amt, pocketBank: pocket - fromPocket, totalInvested: (p.totalInvested || p.startBankroll) + newMoney, totalWithdrawn: Math.max(0, (p.totalWithdrawn || 0) - fromPocket) };
                       }
                       return p;
                     }));
@@ -4768,6 +4963,9 @@ function GameTable({ settings, onBack }) {
                     if (pendingAction) {
                       // Mid-hand rebuy: track so P&L can be adjusted
                       if (!targetIdx || players[targetIdx]?.isHuman) midHandRebuyRef.current += amt;
+                      if (targetIdx != null && players[targetIdx]?.isRealPlayer) {
+                        rpMidHandRebuyRef.current[targetIdx] = (rpMidHandRebuyRef.current[targetIdx] || 0) + amt;
+                      }
                       // Trigger action via useEffect AFTER React commits the new players state
                       setExecuteAfterRebuy(pendingAction);
                     }
@@ -4787,7 +4985,7 @@ function GameTable({ settings, onBack }) {
                 <button onClick={() => { setRebuyDialog(false); const hadPending = pendingActionAfterRebuy; setPendingActionAfterRebuy(null); if (!hadPending) { setDealer({ cards: [], hidden: true }); startBettingRound(false); } }} style={{ flex: 1, padding: "12px", borderRadius: 6, border: "none", background: "#2196f3", color: "#fff", fontWeight: "bold", cursor: "pointer" }}>
                   {pendingActionAfterRebuy ? "Cancel" : "Skip"}
                 </button>
-                {!pendingActionAfterRebuy && <button onClick={() => { setRebuyDialog(false); onBack(); }} style={{ padding: "12px 16px", borderRadius: 6, border: "none", background: "#607d8b", color: "#fff", fontWeight: "bold", cursor: "pointer" }}>
+                {!pendingActionAfterRebuy && <button onClick={() => { setRebuyDialog(false); onBack(); }} style={{ padding: "12px 16px", borderRadius: 6, border: "1.5px solid rgba(176,196,222,0.4)", background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de", fontWeight: "bold", cursor: "pointer", fontFamily: "'Rye', serif", fontSize: 15, letterSpacing: 1 }}>
                   Settings
                 </button>}
               </div>
@@ -4818,11 +5016,11 @@ function GameTable({ settings, onBack }) {
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", marginBottom: 8 }}>
                 {[500, 1000, 2000, 5000].map(v => (
                   <button key={v} onClick={() => setRealPlayerBuyInDialog(prev => ({ ...prev, amount: v }))}
-                    style={{ padding: "6px 14px", borderRadius: 6, border: realPlayerBuyInDialog.amount === v ? "2px solid #ffd700" : "1px solid rgba(255,215,0,0.3)", background: realPlayerBuyInDialog.amount === v ? "rgba(255,215,0,0.2)" : "rgba(255,215,0,0.05)", color: realPlayerBuyInDialog.amount === v ? "#ffd700" : "#ccc", cursor: "pointer", fontSize: 13, fontWeight: "bold" }}>${v.toLocaleString()}</button>
+                    style={{ padding: "6px 14px", borderRadius: 6, border: realPlayerBuyInDialog.amount === v ? "2px solid #ffd700" : "1px solid rgba(255,215,0,0.3)", background: realPlayerBuyInDialog.amount === v ? "rgba(255,215,0,0.2)" : "rgba(255,215,0,0.05)", color: realPlayerBuyInDialog.amount === v ? "#ffd700" : "#ccc", cursor: "pointer", fontSize: 13, fontWeight: "bold", fontFamily: "'Rye', serif" }}>${v.toLocaleString()}</button>
                 ))}
               </div>
               <input type="number" value={realPlayerBuyInDialog.amount} onChange={e => setRealPlayerBuyInDialog(prev => ({ ...prev, amount: parseInt(e.target.value) || 0 }))}
-                style={{ width: "50%", padding: "8px", borderRadius: 8, border: "2px solid rgba(255,215,0,0.3)", background: "rgba(0,0,0,0.3)", color: "#fff", fontSize: 18, textAlign: "center", outline: "none" }} />
+                style={{ width: "50%", padding: "8px", borderRadius: 8, border: "2px solid rgba(255,215,0,0.3)", background: "rgba(0,0,0,0.3)", color: "#fff", fontSize: 18, textAlign: "center", outline: "none", fontFamily: "'Rye', serif" }} />
             </div>
 
             {/* First Bet */}
@@ -4831,7 +5029,7 @@ function GameTable({ settings, onBack }) {
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center" }}>
                 {[settings.tableMin, settings.tableMin * 2, settings.tableMin * 5, settings.tableMin * 10].filter(v => v <= settings.tableMax).map(v => (
                   <button key={v} onClick={() => setRealPlayerBuyInDialog(prev => ({ ...prev, firstBet: v }))}
-                    style={{ padding: "6px 14px", borderRadius: 6, border: realPlayerBuyInDialog.firstBet === v ? "2px solid #64b5f6" : "1px solid rgba(100,181,246,0.3)", background: realPlayerBuyInDialog.firstBet === v ? "rgba(100,181,246,0.2)" : "rgba(100,181,246,0.05)", color: realPlayerBuyInDialog.firstBet === v ? "#64b5f6" : "#ccc", cursor: "pointer", fontSize: 13, fontWeight: "bold" }}>${v}</button>
+                    style={{ padding: "6px 14px", borderRadius: 6, border: realPlayerBuyInDialog.firstBet === v ? "2px solid #64b5f6" : "1px solid rgba(100,181,246,0.3)", background: realPlayerBuyInDialog.firstBet === v ? "rgba(100,181,246,0.2)" : "rgba(100,181,246,0.05)", color: realPlayerBuyInDialog.firstBet === v ? "#64b5f6" : "#ccc", cursor: "pointer", fontSize: 13, fontWeight: "bold", fontFamily: "'Rye', serif" }}>${v}</button>
                 ))}
               </div>
             </div>
@@ -4847,11 +5045,11 @@ function GameTable({ settings, onBack }) {
                   return { ...pp, isRealPlayer: true, name, isAutoPlay: false, pendingBet: firstBet, lastBet: firstBet, bankroll: amt, startBankroll: amt, totalInvested: amt, rpBetConfirmed: false };
                 }));
                 setRealPlayerBuyInDialog(null);
-              }} style={{ flex: 1, padding: "12px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #c41e3a, #8b0000)", color: "#ffd700", fontWeight: "bold", cursor: "pointer", fontSize: 15, boxShadow: "0 3px 10px rgba(0,0,0,0.4)" }}>
+              }} style={{ flex: 1, padding: "12px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #c41e3a, #8b0000)", color: "#ffd700", fontWeight: "bold", cursor: "pointer", fontSize: 15, boxShadow: "0 3px 10px rgba(0,0,0,0.4)", fontFamily: "'Rye', serif", letterSpacing: 1 }}>
                 Take A Seat — ${(realPlayerBuyInDialog.amount || 0).toLocaleString()}
               </button>
               <button onClick={() => setRealPlayerBuyInDialog(null)}
-                style={{ padding: "12px 20px", borderRadius: 8, border: "1px solid #555", background: "rgba(255,255,255,0.08)", color: "#aaa", fontWeight: "bold", cursor: "pointer" }}>Cancel</button>
+                style={{ padding: "12px 20px", borderRadius: 8, border: "1.5px solid rgba(176,196,222,0.4)", background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de", fontWeight: "bold", cursor: "pointer", fontFamily: "'Rye', serif", fontSize: 15, letterSpacing: 1 }}>Cancel</button>
             </div>
           </div>
         </div>
@@ -4867,11 +5065,17 @@ function GameTable({ settings, onBack }) {
             mode={cashierMode}
             onModeChange={setCashierMode}
             onAddFunds={(amount) => {
-              setPlayers(prev => prev.map((p, i) => i === cashierPlayerIdx ? { ...p, bankroll: p.bankroll + amount, totalInvested: (p.totalInvested || p.startBankroll) + amount } : p));
+              setPlayers(prev => prev.map((p, i) => {
+                if (i !== cashierPlayerIdx) return p;
+                const pocket = p.pocketBank || 0;
+                const fromPocket = Math.min(pocket, amount);
+                const newMoney = amount - fromPocket;
+                return { ...p, bankroll: p.bankroll + amount, pocketBank: pocket - fromPocket, totalInvested: (p.totalInvested || p.startBankroll) + newMoney, totalWithdrawn: Math.max(0, (p.totalWithdrawn || 0) - fromPocket) };
+              }));
               setCashierOpen(false);
             }}
             onCashOut={(amount) => {
-              setPlayers(prev => prev.map((p, i) => i === cashierPlayerIdx ? { ...p, bankroll: p.bankroll - amount, totalWithdrawn: (p.totalWithdrawn || 0) + amount } : p));
+              setPlayers(prev => prev.map((p, i) => i === cashierPlayerIdx ? { ...p, bankroll: p.bankroll - amount, totalWithdrawn: (p.totalWithdrawn || 0) + amount, pocketBank: (p.pocketBank || 0) + amount } : p));
               setCashierOpen(false);
             }}
             onClose={() => setCashierOpen(false)}
@@ -4888,18 +5092,18 @@ function GameTable({ settings, onBack }) {
                 ? `${players[lessDialog.playerIdx].name}: ` : ""}{lessDialog.type === "double" ? "Double Down" : "Split"} — Short on Chips
             </h2>
             <p style={{ marginBottom: 6, fontSize: 14, color: "#aaa" }}>
-              Full {lessDialog.type} requires: <strong style={{ color: "#fff" }}>${lessDialog.needed.toLocaleString()}</strong>
+              Full {lessDialog.type} requires: <strong style={{ color: "#fff", fontFamily: "'Rye', serif" }}>${lessDialog.needed.toLocaleString()}</strong>
             </p>
             <p style={{ marginBottom: 16, fontSize: 14, color: "#aaa" }}>
-              Your balance: <strong style={{ color: "#ffd700" }}>${lessDialog.available.toLocaleString()}</strong>
-              {" "}— Short <strong style={{ color: "#ef5350" }}>${(lessDialog.needed - lessDialog.available).toLocaleString()}</strong>
+              Your balance: <strong style={{ color: "#ffd700", fontFamily: "'Rye', serif" }}>${lessDialog.available.toLocaleString()}</strong>
+              {" "}— Short <strong style={{ color: "#ef5350", fontFamily: "'Rye', serif" }}>${(lessDialog.needed - lessDialog.available).toLocaleString()}</strong>
             </p>
             <div style={{ display: "flex", gap: 10, flexDirection: "column" }}>
               <button onClick={() => {
                 setLessDialog(null);
                 handleHumanAction(lessDialog.type);
               }} style={{ padding: "12px", borderRadius: 6, border: "none", background: "linear-gradient(135deg, #ff9800, #e65100)", color: "#fff", fontWeight: "bold", cursor: "pointer", fontSize: 15 }}>
-                {lessDialog.type === "double" ? "Double" : "Split"} for ${lessDialog.available.toLocaleString()} (less)
+                {lessDialog.type === "double" ? "Double" : "Split"} for <span style={{ fontFamily: "'Rye', serif" }}>${lessDialog.available.toLocaleString()}</span> (less)
               </button>
               <button onClick={() => {
                 const actionType = lessDialog.type;
@@ -4911,7 +5115,7 @@ function GameTable({ settings, onBack }) {
               }} style={{ padding: "12px", borderRadius: 6, border: "none", background: "linear-gradient(135deg, #4caf50, #2e7d32)", color: "#fff", fontWeight: "bold", cursor: "pointer", fontSize: 15 }}>
                 Add Chips & {lessDialog.type === "double" ? "Double" : "Split"} Full Amount
               </button>
-              <button onClick={() => setLessDialog(null)} style={{ padding: "10px", borderRadius: 6, border: "1px solid #555", background: "transparent", color: "#aaa", cursor: "pointer", fontSize: 14 }}>
+              <button onClick={() => setLessDialog(null)} style={{ padding: "10px", borderRadius: 6, border: "1.5px solid rgba(176,196,222,0.4)", background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de", cursor: "pointer", fontSize: 15, fontFamily: "'Rye', serif", letterSpacing: 1 }}>
                 Cancel
               </button>
             </div>
@@ -4978,7 +5182,7 @@ function GameTable({ settings, onBack }) {
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 10 }}>
                   {simResults.players.map((sp, i) => (
                     <div key={i} style={{ background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: 10 }}>
-                      <div style={{ fontWeight: "bold", marginBottom: 4, color: sp.isHuman ? "#ffd700" : "#8fc9ff", fontSize: 13 }}>
+                      <div style={{ fontWeight: "bold", marginBottom: 4, color: sp.isHuman ? "#ffd700" : "#ce93d8", fontSize: 13 }}>
                         {sp.isHuman ? "You" : `AI ${i+1}`}
                       </div>
                       <div style={{ fontSize: 11, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2px 6px" }}>
@@ -5048,12 +5252,19 @@ function GameTable({ settings, onBack }) {
                     <div style={{ fontSize: 10, color: "rgba(255,215,0,0.5)", marginBottom: 3, letterSpacing: 2, fontFamily: "'Rye', serif" }}>SEAT {i+1}</div>
                     <div onClick={() => {
                       if (!occupied) {
-                        setNewSeatConfig({ seatIdx: i, name: "", buyIn: settings.buyIn, type: "human", isHost: false });
-                        setRemoveSeatIdx(null);
-                      } else if (occupant && !occupant.isHost) {
-                        // Tap occupied non-host seat to show remove option
+                        if (hostAbsentRef.current) {
+                          setHostReturnPopup({ seatIdx: i });
+                          setNewSeatConfig(null);
+                          setRemoveSeatIdx(null);
+                        } else {
+                          setNewSeatConfig({ seatIdx: i, name: "", buyIn: settings.buyIn, type: null, isHost: false });
+                          setRemoveSeatIdx(null);
+                          setHostReturnPopup(null);
+                        }
+                      } else {
                         setRemoveSeatIdx(removeSeatIdx === i ? null : i);
                         setNewSeatConfig(null);
+                        setHostReturnPopup(null);
                       }
                     }}
                       style={{
@@ -5061,7 +5272,7 @@ function GameTable({ settings, onBack }) {
                         border: occupied ? (removeSeatIdx === i ? "3px solid #c41e3a" : "2px solid rgba(255,255,255,0.2)") : selected ? "3px solid #ffd700" : "2px dashed rgba(255,215,0,0.6)",
                         background: occupied ? (removeSeatIdx === i ? "rgba(196,30,58,0.2)" : "rgba(0,0,0,0.3)") : selected ? "radial-gradient(circle, rgba(255,215,0,0.2), rgba(0,0,0,0.4))" : "rgba(0,0,0,0.2)",
                         display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column",
-                        cursor: (occupied && occupant?.isHost) ? "not-allowed" : "pointer", transition: "all 0.2s",
+                        cursor: "pointer", transition: "all 0.2s",
                         opacity: occupied ? (removeSeatIdx === i ? 1 : 0.55) : 1,
                         boxShadow: removeSeatIdx === i ? "0 0 18px rgba(196,30,58,0.4)" : selected ? "0 0 18px rgba(255,215,0,0.35), inset 0 0 8px rgba(255,215,0,0.1)" : "none",
                       }}>
@@ -5090,26 +5301,78 @@ function GameTable({ settings, onBack }) {
                   borderRadius: 14, border: "1.5px solid rgba(196,30,58,0.4)",
                 }}>
                   <div style={{ fontSize: 14, color: "#ff8a65", fontFamily: "'Rye', serif", letterSpacing: 2, marginBottom: 10 }}>
-                    REMOVE {rp.name.toUpperCase()} FROM SEAT {removeSeatIdx + 1}?
+                    REMOVE {rp.name.toUpperCase()}{rp.isHost ? " (HOST)" : ""} FROM SEAT {removeSeatIdx + 1}?
                   </div>
                   <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginBottom: 14 }}>
-                    {rp.isHuman ? "This human player" : "This AI player"} will leave the table. Their bankroll of ${rp.bankroll.toLocaleString()} will not be saved.
+                    {rp.isHost ? "The Host" : rp.isHuman ? "This human player" : "This AI player"} will leave the table. Their bankroll of <span style={{ fontFamily: "'Rye', serif" }}>${rp.bankroll.toLocaleString()}</span> will not be saved.
+                    {rp.isHost && <span style={{ color: "#ffd700", display: "block", marginTop: 6 }}>The Host can return later through the Open Seat menu.</span>}
                   </div>
                   <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
-                    <button onClick={() => removeMidGamePlayer(removeSeatIdx)} style={{
+                    <button onClick={() => removeMidGamePlayer(removeSeatIdx, rp.isHost)} style={{
                       padding: "10px 28px", borderRadius: 10, border: "2px solid rgba(196,30,58,0.5)",
                       background: "linear-gradient(135deg, #c41e3a, #8b0000)", color: "#fff",
-                      fontWeight: "bold", fontSize: 14, cursor: "pointer", letterSpacing: 1,
+                      fontWeight: "bold", fontSize: 15, cursor: "pointer", letterSpacing: 1, fontFamily: "'Rye', serif",
                     }}>Remove</button>
                     <button onClick={() => setRemoveSeatIdx(null)} style={{
-                      padding: "10px 22px", borderRadius: 10, border: "1.5px solid rgba(255,255,255,0.15)",
-                      background: "rgba(0,0,0,0.4)", color: "rgba(255,255,255,0.5)",
-                      fontWeight: "bold", fontSize: 13, cursor: "pointer",
+                      border: "1.5px solid rgba(176,196,222,0.4)", background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de", fontWeight: "bold", fontSize: 15, cursor: "pointer", fontFamily: "'Rye', serif", letterSpacing: 1, padding: "10px 22px", borderRadius: 10,
                     }}>Keep</button>
                   </div>
                 </div>
               );
             })()}
+
+            {/* Host removal warning popup */}
+            {hostRemovalWarning && (
+              <div style={{
+                marginTop: 12, padding: "16px 24px", textAlign: "center",
+                background: "linear-gradient(180deg, rgba(180,120,0,0.25), rgba(0,0,0,0.5))",
+                borderRadius: 14, border: "1.5px solid rgba(255,215,0,0.4)",
+              }}>
+                <div style={{ fontSize: 14, color: "#ffd700", fontFamily: "'Rye', serif", letterSpacing: 2, marginBottom: 10 }}>
+                  CANNOT REMOVE HOST YET
+                </div>
+                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", marginBottom: 14, lineHeight: 1.5 }}>
+                  {hostRemovalWarning}
+                </div>
+                <button onClick={() => { setHostRemovalWarning(null); setRemoveSeatIdx(null); }} style={{
+                  padding: "10px 28px", borderRadius: 10, border: "2px solid rgba(255,215,0,0.4)",
+                  background: "linear-gradient(135deg, #1a5c1a, #0e3d0e)", color: "#ffd700",
+                  fontWeight: "bold", fontSize: 15, cursor: "pointer", letterSpacing: 1, fontFamily: "'Rye', serif",
+                }}>Got It</button>
+              </div>
+            )}
+
+            {/* Host return popup */}
+            {hostReturnPopup && (
+              <div style={{
+                marginTop: 12, padding: "20px 24px", textAlign: "center",
+                background: "linear-gradient(180deg, rgba(0,60,120,0.25), rgba(0,0,0,0.5))",
+                borderRadius: 14, border: "1.5px solid rgba(100,180,255,0.4)",
+              }}>
+                <div style={{ fontSize: 16, color: "#8fc9ff", fontFamily: "'Rye', serif", letterSpacing: 2, marginBottom: 12, textShadow: "0 1px 6px rgba(100,180,255,0.3)" }}>
+                  IS THIS THE HOST RETURNING?
+                </div>
+                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", marginBottom: 16, lineHeight: 1.5 }}>
+                  The Host left the table earlier. Is this the Host coming back to Seat {hostReturnPopup.seatIdx + 1}?
+                </div>
+                <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+                  <button onClick={() => {
+                    setNewSeatConfig({ seatIdx: hostReturnPopup.seatIdx, name: "", buyIn: settings.buyIn, type: "human", isHost: true });
+                    setHostReturnPopup(null);
+                  }} style={{
+                    padding: "12px 32px", borderRadius: 10, border: "2px solid rgba(255,215,0,0.4)",
+                    background: "linear-gradient(135deg, #c41e3a, #8b0000)", color: "#ffd700",
+                    fontWeight: "bold", fontSize: 15, cursor: "pointer", fontFamily: "'Rye', serif", letterSpacing: 1,
+                  }}>YES — HOST RETURNING</button>
+                  <button onClick={() => {
+                    setNewSeatConfig({ seatIdx: hostReturnPopup.seatIdx, name: "", buyIn: settings.buyIn, type: null, isHost: false });
+                    setHostReturnPopup(null);
+                  }} style={{
+                    border: "1.5px solid rgba(176,196,222,0.4)", background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de", fontWeight: "bold", fontSize: 15, cursor: "pointer", fontFamily: "'Rye', serif", letterSpacing: 1, padding: "12px 24px", borderRadius: 10,
+                  }}>No — New Player</button>
+                </div>
+              </div>
+            )}
 
             {/* Config panel for selected seat */}
             {newSeatConfig && (
@@ -5120,47 +5383,37 @@ function GameTable({ settings, onBack }) {
                 boxShadow: "inset 0 1px 0 rgba(255,215,0,0.05)",
               }}>
                 <div style={{ fontSize: 15, color: "#ffd700", fontFamily: "'Rye', serif", letterSpacing: 2, marginBottom: 14, textShadow: "0 1px 6px rgba(255,215,0,0.2)" }}>
-                  SEAT {newSeatConfig.seatIdx + 1} — SETUP
+                  SEAT {newSeatConfig.seatIdx + 1} — {newSeatConfig.isHost ? "HOST RETURNING" : "SETUP"}
                 </div>
-                {/* Player type chips */}
-                <div style={{ display: "flex", gap: 10, justifyContent: "center", marginBottom: 16 }}>
+                {/* Player type chips — hidden when host is returning (always human) */}
+                {!newSeatConfig.isHost && <div style={{ display: "flex", gap: 10, justifyContent: "center", marginBottom: newSeatConfig.type ? 16 : 0 }}>
                   {[
-                    { type: "human", icon: "⭐", label: "Human Player", color: "#ffd700", glow: "rgba(255,215,0,0.3)" },
-                    { type: "ai", icon: null, label: "AI Player", color: "#8fc9ff", glow: "rgba(74,144,217,0.3)" },
-                  ].map(opt => (
+                    { type: "human", icon: "⭐", label: "Human Player", selColor: "#ffd700", selGlow: "rgba(255,215,0,0.3)", readyColor: "#ffd700", readyBorder: "rgba(255,215,0,0.5)", readyBg: "linear-gradient(135deg, rgba(255,215,0,0.15), rgba(0,0,0,0.3))", readyGlow: "0 0 14px rgba(255,215,0,0.3)", unselColor: "rgba(255,215,0,0.35)", unselBorder: "rgba(255,215,0,0.15)", unselBg: "rgba(0,0,0,0.25)" },
+                    { type: "ai", icon: null, label: "AI Player", selColor: "#ce93d8", selGlow: "rgba(171,71,188,0.4)", readyColor: "#ce93d8", readyBorder: "rgba(171,71,188,0.5)", readyBg: "linear-gradient(135deg, rgba(171,71,188,0.15), rgba(0,0,0,0.3))", readyGlow: "0 0 14px rgba(171,71,188,0.3)", unselColor: "rgba(171,71,188,0.35)", unselBorder: "rgba(171,71,188,0.15)", unselBg: "rgba(0,0,0,0.25)" },
+                  ].map(opt => {
+                    const isSel = newSeatConfig.type === opt.type;
+                    const noChoice = newSeatConfig.type === null;
+                    return (
                     <div key={opt.type} onClick={() => setNewSeatConfig(prev => ({ ...prev, type: opt.type }))}
                       style={{
                         padding: "12px 24px", borderRadius: 12, cursor: "pointer", transition: "all 0.2s",
-                        border: `2px solid ${newSeatConfig.type === opt.type ? opt.color : "rgba(255,255,255,0.1)"}`,
-                        background: newSeatConfig.type === opt.type ? `linear-gradient(135deg, ${opt.glow}, rgba(0,0,0,0.3))` : "rgba(0,0,0,0.25)",
-                        boxShadow: newSeatConfig.type === opt.type ? `0 0 14px ${opt.glow}` : "none",
+                        border: `2px solid ${isSel ? opt.selColor : noChoice ? opt.readyBorder : opt.unselBorder}`,
+                        background: isSel ? `linear-gradient(135deg, ${opt.selGlow}, rgba(0,0,0,0.3))` : noChoice ? opt.readyBg : opt.unselBg,
+                        boxShadow: isSel ? `0 0 14px ${opt.selGlow}` : noChoice ? opt.readyGlow : "none",
                         display: "flex", alignItems: "center", gap: 10, minWidth: 160, justifyContent: "center",
                       }}>
                       <span style={{ fontSize: 22 }}>{opt.icon || <img src={AI_ICON} alt="AI" style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover" }} />}</span>
-                      <span style={{ fontSize: 15, fontWeight: "bold", color: newSeatConfig.type === opt.type ? opt.color : "rgba(255,255,255,0.35)", letterSpacing: 0.5 }}>{opt.label}</span>
+                      <span style={{ fontSize: 15, fontWeight: "bold", fontFamily: "'Rye', serif", color: isSel ? opt.selColor : noChoice ? opt.readyColor : opt.unselColor, letterSpacing: 0.5 }}>{opt.label}</span>
                     </div>
-                  ))}
-                </div>
-                {/* "This is me" host toggle — only for human type */}
-                {newSeatConfig.type === "human" && (
-                  <div style={{ textAlign: "center", marginBottom: 12 }}>
-                    <button onClick={() => setNewSeatConfig(prev => ({ ...prev, isHost: !prev.isHost }))} style={{
-                      padding: "6px 18px", borderRadius: 20, fontSize: 13, fontWeight: "bold", cursor: "pointer",
-                      border: `2px solid ${newSeatConfig.isHost ? "rgba(255,215,0,0.5)" : "rgba(255,255,255,0.15)"}`,
-                      background: newSeatConfig.isHost ? "linear-gradient(135deg, rgba(255,215,0,0.2), rgba(0,0,0,0.3))" : "rgba(0,0,0,0.3)",
-                      color: newSeatConfig.isHost ? "#ffd700" : "rgba(255,255,255,0.4)",
-                      letterSpacing: 1, display: "inline-flex", alignItems: "center", gap: 6,
-                      boxShadow: newSeatConfig.isHost ? "0 2px 8px rgba(255,215,0,0.15)" : "none", transition: "all 0.2s",
-                    }}>
-                      <span style={{ fontSize: 14 }}>👑</span> {newSeatConfig.isHost ? "I am the host" : "This is me (claim host)"}
-                    </button>
-                  </div>
-                )}
-                {/* Name and buy-in row */}
+                    );
+                  })}
+                </div>}
+                {/* Name and buy-in — only show after type is chosen (or host returning) */}
+                {(newSeatConfig.type || newSeatConfig.isHost) && (<>
                 <div style={{ display: "flex", gap: 18, justifyContent: "center", alignItems: "flex-end", flexWrap: "wrap" }}>
                   {newSeatConfig.type === "human" && (
-                    <div style={{ textAlign: "left" }}>
-                      <div style={{ fontSize: 12, color: "#ffd700", marginBottom: 5, letterSpacing: 1.5, fontWeight: "bold" }}>NICKNAME</div>
+                    <div style={{ textAlign: "center" }}>
+                      <div style={{ fontSize: 12, color: "#ffd700", marginBottom: 5, letterSpacing: 1.5, fontWeight: "bold", fontFamily: "'Rye', serif" }}>YOUR NICKNAME</div>
                       <input type="text" maxLength={16} placeholder="Pick any name..." value={newSeatConfig.name}
                         onChange={e => setNewSeatConfig(prev => ({ ...prev, name: e.target.value.slice(0, 16) }))}
                         style={{
@@ -5172,13 +5425,13 @@ function GameTable({ settings, onBack }) {
                         }} />
                     </div>
                   )}
-                  <div style={{ textAlign: "left" }}>
-                    <div style={{ fontSize: 12, color: "#ffd700", marginBottom: 5, letterSpacing: 1.5, fontWeight: "bold" }}>BUY-IN</div>
+                  <div style={{ textAlign: "center" }}>
+                    <div style={{ fontSize: 12, color: "#ffd700", marginBottom: 5, letterSpacing: 1.5, fontWeight: "bold", fontFamily: "'Rye', serif" }}>TABLE BUY-IN</div>
                     <div style={{ display: "flex", gap: 5, flexWrap: "wrap", justifyContent: "center", marginBottom: 8 }}>
                       {[500, 1000, 2000, 5000, 10000].map(v => (
                         <button key={v} onClick={() => setNewSeatConfig(prev => ({ ...prev, buyIn: v }))}
                           style={{
-                            padding: "9px 14px", borderRadius: 8, fontSize: 14, fontWeight: "bold", cursor: "pointer",
+                            padding: "9px 14px", borderRadius: 8, fontSize: 14, fontWeight: "bold", cursor: "pointer", fontFamily: "'Rye', serif",
                             border: `2px solid ${newSeatConfig.buyIn === v ? "#ffd700" : "rgba(255,215,0,0.15)"}`,
                             background: newSeatConfig.buyIn === v ? "rgba(255,215,0,0.2)" : "rgba(0,0,0,0.3)",
                             color: newSeatConfig.buyIn === v ? "#ffd700" : "rgba(255,255,255,0.5)",
@@ -5187,37 +5440,40 @@ function GameTable({ settings, onBack }) {
                           }}>${v.toLocaleString()}</button>
                       ))}
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-                      <span style={{ color: "rgba(255,215,0,0.5)", fontSize: 12 }}>or</span>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                      <span style={{ color: "rgba(255,215,0,0.5)", fontSize: 13 }}>or</span>
                       <div style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
-                        <span style={{ position: "absolute", left: 10, color: "rgba(255,215,0,0.4)", fontSize: 14, fontWeight: "bold", pointerEvents: "none" }}>$</span>
+                        <span style={{ position: "absolute", left: 12, color: (newSeatConfig.buyIn > 0 && ![500,1000,2000,5000,10000].includes(newSeatConfig.buyIn)) ? "#ffd700" : "rgba(255,215,0,0.4)", fontSize: 16, fontWeight: "bold", pointerEvents: "none", fontFamily: "'Rye', serif" }}>$</span>
                         <input type="text" inputMode="numeric" placeholder="Custom..."
-                          value={newSeatConfig._customBuyInText || ""}
+                          value={newSeatConfig._customBuyInText != null ? newSeatConfig._customBuyInText : ((newSeatConfig.buyIn > 0 && ![500,1000,2000,5000,10000].includes(newSeatConfig.buyIn)) ? String(newSeatConfig.buyIn) : "")}
                           onChange={e => {
-                            const val = e.target.value.replace(/[^0-9]/g, "");
-                            setNewSeatConfig(prev => {
-                              const num = parseInt(val);
-                              return { ...prev, _customBuyInText: val, buyIn: (num >= 100) ? num : (prev.buyIn || settings.buyIn) };
-                            });
+                            const raw = e.target.value.replace(/[^0-9]/g, "");
+                            const num = parseInt(raw);
+                            if (num >= 100) setNewSeatConfig(prev => ({ ...prev, buyIn: num, _customBuyInText: raw }));
+                            else setNewSeatConfig(prev => ({ ...prev, _customBuyInText: raw }));
                           }}
+                          onBlur={() => setNewSeatConfig(prev => ({ ...prev, _customBuyInText: null }))}
                           style={{
-                            padding: "9px 10px 9px 24px", borderRadius: 8, width: 110,
-                            border: "2px solid rgba(255,215,0,0.15)", background: "rgba(0,0,0,0.3)",
-                            color: "#fff", fontSize: 14, fontWeight: "bold",
-                            outline: "none", transition: "all 0.15s",
+                            padding: "9px 12px 9px 26px", borderRadius: 8, width: 140, fontFamily: "'Rye', serif",
+                            border: "2px solid " + ((newSeatConfig.buyIn > 0 && ![500,1000,2000,5000,10000].includes(newSeatConfig.buyIn)) ? "#ffd700" : "rgba(255,215,0,0.15)"),
+                            background: (newSeatConfig.buyIn > 0 && ![500,1000,2000,5000,10000].includes(newSeatConfig.buyIn)) ? "rgba(255,215,0,0.2)" : "rgba(0,0,0,0.3)",
+                            color: (newSeatConfig.buyIn > 0 && ![500,1000,2000,5000,10000].includes(newSeatConfig.buyIn)) ? "#ffd700" : "#fff",
+                            fontSize: 14, fontWeight: "bold", outline: "none", transition: "all 0.15s",
                           }} />
                       </div>
                     </div>
                   </div>
                 </div>
-                <div style={{ marginTop: 8, fontSize: 12, color: "rgba(255,255,255,0.3)", fontStyle: "italic" }}>No personal info needed — pick any name you like</div>
+                {newSeatConfig.type === "human" && <div style={{ marginTop: 8, fontSize: 12, color: "rgba(255,255,255,0.3)", fontStyle: "italic" }}>No personal info needed — pick any name you like</div>}
+                </>)}
               </div>
             )}
 
             {/* Action buttons */}
             <div style={{ display: "flex", gap: 12, marginTop: 20, justifyContent: "center", flexWrap: "wrap" }}>
-              {newSeatConfig && (
+              {newSeatConfig && newSeatConfig.type && (
                 <button onClick={() => {
+                  if (newSeatConfig.isHost) hostAbsentRef.current = false;
                   addMidGamePlayer(newSeatConfig.seatIdx, newSeatConfig.name, newSeatConfig.buyIn, newSeatConfig.type === "human", !!newSeatConfig.isHost);
                   // Stay in overlay — reset config so they can pick another seat
                   setNewSeatConfig(null);
@@ -5229,10 +5485,10 @@ function GameTable({ settings, onBack }) {
                     fontWeight: "bold", fontSize: 16, cursor: "pointer", fontFamily: "'Rye', serif",
                     letterSpacing: 2, boxShadow: "0 4px 16px rgba(196,30,58,0.4), 0 0 12px rgba(255,215,0,0.1)",
                   }}>
-                  TAKE A SEAT — ${(newSeatConfig.buyIn || settings.buyIn).toLocaleString()}
+                  {newSeatConfig.isHost ? "WELCOME BACK" : "TAKE A SEAT"} — ${(newSeatConfig.buyIn || settings.buyIn).toLocaleString()}
                 </button>
               )}
-              <button onClick={() => { setOpenSeatOverlay(false); openSeatOverlayRef.current = false; setNewSeatConfig(null); setRemoveSeatIdx(null); if (pendingDealRef.current) { pendingDealRef.current = false; setTimeout(() => executeDeal(), 300); } }}
+              <button onClick={() => { setOpenSeatOverlay(false); openSeatOverlayRef.current = false; setNewSeatConfig(null); setRemoveSeatIdx(null); setHostRemovalWarning(null); setHostReturnPopup(null); if (pendingDealRef.current) { pendingDealRef.current = false; setTimeout(() => executeDeal(), 300); } }}
                 style={{
                   padding: "14px 28px", borderRadius: 12, border: "2px solid rgba(255,215,0,0.3)",
                   background: "linear-gradient(135deg, #0d5016, #1a7a2a)", color: "#ffd700",
@@ -5243,9 +5499,8 @@ function GameTable({ settings, onBack }) {
               </button>
               <button onClick={() => { setOpenSeatOverlay(false); setNewSeatConfig(null); setRemoveSeatIdx(null); }}
                 style={{
-                  padding: "14px 22px", borderRadius: 12, border: "1.5px solid rgba(255,255,255,0.15)",
-                  background: "rgba(0,0,0,0.4)", color: "rgba(255,255,255,0.5)",
-                  fontWeight: "bold", fontSize: 13, cursor: "pointer", letterSpacing: 1,
+                  padding: "14px 22px", borderRadius: 12, border: "1.5px solid rgba(176,196,222,0.4)", background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de",
+                  fontWeight: "bold", fontSize: 15, cursor: "pointer", letterSpacing: 1, fontFamily: "'Rye', serif",
                 }}>
                 Cancel
               </button>
@@ -5272,18 +5527,23 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
   const [tab, setTab] = useState("summary");
   const [confirmClear, setConfirmClear] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState("all");
+  const [expandedSession, setExpandedSession] = useState(null);
+  const [confirmDeleteSession, setConfirmDeleteSession] = useState(null);
 
-  // Derive unique player names from log
+  // Derive unique player names from log (case-insensitive dedup, keep first-seen casing)
   const playerNames = useMemo(() => {
-    const names = new Set();
+    const seen = new Map(); // lowercase → first-seen casing
     for (const h of gameLog) {
-      if (h.playerName) names.add(h.playerName);
+      if (h.playerName) {
+        const key = h.playerName.toLowerCase();
+        if (!seen.has(key)) seen.set(key, h.playerName);
+      }
     }
-    return Array.from(names);
+    return Array.from(seen.values());
   }, [gameLog]);
 
-  // Filter log by selected player (or show all)
-  const log = selectedPlayer === "all" ? gameLog : gameLog.filter(h => h.playerName === selectedPlayer);
+  // Filter log by selected player (case-insensitive match)
+  const log = selectedPlayer === "all" ? gameLog : gameLog.filter(h => h.playerName && h.playerName.toLowerCase() === selectedPlayer.toLowerCase());
   const total = log.length;
 
   // Compute summary stats
@@ -5373,8 +5633,23 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
     const sid = key.split("|")[0];
     const pName = key.split("|")[1] || "Host";
     const net = computeSessionNet(hands);
-    const sKey = selectedPlayer === "all" ? key : sid; // unique key per player-session when viewing all
+    const sKey = selectedPlayer === "all" ? key : sid;
+    const wins = hands.filter(h => h.overallResult === "win" || h.wasBlackjack).length;
+    const losses = hands.filter(h => h.overallResult === "loss").length;
+    const pushes = hands.filter(h => h.overallResult === "push").length;
+    const bjs = hands.filter(h => h.wasBlackjack).length;
+    const surrenders = hands.filter(h => h.didSurrender).length;
+    let betweenRebuysTotal = 0;
+    let betweenWithdrawalsTotal = 0;
+    for (let i = 1; i < hands.length; i++) {
+      const gap = (hands[i].bankrollBefore || 0) - (hands[i - 1].bankrollAfter || 0);
+      if (gap > 0) betweenRebuysTotal += gap;
+      if (gap < 0) betweenWithdrawalsTotal += Math.abs(gap);
+    }
+    const midRebuysTotal = hands.reduce((s, h) => s + (h.midHandRebuy || 0), 0);
+    const totalInvested = (hands[0].bankrollBefore || 0) + betweenRebuysTotal + midRebuysTotal;
     sessions[sKey] = {
+      sessionId: sid,
       start: hands[0].timestamp,
       end: hands[hands.length - 1].timestamp,
       hands: hands.length,
@@ -5383,6 +5658,9 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
       startBank: hands[0].bankrollBefore,
       endBank: hands[hands.length - 1].bankrollAfter,
       playerName: pName,
+      wins, losses, pushes, bjs, surrenders, totalInvested,
+      totalWithdrawn: betweenWithdrawalsTotal,
+      deckCount: hands[0].deckCount || 6,
     };
   }
 
@@ -5468,9 +5746,15 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
   };
 
   const clearData = () => {
-    setGameLog([]);
-    localStorage.removeItem("bj6020_gameLog");
-    localStorage.removeItem("bj6020_overallBal");
+    if (selectedPlayer === "all") {
+      setGameLog([]);
+      localStorage.removeItem("bj6020_gameLog");
+      localStorage.removeItem("bj6020_overallBal");
+    } else {
+      const filtered = gameLog.filter(h => h.playerName !== selectedPlayer);
+      setGameLog(filtered);
+      localStorage.setItem("bj6020_gameLog", JSON.stringify(filtered));
+    }
     setConfirmClear(false);
   };
 
@@ -5487,7 +5771,7 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
       <div style={{ maxWidth: 800, margin: "0 auto", fontFamily: "'Segoe UI', sans-serif" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
           <h1 style={{ color: "#ffd700", fontSize: 24, margin: 0, textShadow: "2px 2px 4px rgba(0,0,0,0.5)" }}>Data Center</h1>
-          <button onClick={onBack} style={{ padding: "8px 20px", fontSize: 14, fontWeight: "bold", background: "#607d8b", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer" }}>{backLabel}</button>
+          <button onClick={onBack} style={{ padding: "8px 20px", fontSize: 15, fontWeight: "bold", background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de", border: "1.5px solid rgba(176,196,222,0.4)", borderRadius: 6, cursor: "pointer", fontFamily: "'Rye', serif", letterSpacing: 1 }}>{backLabel}</button>
         </div>
 
         {/* Player selector — only show if multiple players exist */}
@@ -5543,7 +5827,7 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
           );
         })()}
 
-        <div style={{ background: "#1a1a2e", borderRadius: 10, padding: 20, color: "#eee" }}>
+        <div style={{ background: "#1a1a2e", borderRadius: 10, padding: tab === "sessions" ? "12px 10px" : 20, color: "#eee", maxWidth: tab === "sessions" ? 420 : "none", margin: "0 auto", transition: "max-width 0.3s ease, padding 0.3s ease" }}>
 
           {tab === "summary" && (<div>
             <div style={sec}>OVERALL STATS</div>
@@ -6232,23 +6516,89 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
           {tab === "sessions" && (<div>
             <div style={sec}>SESSION HISTORY</div>
             {Object.entries(sessions).length === 0 ? <div style={{ color: "#666", padding: 10 }}>No sessions recorded</div> :
-              Object.entries(sessions).reverse().map(([sid, s]) => (
-                <div key={sid} style={{ padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                    <span style={{ color: "#64b5f6", fontWeight: "bold", fontSize: 13 }}>
-                      {new Date(s.start).toLocaleDateString()} {new Date(s.start).toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})}
-                    </span>
-                    <span style={{ color: s.net >= 0 ? "#4caf50" : "#ef5350", fontWeight: "bold" }}>
-                      {s.net >= 0 ? "+" : ""}${s.net.toLocaleString()}
-                    </span>
+              Object.entries(sessions).reverse().map(([sid, s]) => {
+                const isExpanded = expandedSession === sid;
+                const winPct = s.hands > 0 ? (s.wins / s.hands * 100).toFixed(1) : "0.0";
+                const roi = s.totalInvested > 0 ? (s.net / s.totalInvested * 100).toFixed(1) : "0.0";
+                const gtLabel = s.gameType === "standard" ? "Standard" : s.gameType === "freeBet" ? "Free Bet" : "Double Deck";
+                return (
+                <div key={sid}>
+                  <div onClick={() => setExpandedSession(isExpanded ? null : sid)} style={{ padding: "10px 0", borderBottom: isExpanded ? "none" : "1px solid rgba(255,255,255,0.08)", cursor: "pointer", transition: "background 0.2s" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                      <span style={{ color: "#64b5f6", fontWeight: "bold", fontSize: 13 }}>
+                        {new Date(s.start).toLocaleDateString()} {new Date(s.start).toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})}
+                      </span>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <span style={{ color: s.net >= 0 ? "#4caf50" : "#ef5350", fontWeight: "bold" }}>
+                          {s.net >= 0 ? "+" : ""}${s.net.toLocaleString()}
+                        </span>
+                        <div style={{
+                          width: 24, height: 24, borderRadius: 6,
+                          border: isExpanded ? "1.5px solid #ffd700" : "1.5px solid rgba(255,215,0,0.3)",
+                          background: isExpanded ? "rgba(255,215,0,0.15)" : "rgba(255,215,0,0.08)",
+                          color: "#ffd700", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center",
+                          transition: "all 0.2s", flexShrink: 0,
+                        }}>{isExpanded ? "−" : "+"}</div>
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: 16, fontSize: 12, color: "#888" }}>
+                      <span>{gtLabel}</span>
+                      <span>{s.hands} hands</span>
+                      <span>${(s.startBank || 0).toLocaleString()} → ${(s.endBank || 0).toLocaleString()}</span>
+                    </div>
                   </div>
-                  <div style={{ display: "flex", gap: 16, fontSize: 12, color: "#888" }}>
-                    <span>{s.gameType === "standard" ? "Standard" : s.gameType === "freeBet" ? "Free Bet" : "Double Deck"}</span>
-                    <span>{s.hands} hands</span>
-                    <span>${(s.startBank || 0).toLocaleString()} → ${(s.endBank || 0).toLocaleString()}</span>
-                  </div>
+                  {isExpanded && (
+                    <div style={{
+                      margin: "6px 0 10px", padding: 12,
+                      background: "rgba(255,255,255,0.05)", borderRadius: 8,
+                    }}>
+                      <div style={{ fontWeight: "bold", fontSize: 15, marginBottom: 8, color: "#ffd700", borderBottom: "1px solid rgba(255,255,255,0.15)", paddingBottom: 6, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span>{s.playerName}{s.playerName === "Host" && <span style={{ color: "#64b5f6", fontSize: 11, fontWeight: "normal", marginLeft: 6 }}>(You)</span>}</span>
+                        <span style={{ fontSize: 10, color: "rgba(255,215,0,0.4)", letterSpacing: 1, fontWeight: "normal" }}>
+                          {gtLabel.toUpperCase()} {s.deckCount === 2 ? "2-DECK" : "6-DECK"}
+                        </span>
+                      </div>
+                      <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "4px 12px", fontSize: 13 }}>
+                        <span style={{ color: "#aaa" }}>Bankroll:</span>
+                        <span style={{ textAlign: "right", fontWeight: "bold", color: (s.endBank || 0) >= (s.totalInvested || 0) ? "#4caf50" : "#ef5350" }}>${(s.endBank || 0).toLocaleString()}</span>
+                        <span style={{ color: "#aaa" }}>Invested:</span>
+                        <span style={{ textAlign: "right" }}>${(s.totalInvested || 0).toLocaleString()}</span>
+                        {(s.totalWithdrawn || 0) > 0 && <>
+                          <span style={{ color: "#aaa" }}>Cashed Out:</span>
+                          <span style={{ textAlign: "right", color: "#ef5350" }}>${(s.totalWithdrawn).toLocaleString()}</span>
+                        </>}
+                        <span style={{ color: "#aaa" }}>Hands:</span>
+                        <span style={{ textAlign: "right" }}>{s.hands}</span>
+                        <span style={{ color: "#aaa" }}>W / L / P:</span>
+                        <span style={{ textAlign: "right" }}>{s.wins} / {s.losses} / {s.pushes}</span>
+                        <span style={{ color: "#aaa" }}>Blackjacks:</span>
+                        <span style={{ textAlign: "right", color: s.bjs > 0 ? "#ffd700" : "#fff" }}>{s.bjs}</span>
+                        <span style={{ color: "#aaa" }}>Surrenders:</span>
+                        <span style={{ textAlign: "right" }}>{s.surrenders}</span>
+                        <div style={{ gridColumn: "1 / -1", height: 1, background: "rgba(255,255,255,0.06)", margin: "4px 0" }} />
+                        <span style={{ color: "#aaa" }}>Win %:</span>
+                        <span style={{ textAlign: "right", fontWeight: "bold" }}>{winPct}%</span>
+                        <span style={{ color: "#aaa" }}>Net:</span>
+                        <span style={{ textAlign: "right", fontWeight: "bold", color: s.net >= 0 ? "#4caf50" : "#ef5350" }}>{s.net >= 0 ? "+" : ""}${s.net.toLocaleString()}</span>
+                        <span style={{ color: "#aaa" }}>ROI:</span>
+                        <span style={{ textAlign: "right", fontWeight: "bold", color: s.net >= 0 ? "#4caf50" : "#ef5350" }}>{roi}%</span>
+                      </div>
+                      <div style={{ marginTop: 10, textAlign: "center" }}>
+                        {confirmDeleteSession === sid ? (
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
+                            <span style={{ color: "#ef5350", fontSize: 12, fontWeight: "bold" }}>Delete this session?</span>
+                            <button onClick={(e) => { e.stopPropagation(); const updated = gameLog.filter(h => !(h.sessionId === s.sessionId && h.playerName === s.playerName)); setGameLog(updated); try { localStorage.setItem("bj6020_gameLog", JSON.stringify(updated)); } catch {} setConfirmDeleteSession(null); setExpandedSession(null); }} style={{ padding: "4px 14px", fontSize: 11, fontWeight: "bold", background: "#c62828", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer" }}>Yes</button>
+                            <button onClick={(e) => { e.stopPropagation(); setConfirmDeleteSession(null); }} style={{ padding: "4px 14px", fontSize: 11, fontWeight: "bold", background: "#555", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer" }}>No</button>
+                          </div>
+                        ) : (
+                          <button onClick={(e) => { e.stopPropagation(); setConfirmDeleteSession(sid); }} style={{ padding: "4px 16px", fontSize: 11, background: "rgba(198,40,40,0.15)", color: "#ef5350", border: "1px solid rgba(198,40,40,0.3)", borderRadius: 4, cursor: "pointer" }}>Delete Session</button>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              ))
+                );
+              })
             }
           </div>)}
 
@@ -6310,13 +6660,13 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
             <div style={sec}>CLEAR DATA</div>
             {!confirmClear ? (
               <button onClick={() => setConfirmClear(true)} style={{ marginTop: 10, padding: "10px 20px", borderRadius: 6, border: "1px solid #ef5350", background: "transparent", color: "#ef5350", fontWeight: "bold", cursor: "pointer" }}>
-                Clear All Data
+                {selectedPlayer === "all" ? "Clear All Data" : `Clear ${selectedPlayer}'s Data`}
               </button>
             ) : (
-              <div style={{ marginTop: 10, display: "flex", gap: 10, alignItems: "center" }}>
-                <span style={{ color: "#ef5350", fontSize: 14 }}>Are you sure? This cannot be undone.</span>
-                <button onClick={clearData} style={{ padding: "8px 16px", borderRadius: 6, border: "none", background: "#ef5350", color: "#fff", fontWeight: "bold", cursor: "pointer" }}>Yes, Delete All</button>
-                <button onClick={() => setConfirmClear(false)} style={{ padding: "8px 16px", borderRadius: 6, border: "1px solid #555", background: "transparent", color: "#aaa", cursor: "pointer" }}>Cancel</button>
+              <div style={{ marginTop: 10, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                <span style={{ color: "#ef5350", fontSize: 14 }}>{selectedPlayer === "all" ? "Delete ALL player data? This cannot be undone." : `Delete all data for ${selectedPlayer}? This cannot be undone.`}</span>
+                <button onClick={clearData} style={{ padding: "8px 16px", borderRadius: 6, border: "none", background: "#ef5350", color: "#fff", fontWeight: "bold", cursor: "pointer" }}>{selectedPlayer === "all" ? "Yes, Delete All" : `Yes, Delete ${selectedPlayer}`}</button>
+                <button onClick={() => setConfirmClear(false)} style={{ padding: "8px 16px", borderRadius: 6, border: "1.5px solid rgba(176,196,222,0.4)", background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de", cursor: "pointer", fontFamily: "'Rye', serif", fontSize: 15, letterSpacing: 1 }}>Cancel</button>
               </div>
             )}
 
@@ -6434,7 +6784,7 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
     padding: "14px 28px", borderRadius: 12, fontSize: 16, fontWeight: "bold", cursor: "pointer",
     border: `2px solid ${border}`, background: bg, color: color,
     letterSpacing: 1, transition: "all 0.15s", minWidth: 140, textAlign: "center",
-    boxShadow: "0 3px 12px rgba(0,0,0,0.3)",
+    boxShadow: "0 3px 12px rgba(0,0,0,0.3)", fontFamily: "'Rye', serif",
   });
 
   // Custom buy-in input state
@@ -6461,7 +6811,7 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
                   border: "2px solid " + (highlighted ? "#ffd700" : "rgba(255,215,0,0.15)"),
                   background: highlighted ? "rgba(255,215,0,0.2)" : "rgba(0,0,0,0.3)",
                   color: highlighted ? "#ffd700" : "rgba(255,255,255,0.45)",
-                  transition: "all 0.15s",
+                  transition: "all 0.15s", fontFamily: "'Rye', serif",
                 }}>${v.toLocaleString()}</button>
             );
           })}
@@ -6469,7 +6819,7 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
           <span style={{ color: "rgba(255,215,0,0.5)", fontSize: 13 }}>or</span>
           <div style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
-            <span style={{ position: "absolute", left: 12, color: isCustom ? "#ffd700" : "rgba(255,215,0,0.4)", fontSize: 16, fontWeight: "bold", pointerEvents: "none" }}>$</span>
+            <span style={{ position: "absolute", left: 12, color: isCustom ? "#ffd700" : "rgba(255,215,0,0.4)", fontSize: 16, fontWeight: "bold", pointerEvents: "none", fontFamily: "'Rye', serif" }}>$</span>
             <input type="text" inputMode="numeric" placeholder="Custom..."
               value={customBuyIn}
               onChange={e => {
@@ -6484,7 +6834,7 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
                 border: "2px solid " + (isCustom ? "#ffd700" : "rgba(255,215,0,0.15)"),
                 background: isCustom ? "rgba(255,215,0,0.2)" : "rgba(0,0,0,0.3)",
                 color: isCustom ? "#ffd700" : "#fff", fontSize: 14, fontWeight: "bold",
-                outline: "none", transition: "all 0.15s",
+                outline: "none", transition: "all 0.15s", fontFamily: "'Rye', serif",
               }} />
           </div>
         </div>
@@ -6505,12 +6855,19 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
         @keyframes seatGlow { 0%,100% { transform: translate(-50%, 0) scale(1); } 50% { transform: translate(-50%, 0) scale(1.04); } }
       `}</style>
 
-      {/* Header */}
+      {/* Header + Deco */}
       <div style={{ textAlign: "center", paddingTop: 10, marginBottom: 0 }}>
+        <div style={{ fontSize: 10, color: "rgba(255,215,0,0.25)", letterSpacing: 6, fontFamily: "'Rye', serif", marginBottom: 2 }}>♠ ♥ ♦ ♣</div>
         <h1 style={{ fontFamily: "'Rye', serif", color: "#ffd700", fontSize: 26, letterSpacing: 4, textShadow: "0 2px 12px rgba(255,215,0,0.3)", margin: 0 }}>CASINO 6020</h1>
         <h2 style={{ fontFamily: "'Rye', serif", color: "rgba(255,215,0,0.45)", fontSize: 13, letterSpacing: 3, fontWeight: "normal", margin: "2px 0 0" }}>
           {hostPicked ? "FILL YOUR TABLE" : "CHOOSE YOUR SEAT"}
         </h2>
+        {/* Decorative separator */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, margin: "8px auto 0", maxWidth: 300 }}>
+          <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, transparent, rgba(255,215,0,0.3))" }} />
+          <span style={{ color: "rgba(255,215,0,0.3)", fontSize: 8, letterSpacing: 2 }}>♦ ♦ ♦</span>
+          <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(255,215,0,0.3), transparent)" }} />
+        </div>
       </div>
 
       {/* Open felt area — seats curve below dealer */}
@@ -6569,16 +6926,16 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
               <div style={{ position: "relative", width: 70, height: 70, margin: "0 auto 5px" }}>
                 <div style={{
                   width: 70, height: 70, borderRadius: "50%",
-                  border: isEmpty ? (!hostPicked ? "2px solid rgba(255,215,0,0.6)" : "2px dashed rgba(255,215,0,0.45)") : isHuman ? "3px solid #ffd700" : "3px solid #4a90d9",
-                  background: isEmpty ? (!hostPicked ? "radial-gradient(circle, rgba(255,215,0,0.1), rgba(0,0,0,0.3))" : "rgba(0,0,0,0.15)") : isHuman ? "radial-gradient(circle, rgba(255,215,0,0.2), rgba(0,0,0,0.4))" : "radial-gradient(circle, rgba(74,144,217,0.15), rgba(0,0,0,0.4))",
+                  border: isEmpty ? (!hostPicked ? "2px solid rgba(255,215,0,0.6)" : "2px dashed rgba(255,215,0,0.45)") : isHuman ? "3px solid #ffd700" : "3px solid #ce93d8",
+                  background: isEmpty ? (!hostPicked ? "radial-gradient(circle, rgba(255,215,0,0.1), rgba(0,0,0,0.3))" : "rgba(0,0,0,0.15)") : isHuman ? "radial-gradient(circle, rgba(255,215,0,0.2), rgba(0,0,0,0.4))" : "radial-gradient(circle, rgba(171,71,188,0.15), rgba(0,0,0,0.4))",
                   display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column",
-                  boxShadow: !hostPicked ? "0 0 16px rgba(255,215,0,0.15)" : isHuman ? "0 0 12px rgba(255,215,0,0.2)" : isAI ? "0 0 8px rgba(74,144,217,0.15)" : "none",
+                  boxShadow: !hostPicked ? "0 0 16px rgba(255,215,0,0.15)" : isHuman ? "0 0 12px rgba(255,215,0,0.2)" : isAI ? "0 0 8px rgba(171,71,188,0.15)" : "none",
                   transition: "all 0.2s",
                 }}>
                   {isEmpty && <div style={{ fontSize: 22, color: "rgba(255,255,255,0.8)", lineHeight: 1 }}>{!hostPicked ? "⭐" : "🪑"}</div>}
                   {isHuman && <div style={{ fontSize: 26, lineHeight: 1 }}>⭐</div>}
                   {isAI && <div style={{ lineHeight: 1 }}><img src={AI_ICON} alt="AI" style={{ width: 26, height: 26, borderRadius: "50%" }} /></div>}
-                  {!isEmpty && <div style={{ fontSize: 8, color: isHuman ? "#ffd700" : "#8fc9ff", fontWeight: "bold", letterSpacing: 1, marginTop: 2 }}>{isHuman ? (seat.isHost ? "YOU" : "PLAYER") : "AI"}</div>}
+                  {!isEmpty && <div style={{ fontSize: 8, color: isHuman ? "#ffd700" : "#ce93d8", fontWeight: "bold", letterSpacing: 1, marginTop: 2 }}>{isHuman ? (seat.isHost ? "YOU" : "PLAYER") : "AI"}</div>}
                 </div>
               </div>
               <div style={{ fontSize: 13, color: isEmpty ? "rgba(255,215,0,0.7)" : isHuman ? "#ffd700" : "rgba(255,255,255,0.6)", fontWeight: isHuman ? "bold" : "normal", minHeight: 16 }}>
@@ -6617,16 +6974,16 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
                 )}
                 <div style={{
                   width: 70, height: 70, borderRadius: "50%",
-                  border: isEmpty ? "2px dashed rgba(255,215,0,0.45)" : isHuman ? (seat.isHost ? "3px solid #ffd700" : "3px solid #b8860b") : "3px solid #4a90d9",
-                  background: isEmpty ? "rgba(0,0,0,0.15)" : isHuman ? "radial-gradient(circle, rgba(255,215,0,0.2), rgba(0,0,0,0.4))" : "radial-gradient(circle, rgba(74,144,217,0.15), rgba(0,0,0,0.4))",
+                  border: isEmpty ? "2px dashed rgba(255,215,0,0.45)" : isHuman ? (seat.isHost ? "3px solid #ffd700" : "3px solid #b8860b") : "3px solid #ce93d8",
+                  background: isEmpty ? "rgba(0,0,0,0.15)" : isHuman ? "radial-gradient(circle, rgba(255,215,0,0.2), rgba(0,0,0,0.4))" : "radial-gradient(circle, rgba(171,71,188,0.15), rgba(0,0,0,0.4))",
                   display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column",
-                  boxShadow: isSelected ? "0 0 24px rgba(255,215,0,0.5), inset 0 0 12px rgba(255,215,0,0.2)" : seat.isHost && isHuman ? "0 0 16px rgba(255,215,0,0.35)" : isHuman ? "0 0 12px rgba(255,215,0,0.2)" : isAI ? "0 0 8px rgba(74,144,217,0.15)" : "none",
+                  boxShadow: isSelected ? "0 0 24px rgba(255,215,0,0.5), inset 0 0 12px rgba(255,215,0,0.2)" : seat.isHost && isHuman ? "0 0 16px rgba(255,215,0,0.35)" : isHuman ? "0 0 12px rgba(255,215,0,0.2)" : isAI ? "0 0 8px rgba(171,71,188,0.15)" : "none",
                   transition: "all 0.2s",
                 }}>
                   {isEmpty && <div style={{ fontSize: 22, color: "rgba(255,255,255,0.8)", lineHeight: 1 }}>🪑</div>}
                   {isHuman && <div style={{ fontSize: 26, lineHeight: 1 }}>⭐</div>}
                   {isAI && <div style={{ lineHeight: 1 }}><img src={AI_ICON} alt="AI" style={{ width: 26, height: 26, borderRadius: "50%" }} /></div>}
-                  {!isEmpty && <div style={{ fontSize: 8, color: isHuman ? "#ffd700" : "#8fc9ff", fontWeight: "bold", letterSpacing: 1, marginTop: 2 }}>{seat.isHost && isHuman ? "HOST" : isHuman ? "PLAYER" : "AI"}</div>}
+                  {!isEmpty && <div style={{ fontSize: 8, color: isHuman ? "#ffd700" : "#ce93d8", fontWeight: "bold", letterSpacing: 1, marginTop: 2 }}>{seat.isHost && isHuman ? "HOST" : isHuman ? "PLAYER" : "AI"}</div>}
                 </div>
               </div>
               {/* Name below circle */}
@@ -6675,14 +7032,40 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
                 border: canDeal ? "2px solid rgba(255,215,0,0.4)" : "1px solid rgba(255,255,255,0.1)",
                 boxShadow: canDeal ? "0 4px 20px rgba(196,30,58,0.4), 0 0 12px rgba(255,215,0,0.1)" : "none",
                 opacity: canDeal ? 1 : 0.5,
-              }}>DEAL CARDS</button>
+                animation: canDeal ? "dealPulse 2s ease-in-out infinite" : "none",
+              }}>DEAL ME IN</button>
           )}
           <button onClick={onBack} style={{
-            padding: "14px 28px", borderRadius: 12, fontSize: 13, fontWeight: "bold",
-            border: "1.5px solid rgba(255,255,255,0.15)", background: "rgba(0,0,0,0.4)",
-            color: "rgba(255,255,255,0.5)", cursor: "pointer", letterSpacing: 1,
-          }}>Back to Settings</button>
+            padding: "14px 28px", borderRadius: 12, fontSize: 15, fontWeight: "bold",
+            border: "1.5px solid rgba(176,196,222,0.4)", background: "linear-gradient(135deg, #455a64, #263238)",
+            color: "#b0c4de", cursor: "pointer", letterSpacing: 1, fontFamily: "'Rye', serif",
+          }}>{"\u2190"} BACK</button>
         </div>
+      </div>
+
+      {/* Step indicator at bottom */}
+      <div style={{ display: "flex", justifyContent: "center", gap: 10, paddingBottom: 14, marginTop: 4 }}>
+        {["TABLE", "RULES", "SEATS"].map((label, idx) => {
+          const stepNum = idx + 1;
+          const done = stepNum < 3;
+          const active = stepNum === 3;
+          return (
+            <div key={label} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{
+                width: 22, height: 22, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 11, fontWeight: "bold", fontFamily: "'Rye', serif",
+                background: done ? "rgba(255,215,0,0.2)" : active ? "rgba(196,30,58,0.5)" : "rgba(255,255,255,0.06)",
+                color: done ? "#ffd700" : active ? "#ffd700" : "rgba(255,255,255,0.2)",
+                border: done ? "1.5px solid rgba(255,215,0,0.4)" : active ? "1.5px solid rgba(255,215,0,0.5)" : "1px solid rgba(255,255,255,0.08)",
+              }}>{done ? "\u2713" : stepNum}</div>
+              <span style={{
+                fontSize: 10, letterSpacing: 1.5, fontFamily: "'Rye', serif",
+                color: done ? "rgba(255,215,0,0.4)" : active ? "#ffd700" : "rgba(255,255,255,0.15)",
+              }}>{label}</span>
+              {idx < 2 && <div style={{ width: 20, height: 1, background: done ? "rgba(255,215,0,0.2)" : "rgba(255,255,255,0.06)", marginLeft: 4 }} />}
+            </div>
+          );
+        })}
       </div>
 
       {/* ═══ POPUP OVERLAY ═══ */}
@@ -6703,7 +7086,7 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
                 <div>
                   <div style={{ color: "rgba(255,215,0,0.6)", fontSize: 14, marginBottom: 16 }}>Your seat — set your name and the table buy-in</div>
                   <div style={{ marginBottom: 14 }}>
-                    <div style={{ fontSize: 12, color: "#ffd700", marginBottom: 6, letterSpacing: 1.5, fontWeight: "bold" }}>YOUR NICKNAME</div>
+                    <div style={{ fontSize: 12, color: "#ffd700", marginBottom: 6, letterSpacing: 1.5, fontWeight: "bold", fontFamily: "'Rye', serif" }}>YOUR NICKNAME</div>
                     <input type="text" maxLength={16} placeholder="Pick any name..."
                       value={seat.name}
                       onChange={e => updateSeatField(popup.seatIdx, "name", e.target.value.slice(0, 16))}
@@ -6716,7 +7099,7 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
                       }} />
                   </div>
                   <div style={{ marginBottom: 14 }}>
-                    <div style={{ fontSize: 12, color: "#ffd700", marginBottom: 6, letterSpacing: 1.5, fontWeight: "bold" }}>TABLE BUY-IN</div>
+                    <div style={{ fontSize: 12, color: "#ffd700", marginBottom: 6, letterSpacing: 1.5, fontWeight: "bold", fontFamily: "'Rye', serif" }}>TABLE BUY-IN</div>
                     <div style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", marginBottom: 8, fontStyle: "italic" }}>This sets the buy-in for you and all AI players</div>
                     {buyInSection(popup.seatIdx)}
                   </div>
@@ -6736,15 +7119,15 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
                 <div style={{ color: "rgba(255,215,0,0.6)", fontSize: 14, marginBottom: 20 }}>Who takes this seat?</div>
                 <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
                   <button onClick={() => { setSeatType(popup.seatIdx, "human"); setPopup({ seatIdx: popup.seatIdx, mode: "playerSetup" }); }}
-                    style={popupBtnStyle("#ffd700", "linear-gradient(135deg, rgba(255,215,0,0.15), rgba(0,0,0,0.3))", "rgba(255,215,0,0.5)")}>
+                    style={{...popupBtnStyle("#ffd700", "linear-gradient(135deg, rgba(255,215,0,0.15), rgba(0,0,0,0.3))", "rgba(255,215,0,0.5)"), boxShadow: "0 0 14px rgba(255,215,0,0.4), 0 3px 12px rgba(0,0,0,0.3)"}}>
                     <div style={{ fontSize: 28, marginBottom: 4 }}>⭐</div>Player
                   </button>
                   <button onClick={() => { setSeatType(popup.seatIdx, "ai"); setPopup(null); }}
-                    style={popupBtnStyle("#8fc9ff", "linear-gradient(135deg, rgba(74,144,217,0.15), rgba(0,0,0,0.3))", "rgba(74,144,217,0.5)")}>
+                    style={{...popupBtnStyle("#ce93d8", "linear-gradient(135deg, rgba(171,71,188,0.25), rgba(0,0,0,0.3))", "rgba(171,71,188,0.5)"), boxShadow: "0 0 14px rgba(171,71,188,0.4), 0 3px 12px rgba(0,0,0,0.3)"}}>
                     <div style={{ marginBottom: 4 }}><img src={AI_ICON} alt="AI" style={{ width: 28, height: 28, borderRadius: "50%" }} /></div>AI
                   </button>
                 </div>
-                <button onClick={() => setPopup(null)} style={{ marginTop: 18, padding: "8px 24px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.15)", background: "transparent", color: "rgba(255,255,255,0.4)", cursor: "pointer", fontSize: 13 }}>Cancel</button>
+                <button onClick={() => setPopup(null)} style={{ marginTop: 18, padding: "8px 24px", borderRadius: 8, border: "1.5px solid rgba(176,196,222,0.4)", background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de", cursor: "pointer", fontSize: 15, fontFamily: "'Rye', serif", letterSpacing: 1 }}>Cancel</button>
               </div>
             )}
 
@@ -6755,7 +7138,7 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
                 <div>
                   <div style={{ color: "rgba(255,215,0,0.6)", fontSize: 14, marginBottom: 16 }}>Set up this player</div>
                   <div style={{ marginBottom: 14 }}>
-                    <div style={{ fontSize: 12, color: "#ffd700", marginBottom: 6, letterSpacing: 1.5, fontWeight: "bold" }}>NICKNAME</div>
+                    <div style={{ fontSize: 12, color: "#ffd700", marginBottom: 6, letterSpacing: 1.5, fontWeight: "bold", fontFamily: "'Rye', serif" }}>YOUR NICKNAME</div>
                     <input type="text" maxLength={16} placeholder="Pick any name..."
                       value={seat.name}
                       onChange={e => updateSeatField(popup.seatIdx, "name", e.target.value.slice(0, 16))}
@@ -6769,7 +7152,7 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
                     <div style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", marginTop: 4, fontStyle: "italic" }}>No personal info needed — pick any name</div>
                   </div>
                   <div style={{ marginBottom: 14 }}>
-                    <div style={{ fontSize: 12, color: "#ffd700", marginBottom: 6, letterSpacing: 1.5, fontWeight: "bold" }}>BUY-IN</div>
+                    <div style={{ fontSize: 12, color: "#ffd700", marginBottom: 6, letterSpacing: 1.5, fontWeight: "bold", fontFamily: "'Rye', serif" }}>TABLE BUY-IN</div>
                     <div style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", marginBottom: 8, fontStyle: "italic" }}>Same as table default, or set a custom amount</div>
                     {buyInSection(popup.seatIdx)}
                   </div>
@@ -6777,12 +7160,12 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
                     <button onClick={() => setPopup(null)} style={{
                       padding: "12px 36px", borderRadius: 10, fontSize: 15, fontWeight: "bold", cursor: "pointer",
                       border: "2px solid rgba(196,30,58,0.6)", background: "linear-gradient(135deg, #c41e3a, #8b0000)",
-                      color: "#ffd700", letterSpacing: 1, boxShadow: "0 3px 12px rgba(196,30,58,0.3)",
+                      color: "#ffd700", letterSpacing: 1, boxShadow: "0 3px 12px rgba(196,30,58,0.3)", fontFamily: "'Rye', serif",
                     }}>Take Your Seat</button>
                     <button onClick={() => removeSeat(popup.seatIdx)} style={{
-                      padding: "12px 24px", borderRadius: 10, fontSize: 13, fontWeight: "bold", cursor: "pointer",
-                      border: "1.5px solid rgba(255,255,255,0.15)", background: "rgba(0,0,0,0.4)",
-                      color: "rgba(255,255,255,0.4)", letterSpacing: 0.5,
+                      padding: "12px 24px", borderRadius: 10, fontSize: 15, fontWeight: "bold", cursor: "pointer",
+                      border: "1.5px solid rgba(176,196,222,0.4)", background: "linear-gradient(135deg, #455a64, #263238)",
+                      color: "#b0c4de", letterSpacing: 1, fontFamily: "'Rye', serif",
                     }}>Remove</button>
                   </div>
                 </div>
@@ -6799,7 +7182,7 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
                 <div>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 16 }}>
                     <span style={{ fontSize: 24 }}>{isHuman ? "⭐" : <img src={AI_ICON} alt="AI" style={{ width: 24, height: 24, borderRadius: "50%", verticalAlign: "middle" }} />}</span>
-                    <span style={{ color: isHuman ? "#ffd700" : "#8fc9ff", fontSize: 18, fontWeight: "bold" }}>{seatName}</span>
+                    <span style={{ color: isHuman ? "#ffd700" : "#ce93d8", fontSize: 18, fontWeight: "bold" }}>{seatName}</span>
                     <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>({isHuman ? (seat.isHost ? "You" : "Player") : "AI"})</span>
                   </div>
                   <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -6821,12 +7204,12 @@ function SeatPickerScreen({ settings, onUpdate, onDeal, onBack }) {
                     )}
                     {isHuman && !seat.isHost && (
                       <button onClick={() => { setSeatType(popup.seatIdx, "ai"); setPopup(null); }}
-                        style={popupBtnStyle("#8fc9ff", "linear-gradient(135deg, rgba(74,144,217,0.1), rgba(0,0,0,0.3))", "rgba(74,144,217,0.3)")}>
+                        style={popupBtnStyle("#ce93d8", "linear-gradient(135deg, rgba(171,71,188,0.1), rgba(0,0,0,0.3))", "rgba(171,71,188,0.3)")}>
                         Switch to AI
                       </button>
                     )}
                   </div>
-                  <button onClick={() => setPopup(null)} style={{ marginTop: 18, padding: "8px 24px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.15)", background: "transparent", color: "rgba(255,255,255,0.4)", cursor: "pointer", fontSize: 13 }}>Cancel</button>
+                  <button onClick={() => setPopup(null)} style={{ marginTop: 18, padding: "8px 24px", borderRadius: 8, border: "1.5px solid rgba(176,196,222,0.4)", background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de", cursor: "pointer", fontSize: 15, fontFamily: "'Rye', serif", letterSpacing: 1 }}>Cancel</button>
                 </div>
               );
             })()}
@@ -6849,13 +7232,18 @@ const DEFAULT_SEAT_CONFIG = [
 function App({ onExitToLobby } = {}) {
   const [screen, setScreen] = useState("settings");
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+  const [settingsStep, setSettingsStep] = useState(1);
   const exitGame = useCallback(() => {
     // Reset seat config to host-only defaults when leaving a game
     setSettings(prev => ({ ...prev, seatConfig: DEFAULT_SEAT_CONFIG.map(s => ({ ...s })) }));
+    setSettingsStep(1);
     setScreen("settings");
   }, []);
-  if (screen === "settings") return <SettingsScreen settings={settings} onUpdate={setSettings} onStart={() => setScreen("game")} onChooseSeats={() => setScreen("seats")} onDataCenter={() => setScreen("data")} onExitToLobby={onExitToLobby} />;
-  if (screen === "seats") return <SeatPickerScreen settings={settings} onUpdate={setSettings} onDeal={() => setScreen("game")} onBack={() => setScreen("settings")} />;
+  if (screen === "settings") return <SettingsScreen settings={settings} onUpdate={setSettings} onStart={() => setScreen("game")} onChooseSeats={() => { setSettingsStep(1); setScreen("seats"); }} onDataCenter={() => setScreen("data")} onExitToLobby={onExitToLobby} initialStep={settingsStep} />;
+  if (screen === "seats") return <SeatPickerScreen settings={settings} onUpdate={setSettings} onDeal={() => setScreen("game")} onBack={() => {
+    setSettingsStep(2);
+    setScreen("settings");
+  }} />;
   if (screen === "data") return <DataCenter onBack={() => setScreen("settings")} />;
   return <GameTable settings={settings} onBack={exitGame} />;
 }
