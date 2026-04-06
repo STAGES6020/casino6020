@@ -23,7 +23,7 @@ const { useState, useEffect, useCallback, useRef, useMemo } = React;
 const BlackjackApp = (() => {
 
 // ===================== CONSTANTS =====================
-const BUILD_NUMBER = 63;
+const BUILD_NUMBER = 69;
 const BUILD_DATE = "2026-04-06";
 const AI_ICON = "data:image/jpeg;base64,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";
 const SUITS = ["♠", "♥", "♦", "♣"];
@@ -1655,7 +1655,7 @@ function GameTable({ settings, onBack }) {
   const [blackjackFlash, setBlackjackFlash] = useState(null);
   const [popoutMessage, setPopoutMessage] = useState(null); // { text, color, glow, subtext }
   const [humanSitOut, setHumanSitOut] = useState(false);
-  const [sitOutWarning, setSitOutWarning] = useState(null); // { seatIdx, betAmount } — confirmation dialog for DD mid-shoe sit-out
+  const [sitOutChoice, setSitOutChoice] = useState(null); // { seatIdx, betAmount, isRpBet } — sit-out choice dialog (1 hand vs rest of shoe)
   const [gameOverDialog, setGameOverDialog] = useState(false);
   const [rebuyDialog, setRebuyDialog] = useState(false);
   const [rebuyAmount, setRebuyAmount] = useState("");
@@ -1706,6 +1706,10 @@ function GameTable({ settings, onBack }) {
   });
   const [sessionId] = useState(() => Date.now().toString(36) + Math.random().toString(36).slice(2, 6));
   const [sessionStartTime] = useState(() => new Date().toISOString());
+  // Run tracking: a "run" is a continuous stretch of play between sit-outs
+  const runIdRef = useRef(Date.now().toString(36) + "r1");
+  const runNumberRef = useRef(1);
+  const runStartBankrollRef = useRef(null); // set when first hand of run is dealt
   const [showDataCenter, setShowDataCenter] = useState(false);
   const handActionsRef = useRef([]); // actions taken in current hand: [{action, handIdx, timestamp}]
   const handStartBankrollRef = useRef(0); // bankroll at start of hand
@@ -1791,6 +1795,10 @@ function GameTable({ settings, onBack }) {
     // Capture bankroll BEFORE bets are placed for accurate P&L tracking
     const hp = players.find(p => p.isHost) || players.find(p => p.isHuman);
     handStartBankrollRef.current = hp ? hp.bankroll : 0;
+    // Capture run start bankroll on first hand of a new run
+    if (runStartBankrollRef.current === null) {
+      runStartBankrollRef.current = hp ? hp.bankroll : 0;
+    }
     const rpStarts = {};
     players.forEach((p, i) => { if (p.isRealPlayer) rpStarts[i] = p.bankroll; });
     rpHandStartBankrollRef.current = rpStarts;
@@ -1892,6 +1900,10 @@ function GameTable({ settings, onBack }) {
     // Capture bankroll BEFORE bets are placed for accurate P&L tracking
     const hp = ps.find(p => p.isHost) || ps.find(p => p.isHuman);
     handStartBankrollRef.current = hp ? hp.bankroll : 0;
+    // Capture run start bankroll on first hand of a new run
+    if (runStartBankrollRef.current === null) {
+      runStartBankrollRef.current = hp ? hp.bankroll : 0;
+    }
     const rpStarts2 = {};
     ps.forEach((p, i) => { if (p.isRealPlayer) rpStarts2[i] = p.bankroll; });
     rpHandStartBankrollRef.current = rpStarts2;
@@ -1984,8 +1996,24 @@ function GameTable({ settings, onBack }) {
   // Helper ref to store advanceBettingSeat (used to break circular dependency)
   const advanceBettingSeatRef = useRef(null);
 
+  // Run management: end current run (marks reason on last hand) and start new run
+  const endCurrentRun = useCallback((reason) => {
+    // Tag the last hand in the game log with the sit-out reason for this run
+    setGameLog(prev => {
+      if (prev.length === 0) return prev;
+      const last = { ...prev[prev.length - 1], runEndReason: reason };
+      return [...prev.slice(0, -1), last];
+    });
+  }, []);
+
+  const startNewRun = useCallback(() => {
+    runNumberRef.current += 1;
+    runIdRef.current = Date.now().toString(36) + "r" + runNumberRef.current;
+    runStartBankrollRef.current = null; // will be captured on next deal
+  }, []);
+
   // Confirm a seat's bet and advance to next
-  const confirmSeatBet = useCallback((seatIdx, betAmount, sitOut = false) => {
+  const confirmSeatBet = useCallback((seatIdx, betAmount, sitOut = false, lockForShoe = false) => {
     // Guard against rapid clicks: ignore if betting is already complete or seat doesn't match
     if (bettingSeatIdxRef.current === -1 || seatIdx !== bettingSeatIdxRef.current) return;
     // Mark this seat as consumed immediately so rapid double-clicks can't sneak through
@@ -2007,9 +2035,23 @@ function GameTable({ settings, onBack }) {
       return;
     }
     setBetWarning("");
-    // In Double Deck, sitting out locks you out until next shoe
-    if (sitOut && settings.gameType === "doubleDeck") {
+    // Lock out until next shuffle: always for Double Deck (house rule), or when player explicitly chose "Rest of Shoe"
+    if (sitOut && (settings.gameType === "doubleDeck" || lockForShoe)) {
       setPlayers(prev => prev.map((p, i) => i === seatIdx ? { ...p, lockedOutUntilShuffle: true } : p));
+      playersRef.current = playersRef.current.map((p, i) => i === seatIdx ? { ...p, lockedOutUntilShuffle: true } : p);
+    }
+    // Run tracking: end current run when host sits out
+    if (sitOut) {
+      const p = playersRef.current[seatIdx];
+      if (p && (p.isHost || p.isHuman)) {
+        const reason = (settings.gameType === "doubleDeck" || lockForShoe) ? "sat out (shoe)" : "sat out (1 hand)";
+        endCurrentRun(reason);
+        // For 1-hand sit-outs, start new run immediately (player returns next hand)
+        // For shoe/shuffle sit-outs, new run starts when they re-enter or shuffle happens
+        if (!lockForShoe && settings.gameType !== "doubleDeck") {
+          startNewRun();
+        }
+      }
     }
     // Store the bet
     setBettingBets(prev => ({
@@ -2373,9 +2415,11 @@ function GameTable({ settings, onBack }) {
         setHandsSinceShuffle(0);
         setRunningCount(settings.initialRunningCount); rcRef.current = settings.initialRunningCount;
         setShuffleAnimation(false);
-        // Clear Double Deck sit-out locks on new shoe
+        // Clear sit-out locks on new shoe — start new run if host was locked out
+        const hostWasLocked = playersRef.current.some(p => (p.isHost || p.isHuman) && p.lockedOutUntilShuffle);
         setPlayers(prev => prev.map(p => ({ ...p, lockedOutUntilShuffle: false })));
         playersRef.current = playersRef.current.map(p => ({ ...p, lockedOutUntilShuffle: false }));
+        if (hostWasLocked) startNewRun();
         setTimeout(() => {
           handleQuickRebet();
         }, 300);
@@ -3037,6 +3081,8 @@ function GameTable({ settings, onBack }) {
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
         timestamp: new Date().toISOString(),
         sessionId: hostPlayer?.playerSessionId || sessionId,
+        runId: runIdRef.current,
+        runNumber: runNumberRef.current,
         playerName: "Host",
         gameType: settings.gameType,
         handNumber: 0, // set in setGameLog updater below
@@ -3153,6 +3199,8 @@ function GameTable({ settings, onBack }) {
           id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
           timestamp: new Date().toISOString(),
           sessionId: rp.playerSessionId || sessionId,
+          runId: runIdRef.current,
+          runNumber: runNumberRef.current,
           playerName: rp.name,
           gameType: settings.gameType,
           handNumber: 0,
@@ -3299,9 +3347,11 @@ function GameTable({ settings, onBack }) {
         setHandsSinceShuffle(0);
         setRunningCount(settings.initialRunningCount); rcRef.current = settings.initialRunningCount;
         setShuffleAnimation(false);
-        // Clear Double Deck sit-out locks on new shoe
+        // Clear sit-out locks on new shoe — start new run if host was locked out
+        const hostWasLocked2 = playersRef.current.some(p => (p.isHost || p.isHuman) && p.lockedOutUntilShuffle);
         setPlayers(prev => prev.map(p => ({ ...p, lockedOutUntilShuffle: false })));
         playersRef.current = playersRef.current.map(p => ({ ...p, lockedOutUntilShuffle: false }));
+        if (hostWasLocked2) startNewRun();
         // Auto-start betting round after shuffle
         startBettingRound(false);
       }, 2000);
@@ -4066,12 +4116,34 @@ function GameTable({ settings, onBack }) {
                                       )}
                                     </div>
                                   )}
-                                  {hand.status === "sitting_out" && <div style={{ color: "#555", fontSize: 10 }}>Sitting out</div>}
+                                  {hand.status === "sitting_out" && <div style={{ color: p.lockedOutUntilShuffle ? "#ff9800" : "#555", fontSize: 10 }}>{p.lockedOutUntilShuffle ? (settings.gameType === "doubleDeck" ? "Out until next shoe" : "Out until shuffle") : "Sitting out"}</div>}
+                                  {hand.status === "sitting_out" && p.lockedOutUntilShuffle && phase === PHASES.SETTLEMENT && settings.gameType !== "doubleDeck" && (
+                                    <button onClick={(e) => { e.stopPropagation(); setPlayers(prev => prev.map((pl, idx) => idx === pi ? { ...pl, lockedOutUntilShuffle: false } : pl)); playersRef.current = playersRef.current.map((pl, idx) => idx === pi ? { ...pl, lockedOutUntilShuffle: false } : pl); if (p.isHost || p.isHuman) startNewRun(); }} style={{
+                                      marginTop: 4, padding: "4px 12px", fontSize: 10, fontWeight: "bold",
+                                      background: "linear-gradient(135deg, rgba(76,175,80,0.3), rgba(0,0,0,0.4))", color: "#4caf50",
+                                      border: "1px solid rgba(76,175,80,0.5)", borderRadius: 6, cursor: "pointer",
+                                      animation: "pulse 2s infinite",
+                                    }}>Re-Enter</button>
+                                  )}
                                 </div>
                               ))}
                             </div>
                           );
                         })()}
+                        {/* Sitting out for shoe — show label + Re-Enter button (outside hasCards block so it renders even with no cards) */}
+                        {!hasCards && p.lockedOutUntilShuffle && (
+                          <div style={{ textAlign: "center", padding: "8px 0" }}>
+                            <div style={{ color: "#ff9800", fontSize: 11, fontWeight: "bold", marginBottom: 4 }}>{settings.gameType === "doubleDeck" ? "Out until next shoe" : "Out until shuffle"}</div>
+                            {phase === PHASES.SETTLEMENT && settings.gameType !== "doubleDeck" && (
+                              <button onClick={(e) => { e.stopPropagation(); setPlayers(prev => prev.map((pl, idx) => idx === pi ? { ...pl, lockedOutUntilShuffle: false } : pl)); playersRef.current = playersRef.current.map((pl, idx) => idx === pi ? { ...pl, lockedOutUntilShuffle: false } : pl); if (p.isHost || p.isHuman) startNewRun(); }} style={{
+                                padding: "6px 16px", fontSize: 11, fontWeight: "bold",
+                                background: "linear-gradient(135deg, rgba(76,175,80,0.3), rgba(0,0,0,0.4))", color: "#4caf50",
+                                border: "1px solid rgba(76,175,80,0.5)", borderRadius: 8, cursor: "pointer",
+                                animation: "pulse 2s infinite",
+                              }}>Re-Enter Next Hand</button>
+                            )}
+                          </div>
+                        )}
                         {p.hands[0]?.bet > 0 && (
                           <div style={{ fontSize: n <= 2 ? 20 : n === 3 ? 17 : n === 4 ? 15 : 12, color: "rgba(255,255,255,0.6)", marginTop: 1, fontWeight: "bold" }}>
                             Bet: ${p.hands.reduce((s, h) => s + h.bet + (h.freeBet || 0), 0).toLocaleString()}
@@ -4334,7 +4406,7 @@ function GameTable({ settings, onBack }) {
                               background: "rgba(255,255,255,0.08)", color: "#ef5350",
                               border: "1px solid rgba(244,67,54,0.3)", borderRadius: 8, cursor: "pointer",
                             }}>💸 Cash Out</button>
-                            <button onClick={() => { setSideBetFocus(null); if (settings.gameType === "doubleDeck") { setSitOutWarning({ seatIdx: bettingSeatIdx, betAmount: 0 }); } else { confirmSeatBet(bettingSeatIdx, 0, true); } }} style={{
+                            <button onClick={() => { setSideBetFocus(null); setSitOutChoice({ seatIdx: bettingSeatIdx, betAmount: 0 }); }} style={{
                               padding: "6px 14px", fontSize: 12, fontWeight: "bold",
                               background: "rgba(255,255,255,0.08)", color: "#aaa",
                               border: "1px solid #555", borderRadius: 8, cursor: "pointer",
@@ -4465,7 +4537,7 @@ function GameTable({ settings, onBack }) {
                               background: "linear-gradient(135deg, #ffd700, #ff8f00)", color: "#1a1a2e",
                               border: "none", borderRadius: 8, cursor: "pointer", boxShadow: "0 3px 10px rgba(255,215,0,0.4)",
                             }}>💰 Buy In</button>
-                            <button onClick={() => { if (settings.gameType === "doubleDeck") { setSitOutWarning({ seatIdx: bettingSeatIdx, betAmount: 0 }); } else { confirmSeatBet(bettingSeatIdx, 0, true); } }} style={{
+                            <button onClick={() => { setSitOutChoice({ seatIdx: bettingSeatIdx, betAmount: 0 }); }} style={{
                               padding: "10px 24px", fontSize: 15, fontWeight: "bold",
                               background: "rgba(255,255,255,0.08)", color: "#aaa",
                               border: "1px solid #555", borderRadius: 8, cursor: "pointer",
@@ -4536,7 +4608,7 @@ function GameTable({ settings, onBack }) {
                                 background: "rgba(255,255,255,0.08)", color: "#ef5350",
                                 border: "1px solid rgba(244,67,54,0.3)", borderRadius: 8, cursor: "pointer",
                               }}>💸 Cash Out</button>
-                              <button onClick={() => { setSideBetFocus(null); if (settings.gameType === "doubleDeck") { setSitOutWarning({ seatIdx: bettingSeatIdx, betAmount: 0 }); } else { confirmSeatBet(bettingSeatIdx, 0, true); } }} style={{
+                              <button onClick={() => { setSideBetFocus(null); setSitOutChoice({ seatIdx: bettingSeatIdx, betAmount: 0, isRpBet: true }); }} style={{
                                 padding: "6px 14px", fontSize: 12, fontWeight: "bold",
                                 background: "rgba(255,255,255,0.08)", color: "#aaa",
                                 border: "1px solid #555", borderRadius: 8, cursor: "pointer",
@@ -4886,32 +4958,72 @@ function GameTable({ settings, onBack }) {
         </div>
       )}
 
-      {/* Sit Out Dialog */}
-
-      {/* Double Deck Sit-Out Warning Dialog */}
-      {sitOutWarning && (
+      {/* Sit Out Choice Dialog — 1 Hand vs Rest of Shoe */}
+      {sitOutChoice && (() => {
+        const soc = sitOutChoice;
+        const socPlayer = players[soc.seatIdx];
+        const socName = socPlayer ? socPlayer.name : "Player";
+        const isCSM = settings.shuffleType === "csm" && settings.gameType !== "doubleDeck";
+        const isDD = settings.gameType === "doubleDeck";
+        const shoeLabel = isCSM ? "Until Next Shuffle" : "Rest of Shoe";
+        return (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-          <div style={{ background: "#1a1a2e", borderRadius: 12, padding: 30, maxWidth: 420, textAlign: "center", color: "#eee", border: "2px solid #ff9800" }}>
-            <h2 style={{ margin: "0 0 10px", color: "#ff9800", fontSize: 20 }}>⚠️ Mid-Shoe Sit Out</h2>
-            <p style={{ marginBottom: 8, fontSize: 15 }}>
-              {(() => { const p = players[sitOutWarning.seatIdx]; return p ? p.name : "Player"; })()} wants to sit out.
-            </p>
-            <p style={{ marginBottom: 20, fontSize: 14, color: "#ff9800", fontWeight: "bold" }}>
-              Sitting out mid-shoe means this player cannot rejoin until the next shoe is dealt.
-            </p>
-            <div style={{ display: "flex", gap: 10 }}>
-              <button onClick={() => { const w = sitOutWarning; setSitOutWarning(null); confirmSeatBet(w.seatIdx, 0, true); }} style={{
-                flex: 1, padding: "12px", borderRadius: 8, border: "none",
-                background: "linear-gradient(135deg, #ff9800, #e65100)", color: "#fff", fontWeight: "bold", cursor: "pointer", fontSize: 15,
-              }}>Yes, Sit Out</button>
-              <button onClick={() => setSitOutWarning(null)} style={{
-                flex: 1, padding: "12px", borderRadius: 8, border: "none",
-                background: "linear-gradient(135deg, #4caf50, #2e7d32)", color: "#fff", fontWeight: "bold", cursor: "pointer", fontSize: 15,
-              }}>No, Stay In</button>
-            </div>
+          <div style={{ background: "#1a1a2e", borderRadius: 12, padding: 30, maxWidth: 440, textAlign: "center", color: "#eee", border: "2px solid #ffd700" }}>
+            <h2 style={{ margin: "0 0 14px", color: "#ffd700", fontSize: 20, fontFamily: "'Rye', serif", letterSpacing: 2 }}>Sit Out</h2>
+            {isDD ? (
+              <>
+              <p style={{ marginBottom: 12, fontSize: 15, color: "#ccc" }}>
+                <span style={{ color: "#ffd700", fontWeight: "bold" }}>{socName}</span> wants to sit out.
+              </p>
+              <p style={{ marginBottom: 20, fontSize: 14, color: "#ff9800", fontWeight: "bold" }}>
+                In Double Deck, sitting out mid-shoe locks you out until the next shoe is dealt. No re-entry allowed.
+              </p>
+              <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+                <button onClick={() => { setSitOutChoice(null); if (soc.isRpBet) { confirmRpBet(true); } else { confirmSeatBet(soc.seatIdx, 0, true, true); } }} style={{
+                  flex: 1, padding: "14px 10px", borderRadius: 10, border: "2px solid rgba(255,152,0,0.5)",
+                  background: "linear-gradient(135deg, rgba(255,152,0,0.2), rgba(0,0,0,0.4))", color: "#ff9800",
+                  fontWeight: "bold", cursor: "pointer", fontSize: 15, letterSpacing: 1,
+                }}>Yes, Sit Out</button>
+              </div>
+              </>
+            ) : (
+              <>
+              <p style={{ marginBottom: 20, fontSize: 15, color: "#ccc" }}>
+                How long should <span style={{ color: "#ffd700", fontWeight: "bold" }}>{socName}</span> sit out?
+              </p>
+              <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+                <button onClick={() => { setSitOutChoice(null); if (soc.isRpBet) { confirmRpBet(true); } else { confirmSeatBet(soc.seatIdx, 0, true, false); } }} style={{
+                  flex: 1, padding: "14px 10px", borderRadius: 10, border: "2px solid rgba(76,175,80,0.5)",
+                  background: "linear-gradient(135deg, rgba(76,175,80,0.2), rgba(0,0,0,0.4))", color: "#4caf50",
+                  fontWeight: "bold", cursor: "pointer", fontSize: 15, letterSpacing: 1,
+                }}>Just This Hand</button>
+                <button onClick={() => {
+                  setSitOutChoice(null);
+                  if (soc.isRpBet) {
+                    const idx = rpBettingIdxRef.current >= 0 ? rpBettingIdxRef.current : soc.seatIdx;
+                    setPlayers(prev => prev.map((p, i) => i === idx ? { ...p, lockedOutUntilShuffle: true } : p));
+                    playersRef.current = playersRef.current.map((p, i) => i === idx ? { ...p, lockedOutUntilShuffle: true } : p);
+                    confirmRpBet(true);
+                  } else {
+                    confirmSeatBet(soc.seatIdx, 0, true, true);
+                  }
+                }} style={{
+                  flex: 1, padding: "14px 10px", borderRadius: 10, border: "2px solid rgba(255,152,0,0.5)",
+                  background: "linear-gradient(135deg, rgba(255,152,0,0.2), rgba(0,0,0,0.4))", color: "#ff9800",
+                  fontWeight: "bold", cursor: "pointer", fontSize: 15, letterSpacing: 1,
+                }}>{shoeLabel}</button>
+              </div>
+              </>
+            )}
+            <button onClick={() => setSitOutChoice(null)} style={{
+              padding: "10px 30px", borderRadius: 8, border: "1px solid #555",
+              background: "rgba(255,255,255,0.08)", color: "#aaa",
+              fontWeight: "bold", cursor: "pointer", fontSize: 14,
+            }}>Cancel</button>
           </div>
         </div>
-      )}
+        );
+      })()}
 
       {/* Rebuy Dialog */}
       {rebuyDialog && (() => {
@@ -5110,8 +5222,11 @@ function GameTable({ settings, onBack }) {
             </p>
             <div style={{ display: "flex", gap: 10, flexDirection: "column" }}>
               <button onClick={() => {
+                const action = lessDialog.type;
                 setLessDialog(null);
-                handleHumanAction(lessDialog.type);
+                // Bypass suggestion check — player already confirmed their choice via the strategy tip
+                const result = performAction(action, playersRef.current, activePlayer, activeHand, dealer.cards, shoeRef.current, rcRef.current);
+                finishHumanAction(result, activePlayer, activeHand);
               }} style={{ padding: "12px", borderRadius: 6, border: "none", background: "linear-gradient(135deg, #ff9800, #e65100)", color: "#fff", fontWeight: "bold", cursor: "pointer", fontSize: 15 }}>
                 {lessDialog.type === "double" ? "Double" : "Split"} for <span style={{ fontFamily: "'Rye', serif" }}>${lessDialog.available.toLocaleString()}</span> (less)
               </button>
@@ -5412,7 +5527,15 @@ function GameTable({ settings, onBack }) {
                     const isSel = newSeatConfig.type === opt.type;
                     const noChoice = newSeatConfig.type === null;
                     return (
-                    <div key={opt.type} onClick={() => setNewSeatConfig(prev => ({ ...prev, type: opt.type }))}
+                    <div key={opt.type} onClick={() => {
+                      if (opt.type === "ai") {
+                        // AI players seat instantly with default buy-in — no name/bankroll screen needed
+                        addMidGamePlayer(newSeatConfig.seatIdx, "", settings.buyIn, false, false);
+                        setNewSeatConfig(null);
+                        return;
+                      }
+                      setNewSeatConfig(prev => ({ ...prev, type: opt.type }));
+                    }}
                       style={{
                         padding: "12px 24px", borderRadius: 12, cursor: "pointer", transition: "all 0.2s",
                         border: `2px solid ${isSel ? opt.selColor : noChoice ? opt.readyBorder : opt.unselBorder}`,
@@ -5541,6 +5664,7 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
   const [confirmClear, setConfirmClear] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState("all");
   const [expandedSession, setExpandedSession] = useState(null); // session key for expanded stat card
+  const [expandedRun, setExpandedRun] = useState(null); // run key for expanded run stat card
   const [confirmDeleteSession, setConfirmDeleteSession] = useState(null); // session key pending delete
 
   // Derive unique player names from log (case-insensitive dedup, keep first-seen casing)
@@ -5573,7 +5697,7 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
   // Compute overall P&L using session-level calculation:
   // For each session: P&L = lastBankrollAfter - firstBankrollBefore - betweenHandRebuys - midHandRebuys
   // This is simple and can't drift.
-  const computeSessionNet = (hands) => {
+  const computeSessionNet = useCallback((hands) => {
     if (hands.length === 0) return 0;
     const startBank = hands[0].bankrollBefore;
     const endBank = hands[hands.length - 1].bankrollAfter;
@@ -5589,7 +5713,7 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
     const midRebuys = hands.reduce((s, h) => s + (h.midHandRebuy || 0), 0);
     // Net = end - start - money_added + money_removed
     return endBank - startBank - betweenRebuys - midRebuys + betweenWithdrawals;
-  };
+  }, []);
   // Group hands by session AND player so each bankroll stream is computed separately
   const sessionPlayerGroups = {};
   for (const h of log) {
@@ -5678,6 +5802,48 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
     };
   }
 
+  // Runs per session: group hands by runId within each session-player combo
+  const runsBySession = useMemo(() => {
+    const result = {};
+    for (const [sKey, sData] of Object.entries(sessions)) {
+      const sid = sData.sessionId;
+      const pName = sData.playerName;
+      // Get all hands for this session-player
+      const hands = (sessionPlayerGroups[(selectedPlayer === "all" ? sKey : sid + "|" + pName)] || []);
+      // Group by runId (or runNumber for ordering)
+      const runGroups = {};
+      for (const h of hands) {
+        const rid = h.runId || "run1";
+        if (!runGroups[rid]) runGroups[rid] = [];
+        runGroups[rid].push(h);
+      }
+      // Build run objects sorted by runNumber
+      const runs = Object.entries(runGroups).map(([rid, rHands]) => {
+        const rWins = rHands.filter(h => h.overallResult === "win" || h.wasBlackjack).length;
+        const rLosses = rHands.filter(h => h.overallResult === "loss").length;
+        const rPushes = rHands.filter(h => h.overallResult === "push").length;
+        const rBjs = rHands.filter(h => h.wasBlackjack).length;
+        const rSurrenders = rHands.filter(h => h.didSurrender).length;
+        const rNet = computeSessionNet(rHands);
+        const endReason = rHands[rHands.length - 1].runEndReason || null;
+        return {
+          runId: rid,
+          runNumber: rHands[0].runNumber || 1,
+          hands: rHands.length,
+          wins: rWins, losses: rLosses, pushes: rPushes, bjs: rBjs, surrenders: rSurrenders,
+          net: rNet,
+          startBank: rHands[0].bankrollBefore,
+          endBank: rHands[rHands.length - 1].bankrollAfter,
+          endReason,
+          start: rHands[0].timestamp,
+          end: rHands[rHands.length - 1].timestamp,
+        };
+      }).sort((a, b) => a.runNumber - b.runNumber);
+      result[sKey] = runs;
+    }
+    return result;
+  }, [sessions, sessionPlayerGroups, selectedPlayer, computeSessionNet]);
+
   // Position stats
   const bySeat = {};
   for (const h of log) {
@@ -5710,7 +5876,7 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
   // Export to CSV
   const exportCSV = () => {
     if (log.length === 0) return;
-    const cols = ["timestamp","sessionId","playerName","gameType","handNumber","numPlayers","humanSeat","deckCount",
+    const cols = ["timestamp","sessionId","runId","runNumber","playerName","gameType","handNumber","numPlayers","humanSeat","deckCount",
       "overallResult","wasBlackjack","didDouble","didSplit","didSurrender","totalBet","netResult",
       "bankrollBefore","bankrollAfter","dealerFinalTotal","dealerBusted","dealerBlackjack","dealer22Push",
       "potOfGoldBet","potOfGoldPayout","sideBet9x","sideBet9xResult","insuranceTaken","insuranceAmount",
@@ -5812,12 +5978,45 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
           <div style={{ textAlign: "center", marginBottom: 16 }}>
             <div style={{ fontFamily: "'Rye', serif", fontSize: 28, color: "#ffd700", letterSpacing: 5, textShadow: "0 0 24px rgba(255,215,0,0.25), 0 2px 4px rgba(0,0,0,0.5)" }}>DATA CENTER</div>
           </div>
-          <div style={{ background: "linear-gradient(135deg, #1a2a1a, #2a3a2a)", borderRadius: 10, padding: "16px 20px", border: "1px solid #4caf50", textAlign: "center" }}>
-            <div style={{ color: "#aaa", fontSize: 12, marginBottom: 4 }}>{selectedPlayer === "all" ? "LIFETIME OVERALL BALANCE" : `${selectedPlayer.toUpperCase()}'S BALANCE`}</div>
-            <div style={{ color: totalNet >= 0 ? "#4caf50" : "#ef5350", fontSize: 32, fontWeight: "bold" }}>
+          <div style={{ background: "linear-gradient(135deg, #1a2a1a 0%, #1e3520 40%, #2a3a2a 100%)", borderRadius: 12, padding: "24px 24px 20px", border: "1px solid #4caf50", textAlign: "center", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, rgba(76,175,80,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
+            {/* Gold accent top */}
+            <div style={{ width: 120, height: 2, background: "linear-gradient(90deg, transparent, #ffd700, transparent)", margin: "0 auto 18px", opacity: 0.4 }} />
+            {/* Balance */}
+            <div style={{ fontFamily: "'Century Schoolbook', Georgia, serif", fontSize: 44, fontWeight: "bold", color: totalNet >= 0 ? "#4caf50" : "#ef5350", textShadow: totalNet >= 0 ? "0 2px 8px rgba(76,175,80,0.3)" : "0 2px 8px rgba(239,83,80,0.3)", letterSpacing: 2 }}>
               {totalNet >= 0 ? "+" : ""}${totalNet.toLocaleString()}
             </div>
-            <div style={{ color: "#888", fontSize: 12, marginTop: 4 }}>{total.toLocaleString()} hands recorded across {Object.keys(sessions).length} sessions</div>
+            {/* Gold accent bottom */}
+            <div style={{ width: 120, height: 2, background: "linear-gradient(90deg, transparent, #ffd700, transparent)", margin: "18px auto 16px", opacity: 0.4 }} />
+            {/* Stat pills */}
+            <div style={{ display: "flex", justifyContent: "center", gap: 8, flexWrap: "nowrap" }}>
+              {/* Hands pill */}
+              <div style={{ background: "rgba(76,175,80,0.12)", border: "1px solid rgba(76,175,80,0.55)", boxShadow: "0 0 6px rgba(76,175,80,0.15)", borderRadius: 20, padding: "5px 12px", display: "flex", alignItems: "center", gap: 5 }}>
+                <span style={{ fontSize: 10, color: "rgba(255,255,255,0.8)", letterSpacing: 1 }}>HANDS</span>
+                <span style={{ fontSize: 13, fontWeight: "bold", color: "#81c784", fontFamily: "'Century Schoolbook', Georgia, serif" }}>{total}</span>
+              </div>
+              {/* Record pill (W/L/P) */}
+              <div style={{ background: "rgba(76,175,80,0.12)", border: "1px solid rgba(76,175,80,0.55)", boxShadow: "0 0 6px rgba(76,175,80,0.15)", borderRadius: 20, padding: "5px 12px", display: "flex", alignItems: "center", gap: 5 }}>
+                <span style={{ fontFamily: "'Century Schoolbook', Georgia, serif", fontSize: 13 }}>
+                  <span style={{ color: "#4caf50", fontWeight: "bold" }}>{wins}</span><span style={{ color: "rgba(255,255,255,0.75)" }}>W</span>
+                  <span style={{ color: "rgba(255,255,255,0.3)", margin: "0 1px" }}>{"\u00b7"}</span>
+                  <span style={{ color: "#ef5350", fontWeight: "bold" }}>{losses}</span><span style={{ color: "rgba(255,255,255,0.75)" }}>L</span>
+                  <span style={{ color: "rgba(255,255,255,0.3)", margin: "0 1px" }}>{"\u00b7"}</span>
+                  <span style={{ color: "#ffa726", fontWeight: "bold" }}>{pushes}</span><span style={{ color: "rgba(255,255,255,0.75)" }}>P</span>
+                </span>
+              </div>
+              {/* Win Rate pill */}
+              <div style={{ background: "rgba(76,175,80,0.12)", border: "1px solid rgba(76,175,80,0.55)", boxShadow: "0 0 6px rgba(76,175,80,0.15)", borderRadius: 20, padding: "5px 12px", display: "flex", alignItems: "center", gap: 5 }}>
+                <span style={{ fontSize: 10, color: "rgba(255,255,255,0.8)", letterSpacing: 1 }}>WR</span>
+                <span style={{ fontSize: 13, fontWeight: "bold", color: "#4caf50", fontFamily: "'Century Schoolbook', Georgia, serif" }}>{total > 0 ? (wins/total*100).toFixed(1) : 0}%</span>
+              </div>
+              {/* Sessions pill — clickable */}
+              <div onClick={() => setTab("sessions")} style={{ background: "rgba(100,181,246,0.08)", border: "1px solid rgba(100,181,246,0.55)", boxShadow: "0 0 6px rgba(100,181,246,0.15)", borderRadius: 20, padding: "5px 12px", display: "flex", alignItems: "center", gap: 5, cursor: "pointer" }}>
+                <span style={{ fontSize: 10, color: "rgba(100,181,246,0.9)", letterSpacing: 1 }}>SESSIONS</span>
+                <span style={{ fontSize: 13, fontWeight: "bold", color: "#64b5f6", fontFamily: "'Century Schoolbook', Georgia, serif" }}>{Object.keys(sessions).length}</span>
+                <span style={{ fontSize: 9, color: "rgba(100,181,246,0.7)" }}>{"\u2192"}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -6574,13 +6773,14 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
                         }}>{isExpanded ? "−" : "+"}</div>
                       </div>
                     </div>
-                    <div style={{ display: "flex", gap: 16, fontSize: 12, color: "#888" }}>
+                    <div style={{ display: "flex", gap: 16, fontSize: 12, color: "#888", flexWrap: "wrap" }}>
                       <span>{gtLabel}</span>
                       <span>{s.hands} hands</span>
                       <span>${(s.startBank || 0).toLocaleString()} → ${(s.endBank || 0).toLocaleString()}</span>
+                      {(runsBySession[sid] || []).length > 1 && <span style={{ color: "#81c784" }}>{(runsBySession[sid] || []).length} runs</span>}
                     </div>
                   </div>
-                  {isExpanded && (
+                  {isExpanded && (<>
                     <div style={{
                       margin: "6px 0 10px", padding: 12,
                       background: "rgba(255,255,255,0.05)", borderRadius: 8,
@@ -6628,7 +6828,92 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
                         )}
                       </div>
                     </div>
-                  )}
+                    {/* RUNS SECTION — show run rows if session has >1 run */}
+                    {(() => {
+                      const runs = runsBySession[sid] || [];
+                      if (runs.length <= 1) return null;
+                      return (
+                        <div style={{ margin: "8px 0 4px", padding: "6px 0 0" }}>
+                          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: "rgba(255,255,255,0.25)", textTransform: "uppercase", padding: "0 0 4px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                            RUNS ({runs.length})
+                          </div>
+                          {runs.map((r, ri) => {
+                            const rKey = sid + "_run_" + r.runId;
+                            const isRunExpanded = expandedRun === rKey;
+                            const rWinPct = r.hands > 0 ? (r.wins / r.hands * 100).toFixed(1) : "0.0";
+                            const rRoi = r.startBank > 0 ? (r.net / r.startBank * 100).toFixed(1) : "0.0";
+                            const isLive = !r.endReason && ri === runs.length - 1;
+                            return (
+                              <div key={rKey}>
+                                <div onClick={() => setExpandedRun(isRunExpanded ? null : rKey)} style={{ padding: "7px 0", borderBottom: "1px solid rgba(255,255,255,0.04)", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                  <div>
+                                    <span style={{ fontSize: 12, fontWeight: 700, color: isLive ? "#81c784" : "rgba(255,255,255,0.5)" }}>
+                                      Run {r.runNumber}
+                                      {isLive && <span style={{ color: "#4caf50", fontSize: 9, marginLeft: 5, letterSpacing: 1, animation: "pulse 2s infinite" }}>LIVE</span>}
+                                    </span>
+                                    <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", marginTop: 1 }}>
+                                      {r.hands} hands
+                                      {r.endReason && <span style={{ color: "#ff9800", marginLeft: 6 }}>{r.endReason}</span>}
+                                    </div>
+                                  </div>
+                                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                    <div style={{ textAlign: "right" }}>
+                                      <div style={{ fontSize: 13, fontWeight: "bold", color: r.net >= 0 ? "#4caf50" : "#ef5350" }}>{r.net >= 0 ? "+" : ""}${r.net.toLocaleString()}</div>
+                                      <div style={{ fontSize: 9, color: "rgba(255,255,255,0.3)" }}>{rWinPct}% WR</div>
+                                    </div>
+                                    <div style={{
+                                      width: 20, height: 20, borderRadius: 5,
+                                      border: isRunExpanded ? "1.5px solid #81c784" : "1.5px solid rgba(76,175,80,0.3)",
+                                      background: isRunExpanded ? "rgba(76,175,80,0.15)" : "rgba(76,175,80,0.05)",
+                                      color: "#81c784", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center",
+                                      transition: "all 0.2s", flexShrink: 0,
+                                    }}>{isRunExpanded ? "−" : "+"}</div>
+                                  </div>
+                                </div>
+                                {isRunExpanded && (
+                                  <div style={{
+                                    margin: "4px 0 8px", padding: 10,
+                                    background: "rgba(76,175,80,0.04)", borderRadius: 8,
+                                    borderLeft: "3px solid rgba(76,175,80,0.25)",
+                                  }}>
+                                    <div style={{ fontWeight: "bold", fontSize: 13, marginBottom: 6, color: "#81c784", borderBottom: "1px solid rgba(76,175,80,0.15)", paddingBottom: 5, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                      <span>Run {r.runNumber}</span>
+                                      {r.endReason ? (
+                                        <span style={{ fontSize: 10, color: "#ff9800", fontWeight: "normal" }}>{r.endReason}</span>
+                                      ) : isLive ? (
+                                        <span style={{ fontSize: 10, color: "#4caf50", fontWeight: "normal", letterSpacing: 1 }}>LIVE</span>
+                                      ) : null}
+                                    </div>
+                                    <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "3px 12px", fontSize: 12 }}>
+                                      <span style={{ color: "#aaa" }}>{isLive ? "Bankroll:" : "End Bankroll:"}</span>
+                                      <span style={{ textAlign: "right", fontWeight: "bold", color: (r.endBank || 0) >= (r.startBank || 0) ? "#4caf50" : "#ef5350" }}>${(r.endBank || 0).toLocaleString()}</span>
+                                      <span style={{ color: "#aaa" }}>Start Bankroll:</span>
+                                      <span style={{ textAlign: "right" }}>${(r.startBank || 0).toLocaleString()}</span>
+                                      <span style={{ color: "#aaa" }}>Hands:</span>
+                                      <span style={{ textAlign: "right" }}>{r.hands}</span>
+                                      <span style={{ color: "#aaa" }}>W / L / P:</span>
+                                      <span style={{ textAlign: "right" }}>{r.wins} / {r.losses} / {r.pushes}</span>
+                                      <span style={{ color: "#aaa" }}>Blackjacks:</span>
+                                      <span style={{ textAlign: "right", color: r.bjs > 0 ? "#ffd700" : "#fff" }}>{r.bjs}</span>
+                                      <span style={{ color: "#aaa" }}>Surrenders:</span>
+                                      <span style={{ textAlign: "right" }}>{r.surrenders}</span>
+                                      <div style={{ gridColumn: "1 / -1", height: 1, background: "rgba(76,175,80,0.1)", margin: "3px 0" }} />
+                                      <span style={{ color: "#aaa" }}>Win %:</span>
+                                      <span style={{ textAlign: "right", fontWeight: "bold" }}>{rWinPct}%</span>
+                                      <span style={{ color: "#aaa" }}>Net:</span>
+                                      <span style={{ textAlign: "right", fontWeight: "bold", color: r.net >= 0 ? "#4caf50" : "#ef5350" }}>{r.net >= 0 ? "+" : ""}${r.net.toLocaleString()}</span>
+                                      <span style={{ color: "#aaa" }}>ROI:</span>
+                                      <span style={{ textAlign: "right", fontWeight: "bold", color: r.net >= 0 ? "#4caf50" : "#ef5350" }}>{rRoi}%</span>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
+                  </>)}
                 </div>
                 );
               })
@@ -6709,7 +6994,7 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
 
             <div style={sec}>DATA FIELDS TRACKED PER HAND</div>
             <div style={{ fontSize: 11, color: "#666", lineHeight: 1.6, marginTop: 6, columnCount: 2, columnGap: 20 }}>
-              {["timestamp","sessionId","playerName","gameType","handNumber","numPlayers","humanSeat","deckCount","penetration",
+              {["timestamp","sessionId","runId","runNumber","runEndReason","playerName","gameType","handNumber","numPlayers","humanSeat","deckCount","penetration",
                 "tableMin","tableMax","dealerHitsSoft17","dealerPeeks","doubleOn","surrender",
                 "playerHands (cards, totals, bets, results)","dealerUpCard","dealerHoleCard","dealerFinalCards",
                 "dealerFinalTotal","dealerBusted","dealerBlackjack","dealer22Push",
