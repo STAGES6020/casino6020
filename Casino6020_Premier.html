@@ -23,8 +23,8 @@ const { useState, useEffect, useCallback, useRef, useMemo } = React;
 const BlackjackApp = (() => {
 
 // ===================== CONSTANTS =====================
-const BUILD_NUMBER = 71;
-const BUILD_DATE = "2026-04-06";
+const BUILD_NUMBER = 88;
+const BUILD_DATE = "2026-04-10";
 const AI_ICON = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCABQAFADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3WiiigAoorG1nxDb6NLHFMqbpBlPMmWPd64z1qZSUVdjSbdkZPxB1jUtM0m3i0qYw3dzKR5iruKqB/iRXHQ/EfxHoGn/8Te3gvpSCUY5RsDqTjr0pvjrxY11fWAgjVVjVi+JN2ST6jtgV5/4m19ZkhdfNilRtwdSCMYxxXM5zlNcmx0KMVH3tz0Xwh8XtQ8ReK7bSrnTIoIZyQHR8lTjPIr12vBfBOvaQJ7bV762hSWNQpuEQBg+QDnnpgj9a93jljmGYpEceqsDW9Nt3uYzSWw+jPI5opAOc960IFPeiimu4jUselADqp6lptjqtk9tqFvHPAecOPu+4PY+9cDq3xRmt7ye0sNLZmjcrvlDHGOuVHT6Zrjdd8da7rrWSxXLW6icMYkQorbTk+7DAIIPFYutDY6I4ee70J9dtI9Avb0wQTXemQS7dyKHKoQDuPTIySOPSubmXwlqeZbm58iIfeIRwQfQAcZrpLfUrm4vLlryVXkkYb1YYjCngKAOwI6CsLxLZ6bHqEf2a1RMlmd0G2OQ9sAdDzXFGreTSv8jveFTS1NjwvceGIZY9N0bTZ7tLiZY3luYW8sE92LHH8OeB2r2Gw0axhm3CWKWVMHbFhQPTgEmvnW51qXS7Wyt7WUoXP2m6QcdGKovsNoJ/4FUOmeNdb0zWpLm1mVllO6eJxhZCfccg47g10Qp68zV/VnLVUV7kWfVNFYHg3Wpde8NwXs0bJIxYYYgkjPBrfrqTurnG1Z2CvO/iH4o+zSppEEqbDGXuWSQbgeQE/wBk5wc1peN/Gg0GFrGyTzNQmQhHDKRET3I659vpXht/eW9vuG/fM+TKW5yx61z1qn2I7nZhqF/3ktuhvtfW6QPfzu0glkAw33iTjO705/Wse1uPtnjC4lcjybVPJjGcYHc/XANc5Dqjg7HO6KI+YM9wo4H54pYr+60yKRociWcCRpJFyefSslh2k7bs3da9r7I9L01s6XrVwViVraKCaMOdpLbn4B9SCR9cVyOo6hHqN+kllDMHIO7zW3hR+XA/Gn+D5GuLrfdo91CHWSZJ2OJCcgY9Mc+1dJqUdlouparpWkR/NdFjcTFeUQ8rCp9u59eB7JU1B+ZPtm27dTg9alsprq3VHDSCEpO4bduOchs9M4PT2FZ0fySoqnLHsO+Kuy+HZbZHm81GtolJeTpyB0x9Ril8MRRS64klxkRREZOOldCnFQbTvYy5Jc6TVmz2z4Sa4LjT/wCypXcywR5+bgHLE4HOeM46V6dXhmhavcaJ4maWCaNLW5ZWdZk4YezAEr9a9vgnjuIY5o2DI4ypHelh6nPEjF0uSd+54HrugbdRumurqZ/mKKU2hpG+hzj1P4etUYfAU+rwP9luFAgyHaZQFVv7u4c59QAevNUtb15bfU7mCB3M4kMXmbfkgGcEg92647CvTVubU2tvZ2TBLOJBHEyOCuccMSOuT3+tcs5TprmO3mU3yL5nldz4PvNP0xLmGKG6mHmi6XzeFwRsCjueCT9QK5uWZ7qJN2S7qF5+p4r2C5vG/tBYpF2Q3ieXISeBIPT1yeMVzWr+E7e7toLvTEaC9+0ETQyMFjAHVl4znOMj3Na0Kzn8RnWgoLQXwXZ3UOt3UgtJpIFjADGNtnyp8vOMdTW/dact3avptjcR/akkQzmQHazcn734ng1qfa9Q0jwXZ6fNcJLKlv5OLaXeHfedgHHoRn6Yrl9RabT0bToJiJWPmXMwPVyOefQdBWVST5rRLpUlJc0ia48Mwy28ej6tfyWK3D7klQK6Sc8qTn5ecevarb+EtL8Hwq8zPMhJJlXJfsDlfTkdM1l6jqssujxW08ZmmgfeuCqt5YXHIP4fpTk119U05HuLpTsgNv8AM23aexBPXoOaqnGUo2exFd8krp6l92gFylxp08Or2ZfbJbspWaIeg65x6Yz9a6rwD4jik1KTTPs5gWQsFUZ+SReqnsMgZGMd68q8QXupR6hDeuWjmECCS5tUIWT/AHj0J96734caZd3uqWes7QUZA1w6j5SwzhvqRwce9axg6bTRk6iqQakdP4l8K6ZaRtd2WiaXLLK7PPJdsQSevHI5J965S7sr1rOKSx021s1RWV0tjuRuckvzle/OTg4969jI61H9nhBQ+THlPu/KPl+ldDgm9UrHGpNa3d/U8G8qabyhHMjyrO0vlId7o2OhXHHTOOajuv7cF99qTSrwW5YF0EDbd23JbLAEnuR6V7+saKxZUVWPcKAaybzw1p+oX7Xk7XvnEY+S7kQD6AHislQSVju+twk7yVv1/Q8iivLiztBcX6yGVcGPcPu7hgHGBx1AOOtQad4O8V6ukdzBCsMFxiRZw6sPbnPGPbp9a9zudPsrwL9rs4LjaAB58Yc/mQayV8MNFfrcwa1qkMani2jdRGOc4C7cAdulNUIRtyoh4uc3K7t/Wx5XrXhlPD4giubeW4utoVn8x3D5zjB6c/N1rpfC2mJp9g11deDPMEkpMMpZWdkwNuVOcEnPXFen5NJVU6XJfW9+5hUqqaVlZrfzPJo/Duu2muW+sWtsrLHnCv0GQwBKcZ+9x+Veg6BLqL28iahFFGyt8nlRbFYeuM+ue1bGT70VokZK0Y8qP//Z";
 const SUITS = ["♠", "♥", "♦", "♣"];
 const RANKS = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
@@ -1589,7 +1589,7 @@ function createPlayer(name, bankroll, isHuman, seat, isHost = false) {
   };
 }
 
-function GameTable({ settings, onBack }) {
+function GameTable({ settings, onBack, onSimulator }) {
   // Load Rye font from Google Fonts
   useEffect(() => {
     if (!document.getElementById("rye-font-link")) {
@@ -1722,6 +1722,7 @@ function GameTable({ settings, onBack }) {
   const sessionRebuysRef = useRef(0); // total rebuys this session (both mid-hand and between-hand)
   const handSettledRef = useRef(false); // prevent double-settlement per hand
   const dealInProgressRef = useRef(false); // prevent double-deal (e.g., safety effect race)
+  const bettingInProgressRef = useRef(false); // prevent double-click on Place Bets / Next Hand
   const winStreakRef = useRef(0);
   const lossStreakRef = useRef(0);
   const maxWinStreakRef = useRef(0);
@@ -1775,6 +1776,18 @@ function GameTable({ settings, onBack }) {
   }, [players[activePlayer]?.isAutoPlay]);
 
   const handleReset = () => {
+    // Close the current run before exiting — must write directly to localStorage
+    // because React 18 batches setGameLog and the updater won't run before unmount
+    try {
+      const raw = localStorage.getItem("bj6020_gameLog");
+      if (raw) {
+        const log = JSON.parse(raw);
+        if (log.length > 0) {
+          log[log.length - 1] = { ...log[log.length - 1], runEndReason: "session ended" };
+          localStorage.setItem("bj6020_gameLog", JSON.stringify(log));
+        }
+      }
+    } catch {}
     // Save final overall balance (prior sessions + this session's P&L) before exiting
     try { localStorage.setItem("bj6020_overallBal", String(overallBalance)); } catch {}
     onBack();
@@ -1997,20 +2010,57 @@ function GameTable({ settings, onBack }) {
   const advanceBettingSeatRef = useRef(null);
 
   // Run management: end current run (marks reason on last hand) and start new run
-  const endCurrentRun = useCallback((reason) => {
+  const endCurrentRun = (reason) => {
     // Tag the last hand in the game log with the sit-out reason for this run
+    // Also persist synchronously to localStorage so it survives component unmount on exit
     setGameLog(prev => {
       if (prev.length === 0) return prev;
       const last = { ...prev[prev.length - 1], runEndReason: reason };
-      return [...prev.slice(0, -1), last];
+      const updated = [...prev.slice(0, -1), last];
+      try { localStorage.setItem("bj6020_gameLog", JSON.stringify(updated)); } catch {}
+      return updated;
     });
-  }, []);
+  };
 
-  const startNewRun = useCallback(() => {
+  const startNewRun = () => {
     runNumberRef.current += 1;
     runIdRef.current = Date.now().toString(36) + "r" + runNumberRef.current;
     runStartBankrollRef.current = null; // will be captured on next deal
-  }, []);
+  };
+
+  // Skip to shuffle: instantly create fresh shoe when host is sitting out and only AI remains
+  const skipToShuffle = () => {
+    setMessage("Shuffling...");
+    setPhase(PHASES.SHUFFLING);
+    setShuffleAnimation(true);
+    bettingInProgressRef.current = false;
+    dealInProgressRef.current = false;
+    setTimeout(() => {
+      const ns = createShoe(settings.deckCount);
+      setShoe(ns); shoeRef.current = ns;
+      setHandsSinceShuffle(0);
+      setRunningCount(settings.initialRunningCount); rcRef.current = settings.initialRunningCount;
+      setShuffleAnimation(false);
+      // Clear all sit-out locks
+      setPlayers(prev => prev.map(p => ({ ...p, lockedOutUntilShuffle: false })));
+      playersRef.current = playersRef.current.map(p => ({ ...p, lockedOutUntilShuffle: false }));
+      // Start new run for the host
+      startNewRun();
+      // Clear cards and results
+      setPlayers(prev => prev.map(p => ({
+        ...p,
+        hands: [{ cards: [], bet: 0, status: "active", result: null, isDoubled: false, isSplit: false, freeBet: 0 }],
+        splitCount: 0, insurance: 0, sideBet9xResult: null,
+      })));
+      playersRef.current = playersRef.current.map(p => ({
+        ...p,
+        hands: [{ cards: [], bet: 0, status: "active", result: null, isDoubled: false, isSplit: false, freeBet: 0 }],
+        splitCount: 0, insurance: 0, sideBet9xResult: null,
+      }));
+      setDealer({ cards: [], hidden: true });
+      startBettingRound(false);
+    }, 1500);
+  };
 
   // Confirm a seat's bet and advance to next
   const confirmSeatBet = useCallback((seatIdx, betAmount, sitOut = false, lockForShoe = false) => {
@@ -2226,7 +2276,7 @@ function GameTable({ settings, onBack }) {
       }
     }
     const newPlayer = createPlayer(playerName, buyIn || settings.buyIn, isHuman, seatIdx, claimHost);
-    if (isHuman) {
+    if (isHuman && !claimHost) {
       newPlayer.isRealPlayer = true;
       newPlayer.isAutoPlay = false;
     }
@@ -2385,12 +2435,17 @@ function GameTable({ settings, onBack }) {
   }, [rpBettingTimer, rpBettingActive, confirmRpBet]);
 
   const handlePlaceBets = useCallback(() => {
-    // Trigger unified left-to-right betting round starting at seat 0
+    // GUARD: Prevent double-click from starting two betting rounds
+    if (bettingInProgressRef.current) return;
+    bettingInProgressRef.current = true;
     startBettingRound(false);
   }, [startBettingRound]);
 
   const handleReBetAndDeal = useCallback(() => {
     if (lastBet <= 0) return;
+    // GUARD: Prevent double-click
+    if (bettingInProgressRef.current) return;
+    bettingInProgressRef.current = true;
     dealInProgressRef.current = false; // Reset deal guard for re-bet path
     // Clear previous hand results
     setPlayers(prev => prev.map(p => ({
@@ -3291,6 +3346,7 @@ function GameTable({ settings, onBack }) {
 
     setPlayers(np); playersRef.current = np;
     dealInProgressRef.current = false; // Allow next hand to deal
+    bettingInProgressRef.current = false; // Allow next betting round
     setPhase(PHASES.SETTLEMENT);
     const msg = dealer22Push ? "Dealer 22 — all hands push!" : "Hand complete";
     setMessage(msg);
@@ -3309,6 +3365,9 @@ function GameTable({ settings, onBack }) {
   }, [settings, sessionId]);
 
   const startNewHand = useCallback(() => {
+    // GUARD: Prevent double-click
+    if (bettingInProgressRef.current) return;
+    bettingInProgressRef.current = true;
     setHideReBet(true); // Hide re-bet on betting screen since user chose Next Hand
     dealInProgressRef.current = false; // Reset deal guard for new hand
     // CRITICAL: Always clear dealer cards immediately when transitioning from settlement
@@ -4117,13 +4176,26 @@ function GameTable({ settings, onBack }) {
                                     </div>
                                   )}
                                   {hand.status === "sitting_out" && <div style={{ color: p.lockedOutUntilShuffle ? "#ff9800" : "#555", fontSize: 10 }}>{p.lockedOutUntilShuffle ? (settings.gameType === "doubleDeck" ? "Out until next shoe" : "Out until shuffle") : "Sitting out"}</div>}
-                                  {hand.status === "sitting_out" && p.lockedOutUntilShuffle && phase === PHASES.SETTLEMENT && settings.gameType !== "doubleDeck" && (
-                                    <button onClick={(e) => { e.stopPropagation(); setPlayers(prev => prev.map((pl, idx) => idx === pi ? { ...pl, lockedOutUntilShuffle: false } : pl)); playersRef.current = playersRef.current.map((pl, idx) => idx === pi ? { ...pl, lockedOutUntilShuffle: false } : pl); if (p.isHost || p.isHuman) startNewRun(); }} style={{
-                                      marginTop: 4, padding: "4px 12px", fontSize: 10, fontWeight: "bold",
-                                      background: "linear-gradient(135deg, rgba(76,175,80,0.3), rgba(0,0,0,0.4))", color: "#4caf50",
-                                      border: "1px solid rgba(76,175,80,0.5)", borderRadius: 6, cursor: "pointer",
-                                      animation: "pulse 2s infinite",
-                                    }}>Re-Enter</button>
+                                  {hand.status === "sitting_out" && p.lockedOutUntilShuffle && (
+                                    <div style={{ display: "flex", gap: 4, marginTop: 4, justifyContent: "center", flexWrap: "wrap" }}>
+                                      {/* Re-Enter button — NOT available in Double Deck (no mid-shoe re-entry) */}
+                                      {settings.gameType !== "doubleDeck" && phase === PHASES.SETTLEMENT && (
+                                        <button onClick={(e) => { e.stopPropagation(); setPlayers(prev => prev.map((pl, idx) => idx === pi ? { ...pl, lockedOutUntilShuffle: false } : pl)); playersRef.current = playersRef.current.map((pl, idx) => idx === pi ? { ...pl, lockedOutUntilShuffle: false } : pl); if (p.isHost || p.isHuman) startNewRun(); }} style={{
+                                          padding: "4px 12px", fontSize: 10, fontWeight: "bold",
+                                          background: "linear-gradient(135deg, rgba(76,175,80,0.3), rgba(0,0,0,0.4))", color: "#4caf50",
+                                          border: "1px solid rgba(76,175,80,0.5)", borderRadius: 6, cursor: "pointer",
+                                          animation: "pulse 2s infinite",
+                                        }}>Re-Enter</button>
+                                      )}
+                                      {/* Skip to Shuffle/Shoe — available in ALL game types when only AI players remain */}
+                                      {(p.isHost || p.isHuman) && phase !== PHASES.SHUFFLING && !players.some(op => op !== p && (op.isHuman || op.isRealPlayer) && !op.lockedOutUntilShuffle && op.bankroll > 0) && (
+                                        <button onClick={(e) => { e.stopPropagation(); skipToShuffle(); }} style={{
+                                          padding: "4px 12px", fontSize: 10, fontWeight: "bold",
+                                          background: "linear-gradient(135deg, rgba(255,152,0,0.3), rgba(0,0,0,0.4))", color: "#ff9800",
+                                          border: "1px solid rgba(255,152,0,0.5)", borderRadius: 6, cursor: "pointer",
+                                        }}>{settings.gameType === "doubleDeck" ? "Skip to Next Shoe" : "Skip to Shuffle"}</button>
+                                      )}
+                                    </div>
                                   )}
                                 </div>
                               ))}
@@ -4134,13 +4206,24 @@ function GameTable({ settings, onBack }) {
                         {!hasCards && p.lockedOutUntilShuffle && (
                           <div style={{ textAlign: "center", padding: "8px 0" }}>
                             <div style={{ color: "#ff9800", fontSize: 11, fontWeight: "bold", marginBottom: 4 }}>{settings.gameType === "doubleDeck" ? "Out until next shoe" : "Out until shuffle"}</div>
-                            {phase === PHASES.SETTLEMENT && settings.gameType !== "doubleDeck" && (
-                              <button onClick={(e) => { e.stopPropagation(); setPlayers(prev => prev.map((pl, idx) => idx === pi ? { ...pl, lockedOutUntilShuffle: false } : pl)); playersRef.current = playersRef.current.map((pl, idx) => idx === pi ? { ...pl, lockedOutUntilShuffle: false } : pl); if (p.isHost || p.isHuman) startNewRun(); }} style={{
-                                padding: "6px 16px", fontSize: 11, fontWeight: "bold",
-                                background: "linear-gradient(135deg, rgba(76,175,80,0.3), rgba(0,0,0,0.4))", color: "#4caf50",
-                                border: "1px solid rgba(76,175,80,0.5)", borderRadius: 8, cursor: "pointer",
-                                animation: "pulse 2s infinite",
-                              }}>Re-Enter Next Hand</button>
+                            {settings.gameType !== "doubleDeck" && (
+                              <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+                                {phase === PHASES.SETTLEMENT && (
+                                  <button onClick={(e) => { e.stopPropagation(); setPlayers(prev => prev.map((pl, idx) => idx === pi ? { ...pl, lockedOutUntilShuffle: false } : pl)); playersRef.current = playersRef.current.map((pl, idx) => idx === pi ? { ...pl, lockedOutUntilShuffle: false } : pl); if (p.isHost || p.isHuman) startNewRun(); }} style={{
+                                    padding: "6px 16px", fontSize: 11, fontWeight: "bold",
+                                    background: "linear-gradient(135deg, rgba(76,175,80,0.3), rgba(0,0,0,0.4))", color: "#4caf50",
+                                    border: "1px solid rgba(76,175,80,0.5)", borderRadius: 8, cursor: "pointer",
+                                    animation: "pulse 2s infinite",
+                                  }}>Re-Enter Next Hand</button>
+                                )}
+                                {(p.isHost || p.isHuman) && phase !== PHASES.SHUFFLING && !players.some(op => op !== p && (op.isHuman || op.isRealPlayer) && !op.lockedOutUntilShuffle && op.bankroll > 0) && (
+                                  <button onClick={(e) => { e.stopPropagation(); skipToShuffle(); }} style={{
+                                    padding: "6px 16px", fontSize: 11, fontWeight: "bold",
+                                    background: "linear-gradient(135deg, rgba(255,152,0,0.3), rgba(0,0,0,0.4))", color: "#ff9800",
+                                    border: "1px solid rgba(255,152,0,0.5)", borderRadius: 8, cursor: "pointer",
+                                  }}>Skip to Shuffle</button>
+                                )}
+                              </div>
                             )}
                           </div>
                         )}
@@ -5086,9 +5169,17 @@ function GameTable({ settings, onBack }) {
                       setPendingActionAfterRebuy(null);
                       // Stay in PLAYER_TURN — don't reset to BETTING
                     } else {
-                      setPhase(PHASES.BETTING);
-                      setMessage("Place your bets!");
+                      // Clear previous hand's cards before starting betting round
+                      const clearedPs = playersRef.current.map(p => ({
+                        ...p,
+                        hands: [{ cards: [], bet: 0, status: "active", result: null, isDoubled: false, isSplit: false, freeBet: 0 }],
+                        splitCount: 0, insurance: 0, sideBet9xResult: null,
+                      }));
+                      setPlayers(clearedPs);
+                      playersRef.current = clearedPs;
                       setDealer({ cards: [], hidden: true });
+                      // Actually start the betting round (was missing — caused freeze)
+                      startBettingRound(false);
                     }
                   }
                 }} style={{ flex: 1, padding: "12px", borderRadius: 6, border: "none", background: "#4caf50", color: "#fff", fontWeight: "bold", cursor: "pointer", opacity: (parseInt(rebuyAmount) || 0) > 0 ? 1 : 0.4 }}>
@@ -5097,7 +5188,7 @@ function GameTable({ settings, onBack }) {
                 <button onClick={() => { setRebuyDialog(false); const hadPending = pendingActionAfterRebuy; setPendingActionAfterRebuy(null); if (!hadPending) { setDealer({ cards: [], hidden: true }); startBettingRound(false); } }} style={{ flex: 1, padding: "12px", borderRadius: 6, border: "none", background: "#2196f3", color: "#fff", fontWeight: "bold", cursor: "pointer" }}>
                   {pendingActionAfterRebuy ? "Cancel" : "Skip"}
                 </button>
-                {!pendingActionAfterRebuy && <button onClick={() => { setRebuyDialog(false); onBack(); }} style={{ padding: "12px 16px", borderRadius: 6, border: "1.5px solid rgba(176,196,222,0.4)", background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de", fontWeight: "bold", cursor: "pointer", fontFamily: "'Rye', serif", fontSize: 15, letterSpacing: 1 }}>
+                {!pendingActionAfterRebuy && <button onClick={() => { try { const raw = localStorage.getItem("bj6020_gameLog"); if (raw) { const log = JSON.parse(raw); if (log.length > 0) { log[log.length - 1] = { ...log[log.length - 1], runEndReason: "session ended" }; localStorage.setItem("bj6020_gameLog", JSON.stringify(log)); } } } catch {} setRebuyDialog(false); onBack(); }} style={{ padding: "12px 16px", borderRadius: 6, border: "1.5px solid rgba(176,196,222,0.4)", background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de", fontWeight: "bold", cursor: "pointer", fontFamily: "'Rye', serif", fontSize: 15, letterSpacing: 1 }}>
                   Settings
                 </button>}
               </div>
@@ -5648,7 +5739,7 @@ function GameTable({ settings, onBack }) {
       {/* Data Center Overlay (accessible mid-game) */}
       {showDataCenter && (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 2000, background: "linear-gradient(135deg, #0a0a2e 0%, #1a1a3e 50%, #050520 100%)" }}>
-          <DataCenter onBack={() => setShowDataCenter(false)} backLabel="Back to Game" />
+          <DataCenter onBack={() => setShowDataCenter(false)} onSimulator={() => { setShowDataCenter(false); if (onSimulator) onSimulator(); }} backLabel="Back to Game" />
         </div>
       )}
     </div>
@@ -5656,15 +5747,15 @@ function GameTable({ settings, onBack }) {
 }
 
 // ===================== DATA CENTER =====================
-function DataCenter({ onBack, backLabel = "Back to Settings" }) {
+function DataCenter({ onBack, onSimulator, backLabel = "Back to Settings" }) {
   const [gameLog, setGameLog] = useState(() => {
     try { const d = localStorage.getItem("bj6020_gameLog"); return d ? JSON.parse(d) : []; } catch { return []; }
   });
   const [tab, setTab] = useState("summary");
   const [confirmClear, setConfirmClear] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState("all");
-  const [expandedSession, setExpandedSession] = useState(null); // session key for expanded stat card
-  const [expandedRun, setExpandedRun] = useState(null); // run key for expanded run stat card
+  const [expandedSessions, setExpandedSessions] = useState({}); // map of session keys to expanded state
+  const [expandedRuns, setExpandedRuns] = useState({}); // map of run keys to expanded state
   const [confirmDeleteSession, setConfirmDeleteSession] = useState(null); // session key pending delete
 
   // Derive unique player names from log (case-insensitive dedup, keep first-seen casing)
@@ -5982,9 +6073,12 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, rgba(76,175,80,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
             {/* Gold accent top */}
             <div style={{ width: 120, height: 2, background: "linear-gradient(90deg, transparent, #ffd700, transparent)", margin: "0 auto 18px", opacity: 0.4 }} />
-            {/* Balance */}
-            <div style={{ fontFamily: "'Century Schoolbook', Georgia, serif", fontSize: 44, fontWeight: "bold", color: totalNet >= 0 ? "#4caf50" : "#ef5350", textShadow: totalNet >= 0 ? "0 2px 8px rgba(76,175,80,0.3)" : "0 2px 8px rgba(239,83,80,0.3)", letterSpacing: 2 }}>
-              {totalNet >= 0 ? "+" : ""}${totalNet.toLocaleString()}
+            {/* Balance + Player Name */}
+            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 16 }}>
+              {selectedPlayer !== "all" && <span style={{ fontFamily: "'Rye', serif", fontSize: 36, color: "#ffd700", textShadow: "0 0 12px rgba(255,215,0,0.2)", textTransform: "capitalize" }}>{selectedPlayer}</span>}
+              <span style={{ fontFamily: "'Century Schoolbook', Georgia, serif", fontSize: 44, fontWeight: "bold", color: totalNet >= 0 ? "#4caf50" : "#ef5350", textShadow: totalNet >= 0 ? "0 2px 8px rgba(76,175,80,0.3)" : "0 2px 8px rgba(239,83,80,0.3)", letterSpacing: 2 }}>
+                {totalNet >= 0 ? "+" : ""}${totalNet.toLocaleString()}
+              </span>
             </div>
             {/* Gold accent bottom */}
             <div style={{ width: 120, height: 2, background: "linear-gradient(90deg, transparent, #ffd700, transparent)", margin: "18px auto 16px", opacity: 0.4 }} />
@@ -6052,8 +6146,9 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
             ))}
           </div>
 
-          {/* Back button */}
-          <div style={{ padding: "12px 14px", borderTop: "1px solid rgba(255,215,0,0.06)" }}>
+          {/* Simulator + Back */}
+          <div style={{ padding: "12px 14px", borderTop: "1px solid rgba(255,215,0,0.06)", display: "flex", flexDirection: "column", gap: 8 }}>
+            {onSimulator && <div onClick={onSimulator} style={{ padding: "10px 14px", borderRadius: 8, background: "linear-gradient(135deg, #1a3d1a, #0d2b0d)", color: "#4caf50", fontSize: 13, textAlign: "center", cursor: "pointer", border: "1px solid rgba(76,175,80,0.3)", fontFamily: "'Rye', serif", letterSpacing: 1 }}>{"\uD83C\uDFB0"} Simulator</div>}
             <div onClick={onBack} style={{ padding: "10px 14px", borderRadius: 8, background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de", fontSize: 13, textAlign: "center", cursor: "pointer", border: "1px solid rgba(176,196,222,0.3)", fontFamily: "'Rye', serif", letterSpacing: 1 }}>{"\u2190"} Back</div>
           </div>
         </div>
@@ -6749,16 +6844,20 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
             <div style={sec}>SESSION HISTORY</div>
             {Object.entries(sessions).length === 0 ? <div style={{ color: "#666", padding: 10 }}>No sessions recorded</div> :
               Object.entries(sessions).reverse().map(([sid, s]) => {
-                const isExpanded = expandedSession === sid;
+                const isExpanded = !!expandedSessions[sid];
                 const winPct = s.hands > 0 ? (s.wins / s.hands * 100).toFixed(1) : "0.0";
                 const roi = s.totalInvested > 0 ? (s.net / s.totalInvested * 100).toFixed(1) : "0.0";
                 const gtLabel = s.gameType === "standard" ? "Standard" : s.gameType === "freeBet" ? "Free Bet" : "Double Deck";
                 return (
                 <div key={sid}>
-                  <div onClick={() => setExpandedSession(isExpanded ? null : sid)} style={{ padding: "10px 0", borderBottom: isExpanded ? "none" : "1px solid rgba(255,255,255,0.08)", cursor: "pointer", transition: "background 0.2s" }}>
+                  <div onClick={() => setExpandedSessions(prev => ({ ...prev, [sid]: !prev[sid] }))} style={{ padding: "10px 0", borderBottom: isExpanded ? "none" : "1px solid rgba(255,255,255,0.08)", cursor: "pointer", transition: "background 0.2s" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
                       <span style={{ color: "#64b5f6", fontWeight: "bold", fontSize: 13 }}>
                         {new Date(s.start).toLocaleDateString()} {new Date(s.start).toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})}
+                      </span>
+                      <span style={{ fontSize: 13 }}>
+                        <span style={{ color: "#ffd700", fontWeight: "bold" }}>{s.playerName}</span>
+                        <span style={{ color: "#ccc", marginLeft: 5 }}>· {gtLabel}</span>
                       </span>
                       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                         <span style={{ color: s.net >= 0 ? "#4caf50" : "#ef5350", fontWeight: "bold" }}>
@@ -6774,9 +6873,7 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
                       </div>
                     </div>
                     <div style={{ display: "flex", gap: 16, fontSize: 12, color: "#888", flexWrap: "wrap" }}>
-                      <span>{gtLabel}</span>
                       <span>{s.hands} hands</span>
-                      <span>${(s.startBank || 0).toLocaleString()} → ${(s.endBank || 0).toLocaleString()}</span>
                       {(runsBySession[sid] || []).length > 1 && <span style={{ color: "#81c784" }}>{(runsBySession[sid] || []).length} runs</span>}
                     </div>
                   </div>
@@ -6785,12 +6882,6 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
                       margin: "6px 0 10px", padding: 12,
                       background: "rgba(255,255,255,0.05)", borderRadius: 8,
                     }}>
-                      <div style={{ fontWeight: "bold", fontSize: 15, marginBottom: 8, color: "#ffd700", borderBottom: "1px solid rgba(255,255,255,0.15)", paddingBottom: 6, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <span>{s.playerName}{s.playerName === "Host" && <span style={{ color: "#64b5f6", fontSize: 11, fontWeight: "normal", marginLeft: 6 }}>(You)</span>}</span>
-                        <span style={{ fontSize: 10, color: "rgba(255,215,0,0.4)", letterSpacing: 1, fontWeight: "normal" }}>
-                          {gtLabel.toUpperCase()} {s.deckCount === 2 ? "2-DECK" : "6-DECK"}
-                        </span>
-                      </div>
                       <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "4px 12px", fontSize: 13 }}>
                         <span style={{ color: "#aaa" }}>Bankroll:</span>
                         <span style={{ textAlign: "right", fontWeight: "bold", color: (s.endBank || 0) >= (s.totalInvested || 0) ? "#4caf50" : "#ef5350" }}>${(s.endBank || 0).toLocaleString()}</span>
@@ -6820,7 +6911,7 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
                         {confirmDeleteSession === sid ? (
                           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
                             <span style={{ color: "#ef5350", fontSize: 12, fontWeight: "bold" }}>Delete this session?</span>
-                            <button onClick={(e) => { e.stopPropagation(); const updated = gameLog.filter(h => !(h.sessionId === s.sessionId && h.playerName === s.playerName)); setGameLog(updated); try { localStorage.setItem("bj6020_gameLog", JSON.stringify(updated)); } catch {} setConfirmDeleteSession(null); setExpandedSession(null); }} style={{ padding: "4px 14px", fontSize: 11, fontWeight: "bold", background: "#c62828", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer" }}>Yes</button>
+                            <button onClick={(e) => { e.stopPropagation(); const updated = gameLog.filter(h => !(h.sessionId === s.sessionId && h.playerName === s.playerName)); setGameLog(updated); try { localStorage.setItem("bj6020_gameLog", JSON.stringify(updated)); } catch {} setConfirmDeleteSession(null); setExpandedSessions(prev => { const next = { ...prev }; delete next[sid]; return next; }); }} style={{ padding: "4px 14px", fontSize: 11, fontWeight: "bold", background: "#c62828", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer" }}>Yes</button>
                             <button onClick={(e) => { e.stopPropagation(); setConfirmDeleteSession(null); }} style={{ padding: "4px 14px", fontSize: 11, fontWeight: "bold", background: "#555", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer" }}>No</button>
                           </div>
                         ) : (
@@ -6839,13 +6930,13 @@ function DataCenter({ onBack, backLabel = "Back to Settings" }) {
                           </div>
                           {runs.map((r, ri) => {
                             const rKey = sid + "_run_" + r.runId;
-                            const isRunExpanded = expandedRun === rKey;
+                            const isRunExpanded = !!expandedRuns[rKey];
                             const rWinPct = r.hands > 0 ? (r.wins / r.hands * 100).toFixed(1) : "0.0";
                             const rRoi = r.startBank > 0 ? (r.net / r.startBank * 100).toFixed(1) : "0.0";
                             const isLive = !r.endReason && ri === runs.length - 1;
                             return (
                               <div key={rKey}>
-                                <div onClick={() => setExpandedRun(isRunExpanded ? null : rKey)} style={{ padding: "7px 0", borderBottom: "1px solid rgba(255,255,255,0.04)", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                <div onClick={() => setExpandedRuns(prev => ({ ...prev, [rKey]: !prev[rKey] }))} style={{ padding: "7px 0", borderBottom: "1px solid rgba(255,255,255,0.04)", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                   <div>
                                     <span style={{ fontSize: 12, fontWeight: 700, color: isLive ? "#81c784" : "rgba(255,255,255,0.5)" }}>
                                       Run {r.runNumber}
@@ -7483,10 +7574,1580 @@ const DEFAULT_SEAT_CONFIG = [
   { type: "empty", name: "", buyIn: 0, isHost: false },
   { type: "empty", name: "", buyIn: 0, isHost: false },
 ];
+// ╔══════════════════════════════════════════════════════════════╗
+// ║              BLACKJACK SIMULATOR                              ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+// React already imported in Premier
+
+// ╔══════════════════════════════════════════════════════════════╗
+// ║              BLACKJACK SIMULATION ENGINE                     ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+// ── SEEDED PRNG (Mulberry32) ──
+function mulberry32(seed) {
+  let s = seed | 0;
+  return function() {
+    s = (s + 0x6D2B79F5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// ── CARD CONSTANTS ──
+const SIM_SUITS = ["s", "h", "d", "c"];
+const SIM_RANKS = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
+const SIM_RV = {2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10,J:10,Q:10,K:10,A:11};
+
+// ── SHOE ──
+function sim_createShoe(deckCount, rng) {
+  const shoe = [];
+  for (let d = 0; d < deckCount; d++)
+    for (const s of SIM_SUITS)
+      for (const r of SIM_RANKS)
+        shoe.push(r);
+  for (let i = shoe.length - 1; i > 0; i--) {
+    const j = (rng() * (i + 1)) | 0;
+    [shoe[i], shoe[j]] = [shoe[j], shoe[i]];
+  }
+  return shoe;
+}
+
+// ── HAND EVALUATION ──
+function sim_handValue(cards) {
+  let t = 0, a = 0;
+  for (const r of cards) { t += SIM_RV[r]; if (r === "A") a++; }
+  while (t > 21 && a > 0) { t -= 10; a--; }
+  return t;
+}
+function sim_isSoft(cards) {
+  let t = 0, a = 0;
+  for (const r of cards) { t += SIM_RV[r]; if (r === "A") a++; }
+  while (t > 21 && a > 0) { t -= 10; a--; }
+  return a > 0 && t <= 21;
+}
+function sim_isBlackjack(cards) { return cards.length === 2 && sim_handValue(cards) === 21; }
+function sim_isPair(cards) { return cards.length === 2 && cards[0] === cards[1]; }
+
+// ── BASIC STRATEGY (H17/S17 aware) ──
+// availCash = remaining cash in pocket AFTER the initial bet for this hand
+function sim_getAction(cards, dealerUp, settings, handIsSplit = false, numSplits = 0, betAmount = 25, availCash = Infinity) {
+  const total = sim_handValue(cards);
+  const soft = sim_isSoft(cards);
+  const pair = sim_isPair(cards);
+  const h17 = settings.dealerHitsSoft17;
+  // availCash = remaining cash AFTER the initial bet for this hand
+  // "double for less" / "split for less" if some cash but not enough for full bet
+  // If zero cash, can't double or split at all → fall back to hit
+  const canAffordSomething = availCash > 0;
+  const canSplit = pair && canAffordSomething && (
+    (cards[0] === "A" && numSplits < settings.aceSplitLimit) ||
+    (cards[0] !== "A" && numSplits < settings.maxSplits2to10)
+  );
+  const du = dealerUp === "A" ? 11 : (SIM_RV[dealerUp] || parseInt(dealerUp));
+  const canDouble = cards.length === 2 && canAffordSomething && (
+    settings.doubleOn === "any" ||
+    (settings.doubleOn === "9-11" && total >= 9 && total <= 11) ||
+    (settings.doubleOn === "10-11" && total >= 10 && total <= 11)
+  ) && (!handIsSplit || settings.doubleAfterSplit);
+  const canSurrender = cards.length === 2 && !handIsSplit && settings.surrender !== "none" && (
+    settings.surrender === "any" || (settings.surrender === "10+A" && (du === 10 || du === 11))
+  );
+
+  // Pairs
+  if (canSplit && pair) {
+    const pv = SIM_RV[cards[0]];
+    if (cards[0] === "A") return "split";
+    if (pv === 10) return "stand";
+    if (pv === 9) return [2,3,4,5,6,8,9].includes(du) ? "split" : "stand";
+    if (pv === 8) {
+      // H17: surrender 8,8 vs A if available
+      if (h17 && canSurrender && du === 11) return "surrender";
+      return "split";
+    }
+    if (pv === 7) return du <= 7 ? "split" : "hit";
+    if (pv === 6) return du >= 2 && du <= 6 ? "split" : "hit";
+    if (pv === 5) return canDouble && du <= 9 ? "double" : "hit";
+    if (pv === 4) return settings.doubleAfterSplit && (du === 5 || du === 6) ? "split" : "hit";
+    if (pv <= 3) return du <= 7 ? "split" : "hit";
+  }
+
+  // Soft totals — H17/S17 aware
+  if (soft) {
+    if (total >= 20) return "stand";
+    if (total === 19) {
+      // H17: double vs 6. S17: stand everywhere.
+      if (h17 && canDouble && du === 6) return "double";
+      return "stand";
+    }
+    if (total === 18) {
+      if (h17) {
+        // H17: double 2-6, stand 7-8, hit 9,10,A
+        if (canDouble && du >= 2 && du <= 6) return "double";
+        if (du === 7 || du === 8) return "stand";
+        return "hit";
+      } else {
+        // S17: double 3-6, stand 2,7,8, hit 9,10
+        if (canDouble && du >= 3 && du <= 6) return "double";
+        if (du <= 8) return "stand";
+        return "hit";
+      }
+    }
+    if (total === 17) {
+      // H17: double 2-6. S17: double 3-6.
+      if (h17) return canDouble && du >= 2 && du <= 6 ? "double" : "hit";
+      return canDouble && du >= 3 && du <= 6 ? "double" : "hit";
+    }
+    if (total === 16 || total === 15) return canDouble && du >= 4 && du <= 6 ? "double" : "hit";
+    if (total === 14 || total === 13) return canDouble && du >= 5 && du <= 6 ? "double" : "hit";
+    return "hit";
+  }
+
+  // Hard totals
+  if (total >= 17) {
+    if (total === 17 && canSurrender && h17 && du === 11) return "surrender";
+    return "stand";
+  }
+  if (total === 16) {
+    if (canSurrender && (du === 9 || du === 10 || du === 11)) return "surrender";
+    return du <= 6 ? "stand" : "hit";
+  }
+  if (total === 15) {
+    if (canSurrender && du === 10) return "surrender";
+    if (canSurrender && h17 && du === 11) return "surrender";
+    return du <= 6 ? "stand" : "hit";
+  }
+  if (total === 14 || total === 13) return du <= 6 ? "stand" : "hit";
+  if (total === 12) return du >= 4 && du <= 6 ? "stand" : "hit";
+  if (total === 11) return canDouble ? "double" : "hit";
+  if (total === 10) return canDouble && du <= 9 ? "double" : "hit";
+  if (total === 9) return canDouble && du >= 3 && du <= 6 ? "double" : "hit";
+  return "hit";
+}
+
+// ── OTHER PLAYER TYPES (card consumers at the table) ──
+// 0 = timid, 1 = casual, 2 = textbook
+function sim_otherPlayerAction(cards, dealerUp, playerType, numSplits, settings) {
+  const total = sim_handValue(cards);
+  const soft = sim_isSoft(cards);
+  const pair = sim_isPair(cards);
+  const du = dealerUp === "A" ? 11 : SIM_RV[dealerUp];
+
+  // ── TIMID: never doubles, never splits, stands on all hard 12+, hits soft normally ──
+  if (playerType === 0) {
+    if (soft) {
+      if (total >= 18) return "stand";
+      return "hit";
+    }
+    if (total >= 12) return "stand";
+    return "hit";
+  }
+
+  // ── CASUAL: simplified basic strategy with common recreational deviations ──
+  if (playerType === 1) {
+    // Only splits aces and 8s
+    if (pair && cards.length === 2 && numSplits < 1) {
+      if (cards[0] === "A" || SIM_RV[cards[0]] === 8) return "split";
+    }
+    // Soft hands: never doubles soft, stands on soft 18+, hits below
+    if (soft) {
+      if (total >= 18) return "stand";
+      return "hit";
+    }
+    // Hard hands: only doubles 10 and 11
+    if (cards.length === 2) {
+      if (total === 11) return "double";
+      if (total === 10 && du <= 9) return "double";
+    }
+    // Stands on 16 vs 10 (afraid to bust) — deviates from BS
+    if (total === 16 && du === 10) return "stand";
+    // Hits 12 vs 4-6 half the time (coin flip based on card sum parity)
+    if (total === 12 && du >= 4 && du <= 6) {
+      // Use card values as pseudo-random: hit if first card is odd rank value
+      return (SIM_RV[cards[0]] % 2 === 1) ? "hit" : "stand";
+    }
+    // Otherwise follows basic hard total strategy
+    if (total >= 17) return "stand";
+    if (total >= 13) return du <= 6 ? "stand" : "hit";
+    if (total === 12) return du >= 4 && du <= 6 ? "stand" : "hit";
+    return "hit";
+  }
+
+  // ── TEXTBOOK: perfect basic strategy (reuse main getAction with infinite bankroll) ──
+  return sim_getAction(cards, dealerUp, settings, numSplits > 0, numSplits, 25, Infinity);
+}
+
+// Play one other player's hand — just consumes cards from the shoe, no result tracked
+function sim_playOtherHand(shoe, shoeIdx, dealerUp, cards, playerType, settings, numSplits) {
+  const draw = () => shoe[shoeIdx.i++];
+
+  // Split aces get one card each
+  if (numSplits > 0 && cards[0] === "A" && settings.aceOneCard) {
+    cards.push(draw());
+    return;
+  }
+
+  const action = sim_otherPlayerAction(cards, dealerUp, playerType, numSplits, settings);
+
+  if (action === "split" && numSplits < 2) {
+    const sc = cards[0];
+    const h1 = [sc, draw()], h2 = [sc, draw()];
+    sim_playOtherHand(shoe, shoeIdx, dealerUp, h1, playerType, settings, numSplits + 1);
+    sim_playOtherHand(shoe, shoeIdx, dealerUp, h2, playerType, settings, numSplits + 1);
+    return;
+  }
+
+  if (action === "double") {
+    cards.push(draw());
+    return;
+  }
+
+  // Hit/stand loop
+  let act = action;
+  while (act === "hit") {
+    cards.push(draw());
+    if (sim_handValue(cards) >= 21) break;
+    act = sim_otherPlayerAction(cards, dealerUp, playerType, numSplits, settings);
+  }
+}
+
+// ── PLAY ONE HAND (recursive for splits) ──
+function sim_playHand(shoe, shoeIdx, dealerCards, dealerUp, playerCards, bet, settings, isAtMaxLevel, numSplits = 0, availBankroll = Infinity) {
+  const draw = () => shoe[shoeIdx.i++];
+
+  // Split aces receive only one card
+  if (numSplits > 0 && playerCards[0] === "A" && settings.aceOneCard) {
+    playerCards.push(draw());
+    return [{ cards: playerCards, bet, isAceSplit: true }];
+  }
+
+  const action = sim_getAction(playerCards, dealerUp, settings, numSplits > 0, numSplits, bet, availBankroll);
+
+  if (action === "surrender") {
+    return [{ cards: playerCards, bet, surrendered: true }];
+  }
+
+  if (action === "split") {
+    const splitCard = playerCards[0];
+    const hand1 = [splitCard, draw()];
+    const hand2 = [splitCard, draw()];
+    // Split for less: second hand bet = min(bet, availBankroll)
+    const splitBet = Math.min(bet, availBankroll);
+    const remainAfterSplit = availBankroll - splitBet;
+    // Each sub-hand gets half the remaining cash for further splits/doubles
+    const r1 = sim_playHand(shoe, shoeIdx, dealerCards, dealerUp, hand1, bet, settings, isAtMaxLevel, numSplits + 1, remainAfterSplit);
+    const r2 = sim_playHand(shoe, shoeIdx, dealerCards, dealerUp, hand2, splitBet, settings, isAtMaxLevel, numSplits + 1, Math.max(0, remainAfterSplit));
+    return [...r1, ...r2];
+  }
+
+  if (action === "double") {
+    playerCards.push(draw());
+    // Double for less: extra bet = min(bet, availBankroll)
+    const extraBet = Math.min(bet, availBankroll);
+    const dblBet = bet + extraBet;
+    return [{ cards: playerCards, bet: dblBet, doubled: true }];
+  }
+
+  // Hit/Stand loop
+  let act = action;
+  while (act === "hit") {
+    playerCards.push(draw());
+    if (sim_handValue(playerCards) >= 21) break;
+    act = sim_getAction(playerCards, dealerUp, settings, numSplits > 0, numSplits, bet, availBankroll);
+  }
+
+  return [{ cards: playerCards, bet }];
+}
+
+// ── SIMULATE ONE COMPLETE HAND (with other players at the table) ──
+// tableSeats: array where each element is either a player type (0=timid, 1=casual, 2=textbook)
+//             or "gambler" for our tracked player. Ordered L→R from dealer's perspective.
+function sim_simulateOneHand(shoe, shoeIdx, settings, betAmount, isAtMaxLevel, bankroll, tableSeats) {
+  const draw = () => shoe[shoeIdx.i++];
+  const totalSeats = tableSeats.length;
+  const gamblerSeat = tableSeats.indexOf("gambler");
+
+  // ── DEAL L→R: Round 1 — one card to each seat, then dealer ──
+  const hands = [];
+  for (let s = 0; s < totalSeats; s++) hands.push([draw()]);
+  const dealerCards = [draw()];
+  // ── DEAL L→R: Round 2 — second card to each seat, then dealer ──
+  for (let s = 0; s < totalSeats; s++) hands[s].push(draw());
+  dealerCards.push(draw());
+
+  const dealerUp = dealerCards[0];
+  const playerCards = hands[gamblerSeat];
+
+  // ── Dealer peeks for BJ — if BJ, round ends immediately, nobody plays ──
+  if (settings.dealerPeeks && sim_isBlackjack(dealerCards)) {
+    if (sim_isBlackjack(playerCards)) {
+      return { totalBet: betAmount, netResult: 0, isBJ: true, isBust: false, isSurrender: false, isPush: true, numHands: 1 };
+    }
+    return { totalBet: betAmount, netResult: -betAmount, isBJ: false, isBust: false, isSurrender: false, isPush: false, numHands: 1 };
+  }
+
+  // ── Even money check (gambler has BJ vs dealer Ace at max level) ──
+  if (dealerUp === "A" && sim_isBlackjack(playerCards) && isAtMaxLevel) {
+    // Take even money — but other players still play their hands for card consumption
+    for (let s = 0; s < totalSeats; s++) {
+      if (s === gamblerSeat) continue;
+      if (!sim_isBlackjack(hands[s])) sim_playOtherHand(shoe, shoeIdx, dealerUp, hands[s], tableSeats[s], settings, 0);
+    }
+    // Dealer plays if any other player is alive
+    let anyAlive = false;
+    for (let s = 0; s < totalSeats; s++) {
+      if (s === gamblerSeat) continue;
+      if (sim_handValue(hands[s]) <= 21) { anyAlive = true; break; }
+    }
+    if (anyAlive) {
+      while (true) {
+        const val = sim_handValue(dealerCards);
+        const soft17 = val === 17 && sim_isSoft(dealerCards);
+        if (val > 21 || val > 17 || (val === 17 && !(settings.dealerHitsSoft17 && soft17))) break;
+        dealerCards.push(draw());
+      }
+    }
+    return { totalBet: betAmount, netResult: betAmount, isBJ: true, isBust: false, isSurrender: false, isPush: false, numHands: 1 };
+  }
+
+  // ── Gambler BJ (no even money taken) ──
+  if (sim_isBlackjack(playerCards)) {
+    // Other players still play for card consumption
+    for (let s = 0; s < totalSeats; s++) {
+      if (s === gamblerSeat) continue;
+      if (!sim_isBlackjack(hands[s])) sim_playOtherHand(shoe, shoeIdx, dealerUp, hands[s], tableSeats[s], settings, 0);
+    }
+    // Dealer plays if any other alive
+    let anyAlive = false;
+    for (let s = 0; s < totalSeats; s++) {
+      if (s === gamblerSeat) continue;
+      if (sim_handValue(hands[s]) <= 21) { anyAlive = true; break; }
+    }
+    if (anyAlive) {
+      while (true) {
+        const val = sim_handValue(dealerCards);
+        const soft17 = val === 17 && sim_isSoft(dealerCards);
+        if (val > 21 || val > 17 || (val === 17 && !(settings.dealerHitsSoft17 && soft17))) break;
+        dealerCards.push(draw());
+      }
+    }
+    // No-peek: dealer might have BJ too
+    if (!settings.dealerPeeks && sim_isBlackjack(dealerCards)) {
+      return { totalBet: betAmount, netResult: 0, isBJ: true, isBust: false, isSurrender: false, isPush: true, numHands: 1 };
+    }
+    return { totalBet: betAmount, netResult: betAmount * settings.blackjackPays, isBJ: true, isBust: false, isSurrender: false, isPush: false, numHands: 1 };
+  }
+
+  // ── PLAY L→R: each seat acts in order ──
+  let handResults = null;
+  for (let s = 0; s < totalSeats; s++) {
+    if (s === gamblerSeat) {
+      // Our gambler plays
+      handResults = sim_playHand(shoe, shoeIdx, dealerCards, dealerUp, [...playerCards], betAmount, settings, isAtMaxLevel, 0, bankroll - betAmount);
+    } else {
+      // Other player plays (consume cards)
+      if (!sim_isBlackjack(hands[s])) {
+        sim_playOtherHand(shoe, shoeIdx, dealerUp, hands[s], tableSeats[s], settings, 0);
+      }
+    }
+  }
+
+  // ── Check if all gambler hands busted or surrendered ──
+  let allGamblerDone = true;
+  for (const h of handResults) {
+    if (!h.surrendered && sim_handValue(h.cards) <= 21) { allGamblerDone = false; break; }
+  }
+
+  // ── Dealer plays if ANY player at the table has a live hand ──
+  let anyAlive = !allGamblerDone;
+  if (!anyAlive) {
+    for (let s = 0; s < totalSeats; s++) {
+      if (s === gamblerSeat) continue;
+      if (sim_handValue(hands[s]) <= 21) { anyAlive = true; break; }
+    }
+  }
+
+  if (anyAlive) {
+    while (true) {
+      const val = sim_handValue(dealerCards);
+      const soft17 = val === 17 && sim_isSoft(dealerCards);
+      if (val > 21 || val > 17 || (val === 17 && !(settings.dealerHitsSoft17 && soft17))) break;
+      dealerCards.push(draw());
+    }
+  }
+
+  // ── No-peek dealer BJ check ──
+  if (!settings.dealerPeeks && sim_isBlackjack(dealerCards)) {
+    let totalBet = 0, netResult = 0, anySurrender = false;
+    for (const h of handResults) {
+      totalBet += h.bet;
+      if (h.surrendered) { netResult -= h.bet * 0.5; anySurrender = true; }
+      else netResult -= h.bet;
+    }
+    return { totalBet, netResult, isBJ: false, isBust: false, isSurrender: anySurrender, isPush: false, numHands: handResults.length };
+  }
+
+  // ── Settle our gambler's hand(s) ──
+  const dealerVal = sim_handValue(dealerCards);
+  const dealerBust = dealerVal > 21;
+  let totalBet = 0, netResult = 0;
+  let anyBust = false, anySurrender = false, anyPush = false;
+
+  for (const h of handResults) {
+    totalBet += h.bet;
+    if (h.surrendered) {
+      netResult -= h.bet * 0.5;
+      anySurrender = true;
+      continue;
+    }
+    const pv = sim_handValue(h.cards);
+    if (pv > 21) {
+      netResult -= h.bet;
+      anyBust = true;
+      continue;
+    }
+    if (dealerBust) {
+      netResult += h.bet;
+    } else if (pv > dealerVal) {
+      netResult += h.bet;
+    } else if (pv < dealerVal) {
+      netResult -= h.bet;
+    } else {
+      anyPush = true;
+    }
+  }
+
+  return { totalBet, netResult, isBJ: false, isBust: anyBust, isSurrender: anySurrender, isPush: anyPush && netResult === 0 && handResults.length === 1, numHands: handResults.length };
+}
+
+// ╔══════════════════════════════════════════════════════════════╗
+// ║              BETTING SYSTEM (Hybrid Levels)                  ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+function createBettingState() {
+  return {
+    currentLevel: 0,
+    consecutiveLosses: 0,  // resets on any win
+    cumulativeLosses: 0,   // only resets on climb or session reset
+    armed: false,
+    sessionProfit: 0,
+  };
+}
+
+function getNextBet(betState, levels, bankroll, tableMax) {
+  const bet = levels[betState.currentLevel].bet;
+  if (bankroll < bet) return 0; // can't afford level bet — walk away
+  return Math.min(bet, tableMax);
+}
+
+function updateBettingState(betState, levels, handNetResult, isPush) {
+  const newState = { ...betState };
+  const isMaxLevel = newState.currentLevel >= levels.length - 1;
+
+  // Pushes are invisible
+  if (isPush && handNetResult === 0) return newState;
+
+  const isLoss = handNetResult < 0;
+  const isWin = handNetResult > 0;
+
+  // Wins: reset consecutive count, then apply onWin action (stay/drop/reset)
+  if (isWin) {
+    newState.consecutiveLosses = 0;
+    if (!isMaxLevel || levels[newState.currentLevel].onWin !== 0) {
+      const onWin = levels[newState.currentLevel].onWin || 0; // 0=stay, -1=reset to L1, 1+=drop back N
+      if (onWin === -1) {
+        // Reset to L1
+        newState.currentLevel = 0;
+        newState.cumulativeLosses = 0;
+        newState.armed = false;
+      } else if (onWin > 0 && newState.currentLevel > 0) {
+        // Drop back N levels (but not below L1)
+        newState.currentLevel = Math.max(0, newState.currentLevel - onWin);
+        newState.cumulativeLosses = 0;
+        newState.armed = false;
+      }
+      // onWin === 0: stay at current level (default)
+    }
+  }
+
+  if (isLoss && !isMaxLevel) {
+    newState.consecutiveLosses++;
+    newState.cumulativeLosses++;
+    const level = levels[newState.currentLevel];
+    const conArm = level.armAfter;   // -1=off, 0=pre-armed, 1+=threshold
+    const cumArm = level.cumArmAfter || 0;  // 0=off, 1+=threshold
+
+    if (conArm === 0) {
+      // Pre-armed: this loss climbs immediately
+      newState.currentLevel = Math.min(newState.currentLevel + 1, levels.length - 1);
+      newState.consecutiveLosses = 0;
+      newState.cumulativeLosses = 0;
+      newState.armed = false;
+    } else if (newState.armed) {
+      // Already armed: this loss climbs
+      newState.currentLevel = Math.min(newState.currentLevel + 1, levels.length - 1);
+      newState.consecutiveLosses = 0;
+      newState.cumulativeLosses = 0;
+      newState.armed = false;
+    } else {
+      // Check if either threshold arms the level (-1 = off, skip that check)
+      const conMet = conArm > 0 && newState.consecutiveLosses >= conArm;
+      const cumMet = cumArm > 0 && newState.cumulativeLosses >= cumArm;
+      if (conMet || cumMet) {
+        newState.armed = true;
+      }
+    }
+  }
+
+  newState.sessionProfit += handNetResult;
+  return newState;
+}
+
+function resetToLevel1(betState) {
+  return { currentLevel: 0, consecutiveLosses: 0, cumulativeLosses: 0, armed: false, sessionProfit: 0 };
+}
+
+function dropToLevel(betState, levelIdx) {
+  return { currentLevel: levelIdx, consecutiveLosses: 0, cumulativeLosses: 0, armed: false, sessionProfit: betState.sessionProfit };
+}
+
+// ╔══════════════════════════════════════════════════════════════╗
+// ║              NIGHT SIMULATION                                ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+function simulateNight(seed, settings, levels, nightBuyIn, nightTarget, sessionTarget, handCap, targetLock, lastCall, sitOutMode) {
+  const rng = mulberry32(seed);
+  let shoe = sim_createShoe(settings.deckCount, rng);
+  let shoeIdx = { i: 0 };
+  const penetrationCut = Math.floor(shoe.length * (settings.penetration / 100));
+
+  // Random 1-5 other players at the table, each with a random type (0=timid, 1=casual, 2=textbook)
+  // Gambler sits at a random seat each night
+  const numOthers = 1 + ((rng() * 5) | 0); // 1-5
+  const totalSeats = numOthers + 1;
+  const gamblerSeatIdx = (rng() * totalSeats) | 0;
+  const tableSeats = [];
+  for (let s = 0; s < totalSeats; s++) {
+    if (s === gamblerSeatIdx) tableSeats.push("gambler");
+    else tableSeats.push((rng() * 3) | 0);
+  }
+
+  let bankroll = nightBuyIn;
+  let nightProfit = 0;
+  let betState = createBettingState();
+  let handsPlayed = 0;
+  let sessionsCompleted = 0;
+  let totalClimbs = 0;
+  let peakBankroll = bankroll;
+  let lowestBankroll = bankroll;
+  let maxDrawdown = 0; // true peak-to-trough drawdown
+  let lastCallTriggered = false;
+
+  let wins = 0, losses = 0, pushes = 0, bjs = 0, busts = 0, surrenders = 0;
+  let totalBetAmount = 0;
+  let totalPayout = 0;
+  let levelTime = new Array(levels.length).fill(0);
+
+  let endReason = "handcap";
+
+  while (handsPlayed < handCap) {
+    // CSM: reshuffle every hand. ASM/Hand: reshuffle at penetration cut.
+    if (settings.shoe === "CSM") {
+      shoe = sim_createShoe(settings.deckCount, rng);
+      shoeIdx.i = 0;
+    } else {
+      if (shoeIdx.i >= penetrationCut) {
+        shoe = sim_createShoe(settings.deckCount, rng);
+        shoeIdx.i = 0;
+      }
+      // Safety margin: enough cards for a full round with all players (splits + doubles possible)
+      const safetyMargin = (numOthers + 2) * 8;
+      if (shoeIdx.i >= shoe.length - safetyMargin) {
+        shoe = sim_createShoe(settings.deckCount, rng);
+        shoeIdx.i = 0;
+      }
+    }
+
+    const isAtMaxLevel = betState.currentLevel >= levels.length - 1;
+    let currentBet;
+
+    if (lastCallTriggered) {
+      currentBet = levels[0].bet;
+    } else {
+      currentBet = getNextBet(betState, levels, bankroll, settings.tableMax);
+    }
+
+    // Can't afford the bet — stand up and pocket what's left
+    if (currentBet === 0 || bankroll < currentBet) {
+      endReason = "bust";
+      break;
+    }
+
+    levelTime[betState.currentLevel]++;
+    const prevLevel = betState.currentLevel;
+
+    const result = sim_simulateOneHand(shoe, shoeIdx, settings, currentBet, isAtMaxLevel, bankroll, tableSeats);
+    handsPlayed++;
+
+    bankroll += result.netResult;
+    if (bankroll < 0) bankroll = 0; // safety floor — can't go below zero
+    nightProfit = bankroll - nightBuyIn;
+    totalBetAmount += result.totalBet;
+    totalPayout += result.netResult;
+
+    if (result.isBJ) bjs++;
+    if (result.isBust) busts++;
+    if (result.isSurrender) surrenders++;
+    if (result.netResult > 0) wins++;
+    else if (result.netResult < 0) losses++;
+    else pushes++;
+
+    if (bankroll > peakBankroll) peakBankroll = bankroll;
+    if (bankroll < lowestBankroll) lowestBankroll = bankroll;
+    const dd = peakBankroll - bankroll;
+    if (dd > maxDrawdown) maxDrawdown = dd;
+
+    if (lastCallTriggered) {
+      endReason = "lastcall";
+      break;
+    }
+
+    if (nightProfit >= nightTarget) {
+      endReason = "target";
+      break;
+    }
+
+    betState = updateBettingState(betState, levels, result.netResult, result.isPush);
+    if (betState.currentLevel > prevLevel) totalClimbs++;
+
+    // Global Last Call — fires ANY time we're within L1 bet of target (checked BEFORE session reset)
+    if (lastCall && !lastCallTriggered && nightProfit > 0) {
+      const remaining = nightTarget - nightProfit;
+      if (remaining > 0 && remaining < levels[0].bet) {
+        lastCallTriggered = true;
+        betState = dropToLevel(betState, 0);
+      }
+    }
+
+    // Target Lock (only on wins at max level while positive)
+    const nowAtMax = betState.currentLevel >= levels.length - 1;
+    if (targetLock && !lastCallTriggered && nowAtMax && result.netResult > 0 && nightProfit > 0) {
+      const remaining = nightTarget - nightProfit;
+      if (remaining > 0) {
+        let dropIdx = 0;
+        for (let i = 0; i < levels.length; i++) {
+          if (levels[i].bet >= remaining) { dropIdx = i; break; }
+          dropIdx = levels.length - 1;
+        }
+        betState = dropToLevel(betState, dropIdx);
+        if (remaining < levels[0].bet) {
+          lastCallTriggered = true;
+        }
+      }
+    }
+
+    // Session target reset (0 = disabled)
+    if (sessionTarget > 0 && betState.sessionProfit >= sessionTarget) {
+      sessionsCompleted++;
+      // Sit-out before next session
+      if (sitOutMode === "1hand") {
+        // Simulate one full round without our gambler — other players + dealer consume cards
+        const cardsLeft = shoe.length - shoeIdx.i;
+        const cardsPerOther = 3; // avg ~2.7 cards per other player hand
+        const dealerAvg = 2;
+        const roundBurn = Math.min(numOthers * cardsPerOther + dealerAvg, cardsLeft);
+        shoeIdx.i += roundBurn;
+      } else if (sitOutMode === "shoe") {
+        // Sit out remainder of shoe — force reshuffle on next iteration
+        shoeIdx.i = shoe.length;
+      }
+      betState = resetToLevel1(betState);
+    }
+  }
+
+  return {
+    nightProfit, handsPlayed,
+    sessionsCompleted: sessionsCompleted + 1,
+    totalClimbs, peakBankroll, lowestBankroll,
+    maxDrawdown,
+    endReason,
+    wins, losses, pushes, bjs, busts, surrenders,
+    totalBetAmount, totalPayout,
+    levelTime,
+    busted: endReason === "bust",
+    hitTarget: nightProfit >= nightTarget,
+  };
+}
+
+// ╔══════════════════════════════════════════════════════════════╗
+// ║              FULL SEASON SIMULATION (chunked)                ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+function runSimulation(config, onProgress, onComplete) {
+  const { settings, levels, gamblers, nights, nightBuyIn, nightTarget, sessionTarget, handCap, targetLock, lastCall, sitOutMode } = config;
+
+  const seasonProfits = new Float64Array(gamblers);
+  const nightProfits = [];
+  const nightData = {
+    totalNights: 0, wins: 0, busts: 0, targetHits: 0, lastCalls: 0, handCaps: 0,
+    totalHands: 0, totalSessions: 0, totalClimbs: 0,
+    handWins: 0, handLosses: 0, handPushes: 0, handBJs: 0, handBusts: 0, handSurrenders: 0,
+    totalBetAmount: 0, totalPayout: 0,
+    peakSum: 0, drawdownSum: 0, worstDrawdown: 0,
+    levelTimeTotal: new Array(levels.length).fill(0),
+  };
+  const cumulativeByNight = [];
+  for (let n = 0; n <= nights; n++) cumulativeByNight.push([]);
+
+  let winStreakSum = 0, loseStreakSum = 0;
+  let gamblerIdx = 0;
+  const CHUNK = 10;
+
+  function processChunk() {
+    const end = Math.min(gamblerIdx + CHUNK, gamblers);
+
+    for (let g = gamblerIdx; g < end; g++) {
+      let seasonProfit = 0;
+      let winStreak = 0, loseStreak = 0;
+      let bestWinStreak = 0, bestLoseStreak = 0;
+      cumulativeByNight[0].push(0);
+
+      for (let n = 0; n < nights; n++) {
+        const seed = g * 100000 + n * 1000;
+        const result = simulateNight(seed, settings, levels, nightBuyIn, nightTarget, sessionTarget, handCap, targetLock, lastCall, sitOutMode || "off");
+
+        seasonProfit += result.nightProfit;
+        nightProfits.push(result.nightProfit);
+        cumulativeByNight[n + 1].push(seasonProfit);
+
+        nightData.totalNights++;
+        nightData.totalHands += result.handsPlayed;
+        nightData.totalSessions += result.sessionsCompleted;
+        nightData.totalClimbs += result.totalClimbs;
+        nightData.handWins += result.wins;
+        nightData.handLosses += result.losses;
+        nightData.handPushes += result.pushes;
+        nightData.handBJs += result.bjs;
+        nightData.handBusts += result.busts;
+        nightData.handSurrenders += result.surrenders;
+        nightData.totalBetAmount += result.totalBetAmount;
+        nightData.totalPayout += result.totalPayout;
+        nightData.peakSum += result.peakBankroll;
+        nightData.drawdownSum += result.maxDrawdown;
+        if (result.maxDrawdown > nightData.worstDrawdown) nightData.worstDrawdown = result.maxDrawdown;
+
+        for (let lvl = 0; lvl < levels.length; lvl++) {
+          nightData.levelTimeTotal[lvl] += (result.levelTime[lvl] || 0);
+        }
+
+        if (result.nightProfit > 0) { nightData.wins++; winStreak++; loseStreak = 0; }
+        else if (result.nightProfit < 0) { loseStreak++; winStreak = 0; }
+        else { winStreak = 0; loseStreak = 0; }
+        if (result.busted) nightData.busts++;
+        if (result.hitTarget) nightData.targetHits++;
+        if (result.endReason === "lastcall") nightData.lastCalls++;
+        if (result.endReason === "handcap") nightData.handCaps++;
+
+        if (winStreak > bestWinStreak) bestWinStreak = winStreak;
+        if (loseStreak > bestLoseStreak) bestLoseStreak = loseStreak;
+      }
+      winStreakSum += bestWinStreak;
+      loseStreakSum += bestLoseStreak;
+      seasonProfits[g] = seasonProfit;
+    }
+
+    gamblerIdx = end;
+    onProgress(gamblerIdx / gamblers, gamblerIdx, nightData);
+
+    if (gamblerIdx < gamblers) {
+      setTimeout(processChunk, 0);
+    } else {
+      const avgWinStreak = Math.round(winStreakSum / gamblers);
+      const avgLoseStreak = Math.round(loseStreakSum / gamblers);
+      onComplete(computeFinalStats(seasonProfits, nightProfits, nightData, cumulativeByNight, levels, gamblers, nights, avgWinStreak, avgLoseStreak));
+    }
+  }
+
+  setTimeout(processChunk, 0);
+}
+
+function computeFinalStats(seasonProfits, nightProfits, nd, cumulativeByNight, levels, gamblers, nights, longestWinStreak, longestLoseStreak) {
+  const sorted = Array.from(seasonProfits).sort((a, b) => a - b);
+  const seasonAhead = sorted.filter(x => x > 0).length;
+  const avgSeason = sorted.reduce((a, b) => a + b, 0) / gamblers;
+  const medianSeason = sorted[Math.floor(gamblers / 2)];
+  const bestSeason = sorted[sorted.length - 1];
+  const worstSeason = sorted[0];
+
+  const bands = { p10: [], p25: [], p50: [], p75: [], p90: [] };
+  for (let n = 0; n <= nights; n++) {
+    const vals = cumulativeByNight[n].slice().sort((a, b) => a - b);
+    const len = vals.length;
+    bands.p10.push(vals[Math.floor(len * 0.10)] || 0);
+    bands.p25.push(vals[Math.floor(len * 0.25)] || 0);
+    bands.p50.push(vals[Math.floor(len * 0.50)] || 0);
+    bands.p75.push(vals[Math.floor(len * 0.75)] || 0);
+    bands.p90.push(vals[Math.floor(len * 0.90)] || 0);
+  }
+
+  const nightSorted = nightProfits.slice().sort((a, b) => a - b);
+  const nightMin = nightSorted[0];
+  const nightMax = nightSorted[nightSorted.length - 1];
+  const NBINS = 31;
+  const nightBinWidth = Math.max(1, (nightMax - nightMin) / NBINS);
+  const nightDist = new Array(NBINS).fill(0);
+  for (const np of nightProfits) {
+    const bin = Math.min(NBINS - 1, Math.max(0, Math.floor((np - nightMin) / nightBinWidth)));
+    nightDist[bin]++;
+  }
+
+  const SBINS = 31;
+  const sBinWidth = Math.max(1, (bestSeason - worstSeason) / SBINS);
+  const seasonDist = new Array(SBINS).fill(0);
+  for (const sp of sorted) {
+    const bin = Math.min(SBINS - 1, Math.max(0, Math.floor((sp - worstSeason) / sBinWidth)));
+    seasonDist[bin]++;
+  }
+
+  const totalHands = nd.totalHands;
+  const totalHandOutcomes = nd.handWins + nd.handLosses + nd.handPushes;
+  const levelPcts = levels.map((_, i) => nd.levelTimeTotal[i] / Math.max(1, totalHands) * 100);
+
+  return {
+    season: {
+      aheadPct: (seasonAhead / gamblers * 100).toFixed(1),
+      avgProfit: Math.round(avgSeason),
+      medianProfit: Math.round(medianSeason),
+      best: Math.round(bestSeason),
+      worst: Math.round(worstSeason),
+    },
+    night: {
+      winPct: (nd.wins / nd.totalNights * 100).toFixed(1),
+      bustPct: (nd.busts / nd.totalNights * 100).toFixed(1),
+      targetHitPct: (nd.targetHits / nd.totalNights * 100).toFixed(1),
+      lastCallPct: (nd.lastCalls / nd.totalNights * 100).toFixed(1),
+      handCapPct: (nd.handCaps / nd.totalNights * 100).toFixed(1),
+      avgProfit: (nightProfits.reduce((a, b) => a + b, 0) / nd.totalNights).toFixed(2),
+      avgHands: (nd.totalHands / nd.totalNights).toFixed(0),
+      avgSessions: (nd.totalSessions / nd.totalNights).toFixed(1),
+      avgHandsPerSession: (nd.totalHands / Math.max(1, nd.totalSessions)).toFixed(0),
+      avgClimbs: (nd.totalClimbs / nd.totalNights).toFixed(1),
+      longestWinStreak,
+      longestLoseStreak,
+    },
+    hand: {
+      total: totalHands,
+      winRate: (nd.handWins / totalHandOutcomes * 100).toFixed(1),
+      lossRate: (nd.handLosses / totalHandOutcomes * 100).toFixed(1),
+      pushRate: (nd.handPushes / totalHandOutcomes * 100).toFixed(1),
+      bjFreq: (nd.handBJs / totalHands * 100).toFixed(1),
+      bustFreq: (nd.handBusts / totalHands * 100).toFixed(1),
+      surrenderFreq: (nd.handSurrenders / totalHands * 100).toFixed(1),
+      avgBet: (nd.totalBetAmount / totalHands).toFixed(2),
+      houseEdge: (-nd.totalPayout / nd.totalBetAmount * 100).toFixed(2),
+    },
+    bankroll: {
+      avgPeak: Math.round(nd.peakSum / nd.totalNights),
+      avgDrawdown: Math.round(nd.drawdownSum / nd.totalNights),
+      worstDrawdown: Math.round(nd.worstDrawdown),
+    },
+    levelPcts,
+    bands,
+    nightDist: { bins: nightDist, min: nightMin, max: nightMax, binWidth: nightBinWidth },
+    seasonDist: { bins: seasonDist, min: worstSeason, max: bestSeason, binWidth: sBinWidth },
+  };
+}
+
+// ╔══════════════════════════════════════════════════════════════╗
+// ║              UI COMPONENTS                                   ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+const PRESETS = {
+  standard: { label: "Standard 6-Deck", deckCount: 6, penetration: 85, shoe: "ASM", dealerPeeks: true, dealerHitsSoft17: true, blackjackPays: 1.5, doubleOn: "any", doubleAfterSplit: true, surrender: "none", maxSplits2to10: 3, aceSplitLimit: 1, aceOneCard: true, tableMin: 25, tableMax: 2000 },
+  doubleDeck: { label: "Double Deck", deckCount: 2, penetration: 75, shoe: "hand", dealerPeeks: true, dealerHitsSoft17: true, blackjackPays: 1.5, doubleOn: "any", doubleAfterSplit: true, surrender: "none", maxSplits2to10: 3, aceSplitLimit: 1, aceOneCard: true, tableMin: 25, tableMax: 2000 },
+  freeBet: { label: "Free Bet", deckCount: 6, penetration: 85, shoe: "ASM", dealerPeeks: true, dealerHitsSoft17: true, blackjackPays: 1.5, doubleOn: "any", doubleAfterSplit: true, surrender: "none", maxSplits2to10: 3, aceSplitLimit: 2, aceOneCard: false, tableMin: 25, tableMax: 2000 },
+  custom: { label: "Custom", deckCount: 6, penetration: 85, shoe: "ASM", dealerPeeks: true, dealerHitsSoft17: true, blackjackPays: 1.5, doubleOn: "any", doubleAfterSplit: true, surrender: "none", maxSplits2to10: 3, aceSplitLimit: 1, aceOneCard: true, tableMin: 25, tableMax: 2000 },
+};
+
+const STRATEGY_PRESETS = {
+  flat: {
+    label: "Flat Bet",
+    description: "Same bet every hand — no progression",
+    levels: [{ bet: 50, armAfter: 0, cumArmAfter: 0, onWin: 0 }],
+  },
+  martingale: {
+    label: "Martingale",
+    description: "Double after loss, reset to L1 on win",
+    levels: [
+      { bet: 25, armAfter: 0, cumArmAfter: 0, onWin: -1 },
+      { bet: 50, armAfter: 0, cumArmAfter: 0, onWin: -1 },
+      { bet: 100, armAfter: 0, cumArmAfter: 0, onWin: -1 },
+      { bet: 200, armAfter: 0, cumArmAfter: 0, onWin: -1 },
+      { bet: 400, armAfter: 0, cumArmAfter: 0, onWin: -1 },
+      { bet: 800, armAfter: 0, cumArmAfter: 0, onWin: -1 },
+    ],
+  },
+  dalembert: {
+    label: "D'Alembert",
+    description: "Climb 1 on loss, drop 1 on win — linear",
+    levels: [
+      { bet: 25, armAfter: 0, cumArmAfter: 0, onWin: 1 },
+      { bet: 50, armAfter: 0, cumArmAfter: 0, onWin: 1 },
+      { bet: 75, armAfter: 0, cumArmAfter: 0, onWin: 1 },
+      { bet: 100, armAfter: 0, cumArmAfter: 0, onWin: 1 },
+      { bet: 125, armAfter: 0, cumArmAfter: 0, onWin: 1 },
+      { bet: 150, armAfter: 0, cumArmAfter: 0, onWin: 1 },
+    ],
+  },
+  oscars: {
+    label: "Oscar's Grind",
+    description: "Conservative grind — slow climb, session targets",
+    levels: [
+      { bet: 25, armAfter: 1, cumArmAfter: 0, onWin: 0 },
+      { bet: 50, armAfter: 2, cumArmAfter: 0, onWin: 0 },
+      { bet: 75, armAfter: 2, cumArmAfter: 0, onWin: 0 },
+      { bet: 100, armAfter: 0, cumArmAfter: 0, onWin: 0 },
+    ],
+  },
+  oneThreeTwoSix: {
+    label: "1-3-2-6",
+    description: "Fixed ratio sequence — reset on loss",
+    levels: [
+      { bet: 25, armAfter: 0, cumArmAfter: 0, onWin: 0 },
+      { bet: 75, armAfter: 0, cumArmAfter: 0, onWin: 0 },
+      { bet: 50, armAfter: 0, cumArmAfter: 0, onWin: 0 },
+      { bet: 150, armAfter: 0, cumArmAfter: 0, onWin: 0 },
+    ],
+  },
+  fibonacci: {
+    label: "Fibonacci",
+    description: "Fibonacci climb on loss, drop back 2 on win",
+    levels: [
+      { bet: 25, armAfter: 0, cumArmAfter: 0, onWin: 2 },
+      { bet: 25, armAfter: 0, cumArmAfter: 0, onWin: 2 },
+      { bet: 50, armAfter: 0, cumArmAfter: 0, onWin: 2 },
+      { bet: 75, armAfter: 0, cumArmAfter: 0, onWin: 2 },
+      { bet: 125, armAfter: 0, cumArmAfter: 0, onWin: 2 },
+      { bet: 200, armAfter: 0, cumArmAfter: 0, onWin: 2 },
+    ],
+  },
+  custom: {
+    label: "Custom",
+    description: "Build your own hybrid level system with armed triggers",
+    levels: null,
+  },
+};
+
+const DEFAULT_LEVELS = [
+  { bet: 25, armAfter: 2, cumArmAfter: 0, onWin: 0 },
+  { bet: 50, armAfter: 3, cumArmAfter: 0, onWin: 0 },
+  { bet: 100, armAfter: 3, cumArmAfter: 0, onWin: 0 },
+  { bet: 200, armAfter: -1, cumArmAfter: 0, onWin: 0 },
+];
+
+const SIM_SCREENS = { SETUP: 0, RUNNING: 1, RESULTS: 2 };
+
+// ── STYLES ──
+const simGold = "#ffd700";
+const simDarkBg = "radial-gradient(ellipse 130% 80% at 50% 30%, #0d2b0d 0%, #0a1f0a 30%, #061206 100%)";
+const simCardBg = "linear-gradient(135deg, rgba(10,10,30,0.85), rgba(0,0,0,0.7))";
+const simGoldBorder = "1px solid rgba(255,215,0,0.2)";
+const simSectionStyle = { background: simCardBg, borderRadius: 14, padding: "18px 20px", border: simGoldBorder, boxShadow: "0 4px 20px rgba(0,0,0,0.4)" };
+const simLabelStyle = { color: "rgba(255,255,255,0.75)", fontSize: 12, fontWeight: "bold", letterSpacing: 2, textTransform: "uppercase", marginBottom: 8 };
+const simSelectStyle = { background: "rgba(0,0,0,0.5)", color: "#fff", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, padding: "8px 14px", fontSize: 13, width: "100%", cursor: "pointer", outline: "none" };
+const simInputStyle = { background: "rgba(0,0,0,0.5)", color: "#fff", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, padding: "8px 14px", fontSize: 14, width: "100%", outline: "none" };
+const simBtnPrimary = { padding: "14px 48px", fontSize: 18, fontWeight: "bold", background: "linear-gradient(135deg, #4caf50, #2e7d32)", color: "#fff", border: "2px solid rgba(255,255,255,0.15)", borderRadius: 12, cursor: "pointer", boxShadow: "0 6px 20px rgba(76,175,80,0.4)", letterSpacing: 2, textTransform: "uppercase" };
+const simBtnSecondary = { padding: "10px 28px", fontSize: 14, fontWeight: "bold", background: "rgba(255,255,255,0.08)", color: "#ccc", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, cursor: "pointer" };
+const simChipStyle = (active) => ({ padding: "5px 12px", fontSize: 11, fontWeight: "bold", borderRadius: 20, cursor: "pointer", border: active ? "2px solid #ffd700" : "1px solid rgba(255,255,255,0.15)", background: active ? "rgba(255,215,0,0.15)" : "rgba(0,0,0,0.3)", color: active ? simGold : "#aaa", transition: "all 0.2s" });
+
+function SimToggle({ value, onChange, label }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 0" }}>
+      <span style={{ color: "#ccc", fontSize: 12 }}>{label}</span>
+      <div onClick={() => onChange(!value)} style={{ width: 40, height: 22, borderRadius: 11, background: value ? "linear-gradient(135deg, #4caf50, #2e7d32)" : "rgba(255,255,255,0.1)", cursor: "pointer", position: "relative", transition: "background 0.2s", border: "1px solid rgba(255,255,255,0.1)" }}>
+        <div style={{ width: 16, height: 16, borderRadius: "50%", background: "#fff", position: "absolute", top: 2, left: value ? 20 : 2, transition: "left 0.2s", boxShadow: "0 1px 3px rgba(0,0,0,0.3)" }} />
+      </div>
+    </div>
+  );
+}
+
+function SimStatBox({ label, value, color, sub }) {
+  return (
+    <div style={{ textAlign: "center", padding: "8px 6px" }}>
+      <div style={{ color: color || simGold, fontSize: 22, fontWeight: "900", fontFamily: "'Georgia', serif", textShadow: `0 0 8px ${color || simGold}33` }}>{value}</div>
+      <div style={{ color: "rgba(255,255,255,0.65)", fontSize: 10, letterSpacing: 1, marginTop: 3, fontWeight: "bold" }}>{label}</div>
+      {sub && <div style={{ color: "rgba(255,255,255,0.45)", fontSize: 9, marginTop: 2 }}>{sub}</div>}
+    </div>
+  );
+}
+
+function SimTooltip({ text, children }) {
+  const [show, setShow] = useState(false);
+  return (
+    <span style={{ position: "relative", display: "inline-flex", alignItems: "center" }} onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+      {children}
+      <span style={{ marginLeft: 4, color: "rgba(255,215,0,0.4)", cursor: "help", fontSize: 11 }}>ⓘ</span>
+      {show && <div style={{ position: "absolute", bottom: "120%", left: "50%", transform: "translateX(-50%)", background: "rgba(0,0,0,0.95)", color: "#ccc", fontSize: 11, padding: "8px 12px", borderRadius: 8, border: simGoldBorder, whiteSpace: "normal", zIndex: 10, maxWidth: 300, minWidth: 200, lineHeight: 1.4 }}>{text}</div>}
+    </span>
+  );
+}
+
+// ── SETUP SCREEN ──
+function SimSetupScreen({ onRun, initialConfig }) {
+  const [preset, setPreset] = useState("standard");
+  const [rules, setRules] = useState(initialConfig ? { ...initialConfig.settings } : { ...PRESETS.standard });
+  const [strategy, setStrategy] = useState("custom");
+
+  const [gamblers, setGamblers] = useState(initialConfig ? initialConfig.gamblers : 1000);
+  const [nights, setNights] = useState(initialConfig ? initialConfig.nights : 100);
+  const [nightBuyIn, setNightBuyIn] = useState(initialConfig ? initialConfig.nightBuyIn : 5000);
+  const [nightTarget, setNightTarget] = useState(initialConfig ? initialConfig.nightTarget : 1000);
+  const [sessionTarget, setSessionTarget] = useState(initialConfig ? initialConfig.sessionTarget : 300);
+  const [handCap, setHandCap] = useState(initialConfig ? initialConfig.handCap : 300);
+  const [targetLock, setTargetLock] = useState(initialConfig ? initialConfig.targetLock : true);
+  const [lastCall, setLastCall] = useState(initialConfig ? initialConfig.lastCall : true);
+  const [sitOutMode, setSitOutMode] = useState(initialConfig ? initialConfig.sitOutMode || "off" : "off");
+
+  const [levels, setLevels] = useState(
+    initialConfig ? initialConfig.levels.map(l => ({ ...l })) : DEFAULT_LEVELS.map(l => ({ ...l }))
+  );
+
+  const armLabel = (level, isLast) => {
+    if (isLast) return "Max level — stays here until target or bust";
+    if (level.armAfter === 0) return "Pre-armed — 1 loss climbs immediately";
+    const parts = [];
+    if (level.armAfter > 0) parts.push(`${level.armAfter} consecutive`);
+    if (level.cumArmAfter > 0) parts.push(`${level.cumArmAfter} cumulative`);
+    if (parts.length === 0) return "No arming — level never climbs";
+    return "Armed after " + parts.join(" or ") + " losses";
+  };
+
+  const addLevel = () => { setLevels([...levels, { bet: (levels[levels.length - 1]?.bet || 25) * 2, armAfter: 3, cumArmAfter: 0, onWin: 0 }]); };
+  const removeLevel = (idx) => { if (levels.length > 1) setLevels(levels.filter((_, i) => i !== idx)); };
+  const updateLevel = (idx, key, val) => { setLevels(levels.map((lvl, i) => i === idx ? { ...lvl, [key]: val } : lvl)); };
+
+  const handlePreset = (key) => { setPreset(key); setRules({ ...PRESETS[key] }); };
+  const updateRule = (key, val) => { setRules(prev => ({ ...prev, [key]: val })); setPreset("custom"); };
+
+  const handleStrategy = (key) => {
+    setStrategy(key);
+    const p = STRATEGY_PRESETS[key];
+    if (p.levels) {
+      setLevels(p.levels.map(l => ({ ...l })));
+    }
+  };
+
+  const handleRun = () => {
+    onRun({ settings: rules, levels, gamblers, nights, nightBuyIn, nightTarget, sessionTarget, handCap, targetLock, lastCall, sitOutMode });
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "auto", padding: "0 16px 16px" }}>
+      <div style={{ textAlign: "center", padding: "18px 0 12px" }}>
+        <div style={{ fontFamily: "'Rye', serif", fontSize: 12, color: "rgba(255,215,0,0.4)", letterSpacing: 6, textTransform: "uppercase", marginBottom: 2 }}>Casino 6020</div>
+        <div style={{ fontFamily: "'Rye', serif", fontSize: 28, color: simGold, textShadow: "0 0 20px rgba(255,215,0,0.3)", letterSpacing: 3 }}>SIMULATOR</div>
+        <div style={{ color: "rgba(255,255,255,0.35)", fontSize: 11, marginTop: 2 }}>Monte Carlo Blackjack · {gamblers.toLocaleString()} Gamblers · {nights}-Night Season</div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14, maxWidth: 1100, margin: "0 auto", width: "100%" }}>
+
+        {/* COL 1: House Rules */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div style={simSectionStyle}>
+            <div style={simLabelStyle}>House Rules Preset</div>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {Object.entries(PRESETS).map(([key, val]) => (
+                <button key={key} onClick={() => handlePreset(key)} style={simChipStyle(preset === key)}>{val.label}</button>
+              ))}
+            </div>
+          </div>
+          <div style={simSectionStyle}>
+            <div style={{ color: simGold, fontSize: 10, fontWeight: "bold", letterSpacing: 2, marginBottom: 10, fontStyle: "italic" }}>SHOE & DEALER</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ color: "#ccc", fontSize: 12, minWidth: 70 }}>Shoe Size</span>
+                <select value={rules.deckCount} onChange={(e) => updateRule("deckCount", Number(e.target.value))} style={{ ...simSelectStyle, width: 88 }}>
+                  {[1, 2, 4, 6, 8].map(n => <option key={n} value={n}>{n} deck{n > 1 ? "s" : ""}</option>)}
+                </select>
+                <span style={{ color: "#888", fontSize: 10 }}>dealt</span>
+                <select value={rules.penetration} onChange={(e) => updateRule("penetration", Number(e.target.value))} style={{ ...simSelectStyle, width: 68 }}>
+                  {[50, 65, 75, 85, 90].map(n => <option key={n} value={n}>{n}%</option>)}
+                </select>
+                <span style={{ color: "#888", fontSize: 10 }}>deep</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ color: "#ccc", fontSize: 12, minWidth: 70 }}>Shuffle</span>
+                <select value={rules.shoe} onChange={(e) => updateRule("shoe", e.target.value)} style={{ ...simSelectStyle, flex: 1 }}>
+                  <option value="ASM">ASM</option><option value="CSM">CSM</option><option value="hand">Hand</option>
+                </select>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ color: "#ccc", fontSize: 12, minWidth: 70 }}>Dealer</span>
+                <select value={rules.dealerPeeks ? "peek" : "nopeek"} onChange={(e) => updateRule("dealerPeeks", e.target.value === "peek")} style={{ ...simSelectStyle, flex: 1 }}>
+                  <option value="peek">Peeks BJ</option><option value="nopeek">No Peek</option>
+                </select>
+                <select value={rules.dealerHitsSoft17 ? "h17" : "s17"} onChange={(e) => updateRule("dealerHitsSoft17", e.target.value === "h17")} style={{ ...simSelectStyle, flex: 1 }}>
+                  <option value="h17">H17</option><option value="s17">S17</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div style={simSectionStyle}>
+            <div style={{ color: simGold, fontSize: 10, fontWeight: "bold", letterSpacing: 2, marginBottom: 10, fontStyle: "italic" }}>PAYOUTS & ACTIONS</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ color: "#ccc", fontSize: 12, minWidth: 90 }}>BJ Pays</span>
+                <select value={rules.blackjackPays} onChange={(e) => updateRule("blackjackPays", Number(e.target.value))} style={{ ...simSelectStyle, flex: 1 }}>
+                  <option value={1.5}>3:2</option><option value={1.2}>6:5</option><option value={1}>Even</option>
+                </select>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ color: "#ccc", fontSize: 12, minWidth: 90 }}>Double Down</span>
+                <select value={rules.doubleOn} onChange={(e) => updateRule("doubleOn", e.target.value)} style={{ ...simSelectStyle, flex: 1 }}>
+                  <option value="any">Any 2 cards</option><option value="9-11">9/10/11</option><option value="10-11">10/11</option>
+                </select>
+                <select value={rules.doubleAfterSplit ? "das" : "nodas"} onChange={(e) => updateRule("doubleAfterSplit", e.target.value === "das")} style={{ ...simSelectStyle, flex: 1 }}>
+                  <option value="das">After split</option><option value="nodas">No DAS</option>
+                </select>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ color: "#ccc", fontSize: 12, minWidth: 90 }}>Surrender</span>
+                <select value={rules.surrender} onChange={(e) => updateRule("surrender", e.target.value)} style={{ ...simSelectStyle, flex: 1 }}>
+                  <option value="none">None</option><option value="10+A">10 & Ace</option><option value="any">Any card</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div style={simSectionStyle}>
+            <div style={{ color: simGold, fontSize: 10, fontWeight: "bold", letterSpacing: 2, marginBottom: 10, fontStyle: "italic" }}>SPLITTING</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ color: "#ccc", fontSize: 12, minWidth: 80 }}>Pairs 2s-10s</span>
+                <select value={rules.maxSplits2to10} onChange={(e) => updateRule("maxSplits2to10", Number(e.target.value))} style={{ ...simSelectStyle, flex: 1 }}>
+                  <option value={0}>No splits</option><option value={1}>1 split</option><option value={2}>Up to 2</option><option value={3}>Up to 3</option>
+                </select>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ color: "#ccc", fontSize: 12, minWidth: 80 }}>Aces</span>
+                <select value={rules.aceSplitLimit} onChange={(e) => updateRule("aceSplitLimit", Number(e.target.value))} style={{ ...simSelectStyle, flex: 1 }}>
+                  <option value={1}>1 split</option><option value={2}>2 splits</option>
+                </select>
+                <select value={rules.aceOneCard ? "one" : "full"} onChange={(e) => updateRule("aceOneCard", e.target.value === "one")} style={{ ...simSelectStyle, flex: 1 }}>
+                  <option value="one">1 card only</option><option value="full">Full play</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div style={simSectionStyle}>
+            <div style={{ color: simGold, fontSize: 10, fontWeight: "bold", letterSpacing: 2, marginBottom: 10, fontStyle: "italic" }}>TABLE LIMITS</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ color: "#ccc", fontSize: 12, minWidth: 70 }}>Bet Range</span>
+              <select value={rules.tableMin} onChange={(e) => updateRule("tableMin", Number(e.target.value))} style={{ ...simSelectStyle, width: 76 }}>
+                {[5, 10, 15, 25, 50, 100].map(n => <option key={n} value={n}>${n}</option>)}
+              </select>
+              <span style={{ color: "#888", fontSize: 10 }}>to</span>
+              <select value={rules.tableMax} onChange={(e) => updateRule("tableMax", Number(e.target.value))} style={{ ...simSelectStyle, width: 88 }}>
+                {[500, 1000, 1500, 2000, 2500, 3000, 5000, 10000].map(n => <option key={n} value={n}>${n.toLocaleString()}</option>)}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* COL 2: Night & Session */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div style={simSectionStyle}>
+            <div style={simLabelStyle}><SimTooltip text="Each gambler plays independently for N nights. Each night is a fresh buy-in with its own random seed.">Season Structure</SimTooltip></div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              <div><div style={{ color: "#888", fontSize: 10, marginBottom: 3 }}>Gamblers</div><input type="number" value={gamblers} onChange={(e) => setGamblers(Number(e.target.value))} style={simInputStyle} /></div>
+              <div><div style={{ color: "#888", fontSize: 10, marginBottom: 3 }}>Nights / Season</div><input type="number" value={nights} onChange={(e) => setNights(Number(e.target.value))} style={simInputStyle} /></div>
+            </div>
+          </div>
+          <div style={simSectionStyle}>
+            <div style={simLabelStyle}><SimTooltip text="Each night the gambler buys in for a fixed amount. Night ends on target hit, bust, or hand cap.">Night & Session</SimTooltip></div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              <div><div style={{ color: "#888", fontSize: 10, marginBottom: 3 }}>Night Buy-In ($)</div><input type="number" value={nightBuyIn} onChange={(e) => setNightBuyIn(Number(e.target.value))} style={simInputStyle} /></div>
+              <div><div style={{ color: "#888", fontSize: 10, marginBottom: 3 }}><SimTooltip text="Night ends when profit reaches this target.">Night Target ($)</SimTooltip></div><input type="number" value={nightTarget} onChange={(e) => setNightTarget(Number(e.target.value))} style={simInputStyle} /></div>
+              <div style={{ gridColumn: "1 / -1" }}><div style={{ color: "#888", fontSize: 10, marginBottom: 3 }}><SimTooltip text="Hit session target → reset to L1, start new session within the same night.">Session Target ($)</SimTooltip></div><input type="number" value={sessionTarget} onChange={(e) => setSessionTarget(Number(e.target.value))} style={simInputStyle} /></div>
+              {sessionTarget > 0 && <div style={{ gridColumn: "1 / -1" }}><div style={{ color: "#888", fontSize: 10, marginBottom: 3 }}><SimTooltip text="After hitting session target, sit out before starting next session. Resets to L1.">Session Sit-Out</SimTooltip></div><select value={sitOutMode} onChange={(e) => setSitOutMode(e.target.value)} style={simSelectStyle}><option value="off">Off</option><option value="1hand">1 Hand</option><option value="shoe">Rest of Shoe</option></select></div>}
+            </div>
+            {/* Target Lock */}
+            <div style={{ marginTop: 10, padding: "8px 10px", background: targetLock ? "rgba(255,215,0,0.06)" : "rgba(0,0,0,0.2)", borderRadius: 8, border: targetLock ? "1px solid rgba(255,215,0,0.2)" : "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span style={{ color: targetLock ? simGold : "#888", fontSize: 12, fontWeight: "bold" }}>Target Lock</span>
+                <div onClick={() => setTargetLock(!targetLock)} style={{ width: 40, height: 22, borderRadius: 11, background: targetLock ? "linear-gradient(135deg, #ffd700, #ff9800)" : "rgba(255,255,255,0.1)", cursor: "pointer", position: "relative", border: "1px solid rgba(255,255,255,0.1)" }}>
+                  <div style={{ width: 16, height: 16, borderRadius: "50%", background: "#fff", position: "absolute", top: 2, left: targetLock ? 20 : 2, transition: "left 0.2s" }} />
+                </div>
+              </div>
+              {targetLock && <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 9, marginTop: 4 }}>Win at max level while positive → smart drop. Last Call always active within.</div>}
+            </div>
+            {/* Last Call */}
+            <div style={{ marginTop: 6, padding: "8px 10px", background: lastCall ? "rgba(100,181,246,0.06)" : "rgba(0,0,0,0.2)", borderRadius: 8, border: lastCall ? "1px solid rgba(100,181,246,0.2)" : "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span style={{ color: lastCall ? "#64b5f6" : "#888", fontSize: 12, fontWeight: "bold" }}>Last Call</span>
+                <div onClick={() => setLastCall(!lastCall)} style={{ width: 40, height: 22, borderRadius: 11, background: lastCall ? "linear-gradient(135deg, #64b5f6, #1976d2)" : "rgba(255,255,255,0.1)", cursor: "pointer", position: "relative", border: "1px solid rgba(255,255,255,0.1)" }}>
+                  <div style={{ width: 16, height: 16, borderRadius: "50%", background: "#fff", position: "absolute", top: 2, left: lastCall ? 20 : 2, transition: "left 0.2s" }} />
+                </div>
+              </div>
+              {lastCall && <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 9, marginTop: 4 }}>Any win within L1 bet of target → final hand at L1, night ends.</div>}
+            </div>
+          </div>
+          <div style={simSectionStyle}>
+            <div style={simLabelStyle}><SimTooltip text="Maximum hands per night. Night ends when this cap is reached.">Hand Cap / Night</SimTooltip></div>
+            <input type="number" value={handCap} onChange={(e) => setHandCap(Number(e.target.value))} style={simInputStyle} />
+          </div>
+          <div style={{ padding: "8px 12px", background: "rgba(255,215,0,0.05)", borderRadius: 10, border: simGoldBorder, display: "flex", justifyContent: "space-around" }}>
+            <div style={{ textAlign: "center" }}><div style={{ color: simGold, fontSize: 16, fontWeight: "900" }}>{(gamblers * nights).toLocaleString()}</div><div style={{ color: "rgba(255,255,255,0.4)", fontSize: 8 }}>TOTAL NIGHTS</div></div>
+            <div style={{ width: 1, background: "rgba(255,215,0,0.15)" }} />
+            <div style={{ textAlign: "center" }}><div style={{ color: simGold, fontSize: 16, fontWeight: "900" }}>{gamblers.toLocaleString()}</div><div style={{ color: "rgba(255,255,255,0.4)", fontSize: 8 }}>GAMBLERS</div></div>
+          </div>
+        </div>
+
+        {/* COL 3: Betting Strategy */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div style={simSectionStyle}>
+            <div style={simLabelStyle}>Betting Strategy</div>
+            <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 10 }}>
+              {Object.entries(STRATEGY_PRESETS).map(([key, val]) => (
+                <button key={key} onClick={() => handleStrategy(key)} style={simChipStyle(strategy === key)}>{val.label}</button>
+              ))}
+            </div>
+            <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, fontStyle: "italic" }}>{STRATEGY_PRESETS[strategy]?.description}</div>
+          </div>
+          <div style={simSectionStyle}>
+            <div style={simLabelStyle}><SimTooltip text="Each level has a bet, loss arming triggers, and a win action. Consec resets on wins. Cumul = total losses (never resets on wins). On Win: Stay/Reset to L1/Drop back N levels.">Hybrid Level Ladder</SimTooltip></div>
+            {/* Column headers */}
+            <div style={{ display: "grid", gridTemplateColumns: "22px 1fr 52px 52px 56px 18px", gap: 3, padding: "0 2px 4px" }}>
+              <span></span>
+              <span style={{ color: "rgba(255,215,0,0.5)", fontSize: 8, fontWeight: "bold", textAlign: "center", letterSpacing: 1 }}>BET</span>
+              <span style={{ color: "rgba(255,215,0,0.5)", fontSize: 8, fontWeight: "bold", textAlign: "center", letterSpacing: 1 }}>CON</span>
+              <span style={{ color: "rgba(255,215,0,0.5)", fontSize: 8, fontWeight: "bold", textAlign: "center", letterSpacing: 1 }}>CUM</span>
+              <span style={{ color: "rgba(76,175,80,0.6)", fontSize: 8, fontWeight: "bold", textAlign: "center", letterSpacing: 1 }}>WIN</span>
+              <span></span>
+            </div>
+            {/* Level rows */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+              {levels.map((lvl, i) => {
+                const isLast = i === levels.length - 1;
+                const isDead = !isLast && lvl.armAfter === -1 && (lvl.cumArmAfter || 0) === 0;
+                const winVal = lvl.onWin || 0;
+                return (
+                  <div key={i}>
+                    <div style={{ display: "grid", gridTemplateColumns: "22px 1fr 52px 52px 56px 18px", gap: 3, alignItems: "center", padding: "6px 2px", background: isDead ? "rgba(239,83,80,0.06)" : isLast ? "rgba(255,165,0,0.04)" : "rgba(255,255,255,0.02)", borderRadius: isDead ? "6px 6px 0 0" : 6, border: isDead ? "1px solid rgba(239,83,80,0.2)" : isLast ? "1px solid rgba(255,165,0,0.15)" : "1px solid rgba(255,255,255,0.04)" }}>
+                      <span style={{ color: simGold, fontSize: 10, fontWeight: "bold", textAlign: "center" }}>L{i + 1}</span>
+                      <input type="number" value={lvl.bet} onChange={(e) => updateLevel(i, "bet", Number(e.target.value))} style={{ ...simInputStyle, padding: "6px 2px", fontSize: 13, textAlign: "center" }} />
+                      {isLast ? (
+                        <span style={{ color: "rgba(255,165,0,0.5)", fontSize: 8, textAlign: "center", fontStyle: "italic" }}>MAX</span>
+                      ) : (
+                        <select value={lvl.armAfter} onChange={(e) => updateLevel(i, "armAfter", Number(e.target.value))} style={{ ...simSelectStyle, padding: "6px 1px", fontSize: 11, textAlign: "center", textAlignLast: "center" }}>
+                          <option value={-1}>Off</option>
+                          <option value={0}>Pre</option>
+                          {[1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={n}>{n}</option>)}
+                        </select>
+                      )}
+                      {isLast ? (
+                        <span style={{ color: "rgba(255,165,0,0.5)", fontSize: 8, textAlign: "center", fontStyle: "italic" }}>LVL</span>
+                      ) : (
+                        <select value={lvl.cumArmAfter || 0} onChange={(e) => updateLevel(i, "cumArmAfter", Number(e.target.value))} style={{ ...simSelectStyle, padding: "6px 1px", fontSize: 11, textAlign: "center", textAlignLast: "center" }}>
+                          <option value={0}>Off</option>
+                          {[2,3,4,5,6,7,8,9,10,12,15,20].map(n => <option key={n} value={n}>{n}</option>)}
+                        </select>
+                      )}
+                      <select value={winVal} onChange={(e) => updateLevel(i, "onWin", Number(e.target.value))} style={{ ...simSelectStyle, padding: "6px 1px", fontSize: 11, textAlign: "center", textAlignLast: "center" }}>
+                        <option value={0}>Stay</option>
+                        <option value={-1}>L1</option>
+                        {[1,2,3,4,5].map(n => <option key={n} value={n}>-{n}</option>)}
+                      </select>
+                      <div style={{ textAlign: "center" }}>
+                        {levels.length > 1 && <button onClick={() => removeLevel(i)} style={{ background: "none", border: "none", color: "#ef5350", cursor: "pointer", fontSize: 11, fontWeight: "bold", padding: 0, lineHeight: 1 }}>✕</button>}
+                      </div>
+                    </div>
+                    {isDead && <div style={{ background: "rgba(239,83,80,0.08)", borderRadius: "0 0 6px 6px", border: "1px solid rgba(239,83,80,0.2)", borderTop: "none", padding: "2px 8px", fontSize: 9, color: "#ef5350", fontStyle: "italic" }}>Dead — both triggers off, never climbs</div>}
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6 }}>
+              <span style={{ color: "rgba(255,255,255,0.25)", fontSize: 8, fontStyle: "italic" }}>Pre = 1 loss climbs · # = losses to arm · Win: Stay/L1/-N</span>
+              <button onClick={addLevel} style={{ fontSize: 10, padding: "4px 12px", background: "none", color: "#4caf50", border: "1px dashed rgba(76,175,80,0.3)", borderRadius: 6, cursor: "pointer" }}>+ Add</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ textAlign: "center", padding: "18px 0" }}>
+        <button onClick={handleRun} style={simBtnPrimary}>Run Simulation</button>
+      </div>
+    </div>
+  );
+}
+
+// ── RUNNING SCREEN ──
+function SimRunningScreen({ config, onComplete }) {
+  const [progress, setProgress] = useState(0);
+  const [currentGambler, setCurrentGambler] = useState(0);
+  const [liveStats, setLiveStats] = useState(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (started.current) return;
+    started.current = true;
+    runSimulation(config,
+      (pct, gIdx, nd) => {
+        setProgress(pct);
+        setCurrentGambler(gIdx);
+        setLiveStats(nd);
+      },
+      (results) => { onComplete(results); }
+    );
+  }, []);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: 20 }}>
+      <div style={{ fontFamily: "'Rye', serif", fontSize: 24, color: simGold, letterSpacing: 3 }}>SIMULATING</div>
+      <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 12 }}>{config.gamblers.toLocaleString()} Gamblers × {config.nights} Nights</div>
+      <div style={{ width: 450, height: 14, borderRadius: 7, background: "rgba(255,255,255,0.08)", overflow: "hidden", border: simGoldBorder }}>
+        <div style={{ width: `${progress * 100}%`, height: "100%", background: "linear-gradient(90deg, #4caf50, #ffd700)", borderRadius: 7, transition: "width 0.05s" }} />
+      </div>
+      <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 13 }}>
+        Gambler <strong style={{ color: simGold }}>{currentGambler.toLocaleString()}</strong> / {config.gamblers.toLocaleString()}
+      </div>
+      <div style={{ color: "rgba(255,255,255,0.35)", fontSize: 12 }}>{Math.round(progress * 100)}% complete{liveStats ? ` · ${liveStats.totalHands.toLocaleString()} hands` : ""}</div>
+      {liveStats && liveStats.totalNights > 0 && (
+        <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 20, padding: "12px 24px", background: "rgba(0,0,0,0.3)", borderRadius: 10, border: simGoldBorder }}>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ color: "#64b5f6", fontSize: 18, fontWeight: "900" }}>{(liveStats.wins / liveStats.totalNights * 100).toFixed(1)}%</div>
+            <div style={{ color: "rgba(255,255,255,0.3)", fontSize: 9 }}>NIGHT WIN %</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ color: "#ef5350", fontSize: 18, fontWeight: "900" }}>{(liveStats.busts / liveStats.totalNights * 100).toFixed(1)}%</div>
+            <div style={{ color: "rgba(255,255,255,0.3)", fontSize: 9 }}>BUST %</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ color: "#4caf50", fontSize: 18, fontWeight: "900" }}>{(liveStats.targetHits / liveStats.totalNights * 100).toFixed(1)}%</div>
+            <div style={{ color: "rgba(255,255,255,0.3)", fontSize: 9 }}>TARGET HIT %</div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── RESULTS SCREEN ──
+function SimResultsScreen({ results, onBack }) {
+  const s = results.season;
+  const n = results.night;
+  const h = results.hand;
+  const b = results.bankroll;
+  const bands = results.bands;
+  const lp = results.levelPcts;
+
+  const allVals = [...bands.p10, ...bands.p25, ...bands.p50, ...bands.p75, ...bands.p90];
+  const bMax = Math.max(...allVals);
+  const bMin = Math.min(...allVals);
+  const bRange = bMax - bMin || 1;
+  const toY = (v) => 180 - ((v - bMin) / bRange) * 175;
+  const toLine = (pts) => pts.map((v, i) => `${(i / (pts.length - 1)) * 400},${toY(v)}`).join(" ");
+
+  const renderDist = (dist) => {
+    const maxH = Math.max(...dist.bins);
+    const zeroIdx = dist.min >= 0 ? -1 : Math.floor((0 - dist.min) / dist.binWidth);
+    return (
+      <div>
+        <div style={{ display: "flex", alignItems: "flex-end", height: 120, gap: 1, paddingBottom: 16, position: "relative" }}>
+          {dist.bins.map((count, i) => {
+            const h = maxH > 0 ? (count / maxH * 100) : 0;
+            const isNeg = i <= zeroIdx;
+            return (
+              <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }}>
+                <div style={{ width: "100%", height: `${h}%`, background: isNeg ? "linear-gradient(180deg, #ef5350, rgba(239,83,80,0.3))" : "linear-gradient(180deg, #4caf50, rgba(76,175,80,0.3))", borderRadius: "2px 2px 0 0", minHeight: count > 0 ? 2 : 0 }} />
+              </div>
+            );
+          })}
+          <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", color: "rgba(255,255,255,0.6)", fontSize: 10, fontWeight: "bold" }}>$0</div>
+          <div style={{ position: "absolute", bottom: 0, left: 2, color: "rgba(239,83,80,0.8)", fontSize: 10, fontWeight: "bold" }}>{dist.min >= -1000 ? `$${Math.round(dist.min)}` : `-$${Math.round(Math.abs(dist.min) / 1000)}K`}</div>
+          <div style={{ position: "absolute", bottom: 0, right: 2, color: "rgba(76,175,80,0.8)", fontSize: 10, fontWeight: "bold" }}>{dist.max <= 1000 ? `$${Math.round(dist.max)}` : `+$${Math.round(dist.max / 1000)}K`}</div>
+        </div>
+      </div>
+    );
+  };
+
+  const colors = ["#4caf50", "#64b5f6", "#ff9800", "#ef5350", "#ab47bc", "#26a69a", "#ffd700", "#e91e63"];
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "auto", padding: "0 16px 16px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0 10px" }}>
+        <button onClick={onBack} style={simBtnSecondary}>← New Simulation</button>
+        <div style={{ fontFamily: "'Rye', serif", fontSize: 22, color: simGold, letterSpacing: 3 }}>RESULTS</div>
+        <div style={{ width: 120 }} />
+      </div>
+
+      {/* HEADLINE */}
+      <div style={{ ...simSectionStyle, marginBottom: 14, maxWidth: 1100, margin: "0 auto 14px", width: "100%" }}>
+        <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center" }}>
+          <SimStatBox label="SEASON AHEAD %" value={`${s.aheadPct}%`} color={parseFloat(s.aheadPct) >= 50 ? "#4caf50" : "#ef5350"} sub="gamblers profitable" />
+          <div style={{ width: 1, height: 50, background: "rgba(255,215,0,0.25)" }} />
+          <SimStatBox label="NIGHT WIN %" value={`${n.winPct}%`} color="#64b5f6" />
+          <div style={{ width: 1, height: 50, background: "rgba(255,215,0,0.25)" }} />
+          <SimStatBox label="BUST %" value={`${n.bustPct}%`} color="#ef5350" />
+          <div style={{ width: 1, height: 50, background: "rgba(255,215,0,0.25)" }} />
+          <SimStatBox label="AVG SEASON" value={`${s.avgProfit >= 0 ? "+" : "-"}$${Math.abs(s.avgProfit).toLocaleString()}`} color={s.avgProfit >= 0 ? "#4caf50" : "#ef5350"} />
+          <div style={{ width: 1, height: 50, background: "rgba(255,215,0,0.25)" }} />
+          <SimStatBox label="MEDIAN SEASON" value={`${s.medianProfit >= 0 ? "+" : "-"}$${Math.abs(s.medianProfit).toLocaleString()}`} color={s.medianProfit >= 0 ? "#4caf50" : "#ff9800"} />
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, maxWidth: 1100, margin: "0 auto", width: "100%" }}>
+        {/* PERCENTILE BANDS */}
+        <div style={simSectionStyle}>
+          <div style={simLabelStyle}>Season Cumulative P&L — Percentile Bands</div>
+          <div style={{ position: "relative", height: 190, marginTop: 8 }}>
+            {[0, 0.25, 0.5, 0.75, 1].map(f => (
+              <div key={f} style={{ position: "absolute", left: 56, right: 0, bottom: `${f * 100}%`, borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+                <span style={{ position: "absolute", left: -60, color: "rgba(255,255,255,0.55)", fontSize: 11, fontWeight: "bold" }}>${Math.round(bMin + bRange * f).toLocaleString()}</span>
+              </div>
+            ))}
+            <svg viewBox="0 0 400 180" style={{ position: "absolute", left: 56, right: 0, top: 0, bottom: 0, width: "calc(100% - 56px)", height: "100%" }} preserveAspectRatio="none">
+              <polyline points={toLine(bands.p10)} fill="none" stroke="#ef5350" strokeWidth="1.5" strokeOpacity="0.7" />
+              <polyline points={toLine(bands.p25)} fill="none" stroke="#ff9800" strokeWidth="1.5" strokeOpacity="0.8" />
+              <polyline points={toLine(bands.p50)} fill="none" stroke="#ffd700" strokeWidth="2.5" />
+              <polyline points={toLine(bands.p75)} fill="none" stroke="#4caf50" strokeWidth="1.5" strokeOpacity="0.8" />
+              <polyline points={toLine(bands.p90)} fill="none" stroke="#66bb6a" strokeWidth="1.5" strokeOpacity="0.7" />
+              <line x1="0" y1={toY(0)} x2="400" y2={toY(0)} stroke="rgba(255,255,255,0.3)" strokeWidth="1" strokeDasharray="6,4" />
+            </svg>
+            <div style={{ position: "absolute", bottom: -4, left: 56, color: "rgba(255,255,255,0.5)", fontSize: 11, fontWeight: "bold" }}>Night 1</div>
+            <div style={{ position: "absolute", bottom: -4, right: 0, color: "rgba(255,255,255,0.5)", fontSize: 11, fontWeight: "bold" }}>Night {bands.p50.length - 1}</div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", gap: 18, marginTop: 14 }}>
+            {[{c:"#66bb6a",l:"90th"},{c:"#4caf50",l:"75th"},{c:"#ffd700",l:"Median"},{c:"#ff9800",l:"25th"},{c:"#ef5350",l:"10th"}].map(x => (
+              <div key={x.l} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ width: 16, height: 3, background: x.c, borderRadius: 2 }} />
+                <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 11, fontWeight: "bold" }}>{x.l}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* NIGHT ANALYSIS */}
+        <div style={simSectionStyle}>
+          <div style={simLabelStyle}>Night Analysis</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
+            <SimStatBox label="AVG NIGHT P&L" value={`$${n.avgProfit}`} color={parseFloat(n.avgProfit) >= 0 ? "#4caf50" : "#ef5350"} />
+            <SimStatBox label="AVG HANDS" value={n.avgHands} />
+            <SimStatBox label="AVG SESSIONS" value={n.avgSessions} color="#64b5f6" sub="per night" />
+            <SimStatBox label="TARGET HIT %" value={`${n.targetHitPct}%`} color="#4caf50" />
+            <SimStatBox label="AVG PEAK" value={`$${b.avgPeak.toLocaleString()}`} color="#4caf50" />
+            <SimStatBox label="AVG DRAWDOWN" value={`$${b.avgDrawdown.toLocaleString()}`} color="#ef5350" />
+          </div>
+          <div style={{ marginTop: 10, padding: 8, background: "rgba(0,0,0,0.25)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.05)" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
+              <SimStatBox label="HANDS/SESSION" value={n.avgHandsPerSession} color="#64b5f6" />
+              <SimStatBox label="CLIMBS/NIGHT" value={n.avgClimbs} color="#ff9800" />
+              <SimStatBox label="AVG BEST STREAK" value={`W${n.longestWinStreak}/L${n.longestLoseStreak}`} color={simGold} sub="nights won/lost" />
+            </div>
+          </div>
+        </div>
+
+        {/* SEASON DISTRIBUTION */}
+        <div style={simSectionStyle}>
+          <div style={simLabelStyle}>Season Profit Distribution</div>
+          {renderDist(results.seasonDist)}
+          <div style={{ display: "flex", justifyContent: "space-around", marginTop: 6, padding: "6px 0", borderTop: "1px solid rgba(255,255,255,0.12)" }}>
+            <SimStatBox label="BEST" value={`+$${s.best.toLocaleString()}`} color="#4caf50" />
+            <SimStatBox label="WORST" value={`-$${Math.abs(s.worst).toLocaleString()}`} color="#ef5350" />
+            <SimStatBox label="AHEAD %" value={`${s.aheadPct}%`} color={parseFloat(s.aheadPct) >= 50 ? "#4caf50" : "#ff9800"} />
+          </div>
+        </div>
+
+        {/* NIGHT DISTRIBUTION */}
+        <div style={simSectionStyle}>
+          <div style={simLabelStyle}>Night Profit Distribution</div>
+          {renderDist(results.nightDist)}
+          <div style={{ display: "flex", justifyContent: "space-around", marginTop: 6, padding: "6px 0", borderTop: "1px solid rgba(255,255,255,0.12)" }}>
+            <SimStatBox label="NIGHT WIN %" value={`${n.winPct}%`} color="#64b5f6" />
+            <SimStatBox label="BUST %" value={`${n.bustPct}%`} color="#ef5350" />
+            <SimStatBox label="TARGET %" value={`${n.targetHitPct}%`} color="#4caf50" />
+          </div>
+          <div style={{ color: "rgba(255,255,255,0.35)", fontSize: 9, marginTop: 8, letterSpacing: 1 }}>HOW NIGHTS ENDED</div>
+          <div style={{ display: "flex", justifyContent: "space-around", marginTop: 4, padding: "6px 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+            <SimStatBox label="TARGET" value={`${n.targetHitPct}%`} color="#4caf50" />
+            <SimStatBox label="LAST CALL" value={`${n.lastCallPct}%`} color="#64b5f6" />
+            <SimStatBox label="HAND CAP" value={`${n.handCapPct}%`} color="#ff9800" />
+            <SimStatBox label="BUSTED" value={`${n.bustPct}%`} color="#ef5350" />
+          </div>
+        </div>
+
+        {/* HAND STATS */}
+        <div style={simSectionStyle}>
+          <div style={simLabelStyle}>Hand Summary</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
+            <SimStatBox label="TOTAL HANDS" value={h.total > 1000000 ? `${(h.total / 1000000).toFixed(1)}M` : h.total.toLocaleString()} />
+            <SimStatBox label="WIN RATE" value={`${h.winRate}%`} color="#4caf50" />
+            <SimStatBox label="LOSS RATE" value={`${h.lossRate}%`} color="#ef5350" />
+            <SimStatBox label="PUSH RATE" value={`${h.pushRate}%`} color="#888" />
+            <SimStatBox label="BJ FREQ" value={`${h.bjFreq}%`} color="#64b5f6" />
+            <SimStatBox label="BUST FREQ" value={`${h.bustFreq}%`} color="#ff9800" />
+          </div>
+          <div style={{ marginTop: 8, padding: 8, background: "rgba(0,0,0,0.3)", borderRadius: 8, display: "flex", justifyContent: "space-around" }}>
+            <SimStatBox label="AVG BET" value={`$${h.avgBet}`} />
+            <SimStatBox label="HOUSE EDGE" value={`${h.houseEdge}%`} color="#ff9800" />
+            <SimStatBox label="SURRENDER %" value={`${h.surrenderFreq}%`} />
+          </div>
+        </div>
+
+        {/* LEVEL ANALYSIS */}
+        <div style={simSectionStyle}>
+          <div style={simLabelStyle}>Betting Level Analysis</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
+            <SimStatBox label="WORST DRAWDOWN" value={`$${b.worstDrawdown.toLocaleString()}`} color="#ef5350" sub="single night" />
+            <SimStatBox label="AVG DRAWDOWN" value={`$${b.avgDrawdown.toLocaleString()}`} color="#ff9800" />
+            <SimStatBox label="AVG PEAK" value={`$${b.avgPeak.toLocaleString()}`} color="#4caf50" />
+          </div>
+          <div style={{ marginTop: 10 }}>
+            <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 11, marginBottom: 8, fontWeight: "bold" }}>Time Spent at Each Level</div>
+            {lp.map((pct, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                <span style={{ color: simGold, fontSize: 12, fontWeight: "bold", minWidth: 24 }}>L{i + 1}</span>
+                <div style={{ flex: 1, height: 12, background: "rgba(255,255,255,0.08)", borderRadius: 6, overflow: "hidden" }}>
+                  <div style={{ width: `${pct}%`, height: "100%", background: colors[i % colors.length], borderRadius: 6 }} />
+                </div>
+                <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 12, fontWeight: "bold", minWidth: 36, textAlign: "right" }}>{pct.toFixed(1)}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── MAIN APP ──
+function SimulatorApp({ onBack }) {
+  const [screen, setScreen] = useState(SIM_SCREENS.SETUP);
+  const [config, setConfig] = useState(null);
+  const [lastConfig, setLastConfig] = useState(null);
+  const [results, setResults] = useState(null);
+
+  const handleRun = (cfg) => { setLastConfig(cfg); setConfig(cfg); setScreen(SIM_SCREENS.RUNNING); };
+  const handleComplete = (res) => { setResults(res); setScreen(SIM_SCREENS.RESULTS); };
+  const handleBack = () => { setScreen(SIM_SCREENS.SETUP); setResults(null); setConfig(null); };
+
+  return (
+    <div style={{ height: "100vh", width: "100vw", background: simDarkBg, fontFamily: "'Segoe UI', sans-serif", color: "#fff" }}>
+      {screen === SIM_SCREENS.SETUP && <div style={{ position: "relative" }}><button onClick={onBack} style={{ position: "absolute", top: 10, left: 10, padding: "8px 16px", borderRadius: 6, fontSize: 13, fontWeight: "bold", border: "1.5px solid rgba(176,196,222,0.4)", background: "linear-gradient(135deg, #455a64, #263238)", color: "#b0c4de", cursor: "pointer", letterSpacing: 1, fontFamily: "'Rye', serif", zIndex: 10 }}>← BACK</button><SimSetupScreen onRun={handleRun} initialConfig={lastConfig} /></div>}
+      {screen === SIM_SCREENS.RUNNING && <SimRunningScreen config={config} onComplete={handleComplete} />}
+      {screen === SIM_SCREENS.RESULTS && <SimResultsScreen results={results} onBack={handleBack} />}
+    </div>
+  );
+}
+
+
+
 function App({ onExitToLobby } = {}) {
   const [screen, setScreen] = useState("settings");
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [settingsStep, setSettingsStep] = useState(1);
+  const [simReturnTo, setSimReturnTo] = useState("data"); // tracks where simulator was launched from
   const exitGame = useCallback(() => {
     // Reset seat config to host-only defaults when leaving a game
     setSettings(prev => ({ ...prev, seatConfig: DEFAULT_SEAT_CONFIG.map(s => ({ ...s })) }));
@@ -7498,8 +9159,9 @@ function App({ onExitToLobby } = {}) {
     setSettingsStep(2);
     setScreen("settings");
   }} />;
-  if (screen === "data") return <DataCenter onBack={() => { setSettingsStep(1); setScreen("settings"); }} />;
-  return <GameTable settings={settings} onBack={exitGame} />;
+  if (screen === "data") return <DataCenter onBack={() => { setSettingsStep(1); setScreen("settings"); }} onSimulator={() => { setSimReturnTo("data"); setScreen("simulator"); }} />;
+  if (screen === "simulator") return <SimulatorApp onBack={() => { if (simReturnTo === "game") { setScreen("game"); } else { setSettingsStep(1); setScreen("data"); } }} />;
+  return <GameTable settings={settings} onBack={exitGame} onSimulator={() => { setSimReturnTo("game"); setScreen("simulator"); }} />;
 }
 
 
@@ -7508,6 +9170,27 @@ return App; })();
 // ═══════════════════════════════════════════════════════════════
 // TEXAS HOLD'EM MODULE
 // ═══════════════════════════════════════════════════════════════
+
+function CardBackSmall({ offset = 0 }) {
+  return (
+    <div style={{
+      width: 50, height: 70, borderRadius: 6, border: "1px solid #1a0a2e",
+      background: "linear-gradient(135deg, #1a0a2e, #0d0518)",
+      position: "absolute", top: -offset * 2, left: -offset * 0.5,
+      boxShadow: offset === 0 ? "0 4px 12px rgba(0,0,0,0.6)" : "0 1px 3px rgba(0,0,0,0.3)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+    }}>
+      <div style={{
+        width: 40, height: 60, borderRadius: 4,
+        border: "0.5px solid rgba(255,215,0,0.3)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}>
+        <span style={{ color: "#ffd700", fontFamily: "'Rye', serif", fontSize: 8, opacity: 0.6, letterSpacing: 1 }}>6020</span>
+      </div>
+    </div>
+  );
+}
+
 const HoldemApp = (() => {
 
 // ============================================================
@@ -7534,6 +9217,7 @@ const HAND_NAMES = {
 const PHASES = {
   SETUP: "SETUP", WAITING: "WAITING", PREFLOP: "PREFLOP", FLOP: "FLOP",
   TURN: "TURN", RIVER: "RIVER", SHOWDOWN: "SHOWDOWN", HAND_OVER: "HAND_OVER",
+  DEALING: "DEALING",
 };
 
 const POSITIONS_6MAX = ["BTN", "SB", "BB", "UTG", "HJ", "CO"];
@@ -8448,6 +10132,19 @@ function App({ onExitToLobby } = {}) {
   const [lastAction, setLastAction] = useState(null); // { playerIdx, action, amount } for action indicators
   const [gameOver, setGameOver] = useState(null); // { winnerName, winnerStack, isHuman, handsPlayed, stats }
 
+  // ── Animation State ──
+  const [dealingCards, setDealingCards] = useState([]);
+  const [dealtSeatCards, setDealtSeatCards] = useState({});
+  const [burnCards, setBurnCards] = useState([]);
+  const [communityFlipping, setCommunityFlipping] = useState([]);
+  const [foldingPlayer, setFoldingPlayer] = useState(-1);
+  const [chipAnimations, setChipAnimations] = useState([]);
+  const [winnerSweep, setWinnerSweep] = useState(null);
+  const [showdownRevealIdx, setShowdownRevealIdx] = useState(-1);
+  const chipAnimIdRef = useRef(0);
+  const [chipsToPot, setChipsToPot] = useState([]);
+  const [potToWinner, setPotToWinner] = useState(null);
+
   // Timer
   const [timer, setTimer] = useState(0);
   const timerRef = useRef(null);
@@ -8548,24 +10245,32 @@ function App({ onExitToLobby } = {}) {
   // Count players who can still act (not folded, not all-in)
   const countCanAct = (ps) => ps.filter(p => !p.folded && !p.allIn && !p.sittingOut).length;
 
+  // ── DEALER BAY POSITION (top-center of table) ──
+  const dealerBayPos = { left: 50, top: 14 };
+  const deckPosition = { left: "52%", top: "16%" };
+
+  // ── Trigger chip animation from a player's seat toward their bet position ──
+  const triggerBetChipAnim = useCallback((seatIdx, amount) => {
+    if (amount <= 0 || !seatPositions[seatIdx]) return;
+    const id = chipAnimIdRef.current++;
+    setChipAnimations(prev => [...prev, { id, seatIdx, amount }]);
+    setTimeout(() => {
+      setChipAnimations(prev => prev.filter(c => c.id !== id));
+    }, 550);
+  }, [seatPositions]);
+
   // ── Deal New Hand ──
   const dealNewHand = useCallback(() => {
     const newDeck = createDeck();
-    const di = dealerIdxRef.current; // Always read from ref for correct rotation
+    const di = dealerIdxRef.current;
     const n = players.length;
     const sbIdx = getNextLivePlayer(di, players);
     const bbIdx = getNextLivePlayer(sbIdx, players);
 
-    // Reset players
+    // Reset players (no hole cards yet — animation will "deliver" them)
     let np = players.map((p, i) => ({
-      ...p,
-      holeCards: [],
-      folded: p.sittingOut || p.stack <= 0,
-      allIn: false,
-      currentBet: 0,
-      totalBet: 0,
-      positionIndex: ((i - di + n) % n),
-      handResult: null,
+      ...p, holeCards: [], folded: p.sittingOut || p.stack <= 0, allIn: false,
+      currentBet: 0, totalBet: 0, positionIndex: ((i - di + n) % n), handResult: null,
     }));
 
     // Post blinds
@@ -8574,17 +10279,21 @@ function App({ onExitToLobby } = {}) {
     const bb = Math.min(settings.bigBlind, np[bbIdx].stack);
     np[bbIdx] = { ...np[bbIdx], currentBet: bb, totalBet: bb, stack: np[bbIdx].stack - bb, allIn: np[bbIdx].stack <= bb };
 
-    // Deal hole cards
+    // Pre-deal hole cards (stored but NOT shown yet — animation reveals them)
     let d = [...newDeck];
+    const preDealtCards = {};
+    const activeSeats = [];
     for (let i = 0; i < np.length; i++) {
       if (!np[i].folded) {
-        np[i] = { ...np[i], holeCards: [d.pop(), d.pop()] };
+        preDealtCards[i] = [d.pop(), d.pop()];
+        activeSeats.push(i);
       }
     }
 
     const totalBlinds = sb + bb;
     const firstToAct = getNextActivePlayer(bbIdx, np);
 
+    // Set up initial state
     setDeck(d);
     deckRef.current = d;
     setCommunityCards([]);
@@ -8594,28 +10303,79 @@ function App({ onExitToLobby } = {}) {
     setPots([]);
     setPlayers(np);
     playersRef.current = np;
-    setPhase(PHASES.PREFLOP);
-    phaseRef.current = PHASES.PREFLOP;
+    setPhase(PHASES.DEALING);
+    phaseRef.current = PHASES.DEALING;
     setCurrentBet(settings.bigBlind);
     currentBetRef.current = settings.bigBlind;
     setMinRaise(settings.bigBlind * 2);
     minRaiseRef.current = settings.bigBlind * 2;
     setLastRaiserIdx(bbIdx);
     lastRaiserIdxRef.current = bbIdx;
-    setActivePlayerIdx(firstToAct);
-    activePlayerIdxRef.current = firstToAct;
     setHandNumber(prev => prev + 1);
     setShowdown(false);
     setWinners([]);
     setWinnerAnnouncement(null);
     setLastAction(null);
     setRaiseAmount(settings.bigBlind * 2);
-    setMessage(`Hand #${handNumber + 1} — ${np[sbIdx].name} posts SB $${sb}, ${np[bbIdx].name} posts BB $${bb}`);
+    setBurnCards([]);
+    setCommunityFlipping([]);
+    setDealtSeatCards({});
+    setFoldingPlayer(-1);
+    setWinnerSweep(null);
+    setShowdownRevealIdx(-1);
 
-    // If first to act is AI, trigger AI turn
-    if (firstToAct >= 0 && !np[firstToAct].isHuman) {
-      setTimeout(() => processAITurn(np, firstToAct, d, [], totalBlinds, settings.bigBlind, settings.bigBlind * 2, bbIdx), 800);
-    }
+    setMessage(`Dealing hand #${handNumber + 1}...`);
+
+    // ── Animated dealing sequence ──
+    const dealOrder = [];
+    for (const seatIdx of activeSeats) dealOrder.push({ seatIdx, cardIdx: 0 });
+    for (const seatIdx of activeSeats) dealOrder.push({ seatIdx, cardIdx: 1 });
+
+    const flyDuration = 450;
+
+    const dealEntries = dealOrder.map((entry, i) => ({
+      ...entry,
+      startTime: Date.now() + i * 150,
+      card: preDealtCards[entry.seatIdx][entry.cardIdx],
+    }));
+
+    let cardIndex = 0;
+    const dealNextCard = () => {
+      if (cardIndex >= dealEntries.length) {
+        setDealingCards([]);
+        setDealtSeatCards({});
+        let finalPlayers = playersRef.current.map((p, i) => {
+          if (preDealtCards[i]) return { ...p, holeCards: preDealtCards[i] };
+          return p;
+        });
+        setPlayers(finalPlayers);
+        playersRef.current = finalPlayers;
+        setPhase(PHASES.PREFLOP);
+        phaseRef.current = PHASES.PREFLOP;
+        setActivePlayerIdx(firstToAct);
+        activePlayerIdxRef.current = firstToAct;
+        setMessage(`Hand #${handNumber + 1} — ${np[sbIdx].name} posts SB $${sb}, ${np[bbIdx].name} posts BB $${bb}`);
+        if (firstToAct >= 0 && !finalPlayers[firstToAct].isHuman) {
+          setTimeout(() => processAITurn(finalPlayers, firstToAct, d, [], totalBlinds, settings.bigBlind, settings.bigBlind * 2, bbIdx), 800);
+        }
+        return;
+      }
+      const entry = dealEntries[cardIndex];
+      setDealingCards([{ ...entry, flyId: cardIndex }]);
+      setTimeout(() => {
+        setDealtSeatCards(prev => {
+          const updated = { ...prev };
+          if (!updated[entry.seatIdx]) updated[entry.seatIdx] = [];
+          updated[entry.seatIdx] = [...updated[entry.seatIdx], entry.card];
+          return updated;
+        });
+        setDealingCards([]);
+        cardIndex++;
+        setTimeout(dealNextCard, 50);
+      }, flyDuration);
+    };
+    dealNextCard();
+
   }, [players, dealerIdx, settings, handNumber, getNextActivePlayer, getNextLivePlayer]);
 
   // ── Process Action ──
@@ -8751,33 +10511,49 @@ function App({ onExitToLobby } = {}) {
 
   // ── Advance Phase (Flop/Turn/River/Showdown) ──
   const advancePhase = useCallback((ps, dk, cc, pt) => {
+    // Trigger chip-to-pot animation for any players with current bets
+    const bettingPlayers = ps.filter(p => p.currentBet > 0);
+    if (bettingPlayers.length > 0) {
+      const animations = bettingPlayers.map((p, idx) => {
+        const pIdx = ps.indexOf(p);
+        const chipPos = seatPositions[pIdx] ? getBetChipPos(pIdx) : null;
+        return chipPos ? { id: Date.now() + idx, fromLeft: chipPos.left, fromTop: chipPos.top, amount: p.currentBet } : null;
+      }).filter(Boolean);
+      setChipsToPot(animations);
+      setTimeout(() => setChipsToPot([]), 600);
+    }
+
     let newDeck = [...dk];
     let newCC = [...cc];
     let newPhase;
-
-    // Reset current bets for new street
     let np = ps.map(p => ({ ...p, currentBet: 0 }));
-
     const currentPhase = phaseRef.current;
 
     if (currentPhase === PHASES.PREFLOP) {
-      // Deal flop (burn 1, deal 3)
-      newDeck.pop(); // burn
+      const burnCard = newDeck.pop();
+      setBurnCards(prev => [...prev, burnCard]);
       newCC = [newDeck.pop(), newDeck.pop(), newDeck.pop()];
       newPhase = PHASES.FLOP;
       setMessage("--- FLOP ---");
+      setCommunityFlipping([0, 1, 2]);
+      setTimeout(() => setCommunityFlipping([]), 1200);
     } else if (currentPhase === PHASES.FLOP) {
-      newDeck.pop(); // burn
+      const burnCard = newDeck.pop();
+      setBurnCards(prev => [...prev, burnCard]);
       newCC = [...cc, newDeck.pop()];
       newPhase = PHASES.TURN;
       setMessage("--- TURN ---");
+      setCommunityFlipping([cc.length]);
+      setTimeout(() => setCommunityFlipping([]), 1000);
     } else if (currentPhase === PHASES.TURN) {
-      newDeck.pop(); // burn
+      const burnCard = newDeck.pop();
+      setBurnCards(prev => [...prev, burnCard]);
       newCC = [...cc, newDeck.pop()];
       newPhase = PHASES.RIVER;
       setMessage("--- RIVER ---");
+      setCommunityFlipping([cc.length]);
+      setTimeout(() => setCommunityFlipping([]), 1000);
     } else {
-      // Showdown
       finishHand(np, newDeck, newCC, pt);
       return;
     }
@@ -8858,11 +10634,11 @@ function App({ onExitToLobby } = {}) {
 
     // Display message and action indicator
     const callAmt = Math.min(toCall, player.stack);
-    if (action === "fold") { setMessage(`${player.name} folds`); setLastAction({ playerIdx: idx, action: "FOLD", amount: 0 }); }
+    if (action === "fold") { setMessage(`${player.name} folds`); setLastAction({ playerIdx: idx, action: "FOLD", amount: 0 }); setFoldingPlayer(idx); setTimeout(() => setFoldingPlayer(-1), 500); }
     else if (action === "check") { setMessage(`${player.name} checks`); setLastAction({ playerIdx: idx, action: "CHECK", amount: 0 }); }
-    else if (action === "call") { setMessage(`${player.name} calls $${callAmt}`); setLastAction({ playerIdx: idx, action: "CALL", amount: callAmt }); }
-    else if (action === "raise") { setMessage(`${player.name} raises to $${result.currentBet}`); setLastAction({ playerIdx: idx, action: "RAISE", amount: result.currentBet }); }
-    else if (action === "allin") { setMessage(`${player.name} goes ALL IN ($${player.stack + player.currentBet})`); setLastAction({ playerIdx: idx, action: "ALL IN", amount: player.stack + player.currentBet }); }
+    else if (action === "call") { setMessage(`${player.name} calls $${callAmt}`); setLastAction({ playerIdx: idx, action: "CALL", amount: callAmt }); triggerBetChipAnim(idx, callAmt); }
+    else if (action === "raise") { setMessage(`${player.name} raises to $${result.currentBet}`); setLastAction({ playerIdx: idx, action: "RAISE", amount: result.currentBet }); triggerBetChipAnim(idx, result.currentBet); }
+    else if (action === "allin") { setMessage(`${player.name} goes ALL IN ($${player.stack + player.currentBet})`); setLastAction({ playerIdx: idx, action: "ALL IN", amount: player.stack + player.currentBet }); triggerBetChipAnim(idx, player.stack + player.currentBet); }
 
     setTimeout(() => advanceAction(result.players, idx, dk, cc, result.pot, result.currentBet, result.minRaise, result.lastRaiserIdx), 600);
   }, [settings, processAction, advanceAction]);
@@ -8897,7 +10673,11 @@ function App({ onExitToLobby } = {}) {
       winnerList.push({ idx: wIdx, amount: pt, hand: null });
       setMessage(`${winner.name} wins $${pt}!`);
       setWinnerAnnouncement({ name: winner.name, handName: "All Folded", amount: pt, winnerIdx: wIdx });
-      setTimeout(() => setWinnerAnnouncement(null), 4000);
+      setWinnerSweep({ winnerIdx: wIdx });
+      // Winner announcement plays for 4s, THEN pot sweeps to winner
+      setTimeout(() => { setWinnerAnnouncement(null); setWinnerSweep(null); }, 4000);
+      setTimeout(() => { setPotToWinner({ winnerIdx: wIdx, amount: pt }); }, 4200);
+      setTimeout(() => { setPotToWinner(null); }, 6000);
     } else {
       // Showdown — evaluate hands
       const evaluations = activePlayers.map(p => {
@@ -8907,24 +10687,26 @@ function App({ onExitToLobby } = {}) {
         return { ...handResult, playerIdx: pIdx, player: p };
       });
 
+      // Sequential showdown reveal
+      let revealDelay = 0;
+      evaluations.forEach((ev, i) => {
+        setTimeout(() => setShowdownRevealIdx(i), revealDelay);
+        revealDelay += 600;
+      });
+
       // Award each pot
       let totalAwarded = 0;
-      console.log("[SHOWDOWN] Pots:", JSON.stringify(potList));
-      console.log("[SHOWDOWN] Evaluations:", evaluations.map(e => `${e.player.name}: rank=${e.rank} (${e.name}) kickers=${JSON.stringify(e.kickers)}`));
       for (const potInfo of potList) {
         const eligible = evaluations.filter(e => potInfo.eligible.includes(e.playerIdx));
         if (eligible.length === 0) continue;
 
-        // Find best hand among eligible
         eligible.sort((a, b) => compareHandResult(b, a));
         const bestRank = eligible[0].rank;
         const bestKickers = eligible[0].kickers;
         const tiedWinners = eligible.filter(e => e.rank === bestRank && JSON.stringify(e.kickers) === JSON.stringify(bestKickers));
-        console.log(`[SHOWDOWN] Pot $${potInfo.amount} eligible=[${eligible.map(e=>e.player.name)}] winner(s)=[${tiedWinners.map(e=>e.player.name)}]`);
 
         const share = Math.floor(potInfo.amount / tiedWinners.length);
         let remainder = potInfo.amount - share * tiedWinners.length;
-        // Track if this was a contested pot (multiple eligible players) vs uncontested side pot
         const contested = eligible.length > 1;
 
         for (const tw of tiedWinners) {
@@ -8938,37 +10720,37 @@ function App({ onExitToLobby } = {}) {
         totalAwarded += potInfo.amount;
       }
 
-      // Showdown message & winner announcement
-      // Deduplicate winners — only count contested pot winners as true "winners"
-      // Players who only won uncontested side pots just got their own money back
       const contestedWinners = [...new Set(winnerList.filter(w => w.contested).map(w => w.idx))];
       const allWinnerIdxs = [...new Set(winnerList.map(w => w.idx))];
-      // Use contested winners for display; fall back to all winners if no contested pots
       const displayWinnerIdxs = contestedWinners.length > 0 ? contestedWinners : allWinnerIdxs;
 
-      if (displayWinnerIdxs.length === 1) {
-        const wIdx = displayWinnerIdxs[0];
-        const totalAmount = winnerList.filter(w => w.idx === wIdx).reduce((s, w) => s + w.amount, 0);
-        const bestHand = winnerList.find(w => w.idx === wIdx && w.hand)?.hand?.name || "Best Hand";
-        setMessage(`${np[wIdx].name} wins $${totalAmount} with ${bestHand}!`);
-        setWinnerAnnouncement({ name: np[wIdx].name, handName: bestHand, amount: totalAmount, winnerIdx: wIdx });
-      } else {
-        // Multiple different players won contested pots or actual tie
-        const winnerNames = displayWinnerIdxs.map(idx => np[idx].name);
-        const totalWon = winnerList.reduce((s, w) => s + w.amount, 0);
-        const bestHand = winnerList.find(w => w.hand)?.hand?.name || "Split";
-        setMessage(`Split pot! ${winnerNames.join(" & ")} win!`);
-        setWinnerAnnouncement({ name: winnerNames.join(" & "), handName: bestHand, amount: totalWon, winnerIdx: winnerList[0].idx });
-      }
+      setTimeout(() => {
+        if (displayWinnerIdxs.length === 1) {
+          const wIdx = displayWinnerIdxs[0];
+          const totalAmount = winnerList.filter(w => w.idx === wIdx).reduce((s, w) => s + w.amount, 0);
+          const bestHand = winnerList.find(w => w.idx === wIdx && w.hand)?.hand?.name || "Best Hand";
+          setMessage(`${np[wIdx].name} wins $${totalAmount} with ${bestHand}!`);
+          setWinnerAnnouncement({ name: np[wIdx].name, handName: bestHand, amount: totalAmount, winnerIdx: wIdx });
+          setWinnerSweep({ winnerIdx: wIdx });
+          // Winner announcement plays for 5s, THEN pot sweeps to winner
+          setTimeout(() => { setPotToWinner({ winnerIdx: wIdx, amount: totalAmount }); }, 5200);
+          setTimeout(() => { setPotToWinner(null); }, 7000);
+        } else {
+          const winnerNames = displayWinnerIdxs.map(idx => np[idx].name);
+          const bestHand = winnerList.find(w => w.hand)?.hand?.name || "Split";
+          const totalWon = winnerList.reduce((s, w) => s + w.amount, 0);
+          setMessage(`Split pot! ${winnerNames.join(" & ")} win!`);
+          setWinnerAnnouncement({ name: winnerNames.join(" & "), handName: bestHand, amount: totalWon, winnerIdx: winnerList[0].idx });
+          // Winner announcement plays for 5s, THEN pot sweeps to winner
+          setTimeout(() => { setPotToWinner({ winnerIdx: displayWinnerIdxs[0], amount: totalWon }); }, 5200);
+          setTimeout(() => { setPotToWinner(null); }, 7000);
+        }
+        setTimeout(() => { setWinnerAnnouncement(null); setWinnerSweep(null); setShowdownRevealIdx(-1); }, 5000);
+      }, revealDelay);
 
-      // Only mark contested pot winners in the winnerList for display purposes
-      // (uncontested side pot recipients don't get WINNER badge)
       winnerList.forEach(w => { w.isContestedWinner = w.contested; });
-      setTimeout(() => setWinnerAnnouncement(null), 5000);
-
       setShowdown(true);
 
-      // Store hand results for display
       for (const ev of evaluations) {
         np[ev.playerIdx].handResult = ev;
       }
@@ -8983,10 +10765,20 @@ function App({ onExitToLobby } = {}) {
     setPlayers(np);
     playersRef.current = np;
     setWinners(winnerList);
-    setPhase(PHASES.HAND_OVER);
-    phaseRef.current = PHASES.HAND_OVER;
     setPots(potList);
     setActivePlayerIdx(-1);
+
+    // Delay HAND_OVER until pot sweep animation is fully complete
+    // Solo winner (fold): announcement 4s + pot sweep starts 4.2s, ends 6s → show button at 6.5s
+    // Showdown: revealDelay + pot sweep ends at 7s inside the setTimeout → total = revealDelay + 7500ms
+    const revealTime = activePlayers.length === 1 ? 0 : (activePlayers.length * 600);
+    const handOverDelay = activePlayers.length === 1 ? 6500 : (revealTime + 7500);
+    setPhase(PHASES.SHOWDOWN);
+    phaseRef.current = PHASES.SHOWDOWN;
+    setTimeout(() => {
+      setPhase(PHASES.HAND_OVER);
+      phaseRef.current = PHASES.HAND_OVER;
+    }, handOverDelay);
 
     // Check for game over — only one player with chips remaining
     const playersWithChips = np.filter(p => p.stack > 0);
@@ -9028,26 +10820,30 @@ function App({ onExitToLobby } = {}) {
     const ps = playersRef.current;
     const idx = activePlayerIdxRef.current;
     const toCall = currentBetRef.current - ps[idx].currentBet;
+    const callAmt = Math.min(toCall, ps[idx].stack);
+    triggerBetChipAnim(idx, callAmt);
     const result = processAction("call", 0, ps, idx, deckRef.current, communityCardsRef.current, potRef.current, currentBetRef.current, minRaiseRef.current, lastRaiserIdxRef.current);
-    setMessage(`You call $${Math.min(toCall, ps[idx].stack)}.`);
+    setMessage(`You call $${callAmt}.`);
     advanceAction(result.players, idx, deckRef.current, communityCardsRef.current, result.pot, result.currentBet, result.minRaise, result.lastRaiserIdx);
-  }, [processAction, advanceAction]);
+  }, [processAction, advanceAction, triggerBetChipAnim]);
 
   const handleRaise = useCallback((amount) => {
     const ps = playersRef.current;
     const idx = activePlayerIdxRef.current;
+    triggerBetChipAnim(idx, amount);
     const result = processAction("raise", amount, ps, idx, deckRef.current, communityCardsRef.current, potRef.current, currentBetRef.current, minRaiseRef.current, lastRaiserIdxRef.current);
     setMessage(`You raise to $${result.currentBet}.`);
     advanceAction(result.players, idx, deckRef.current, communityCardsRef.current, result.pot, result.currentBet, result.minRaise, result.lastRaiserIdx);
-  }, [processAction, advanceAction]);
+  }, [processAction, advanceAction, triggerBetChipAnim]);
 
   const handleAllIn = useCallback(() => {
     const ps = playersRef.current;
     const idx = activePlayerIdxRef.current;
+    triggerBetChipAnim(idx, ps[idx].stack + ps[idx].currentBet);
     const result = processAction("allin", 0, ps, idx, deckRef.current, communityCardsRef.current, potRef.current, currentBetRef.current, minRaiseRef.current, lastRaiserIdxRef.current);
     setMessage(`You go ALL IN! ($${ps[idx].stack + ps[idx].currentBet})`);
     advanceAction(result.players, idx, deckRef.current, communityCardsRef.current, result.pot, result.currentBet, result.minRaise, result.lastRaiserIdx);
-  }, [processAction, advanceAction]);
+  }, [processAction, advanceAction, triggerBetChipAnim]);
 
   // ── Next Hand ──
   const startNextHand = useCallback(() => {
@@ -9067,19 +10863,21 @@ function App({ onExitToLobby } = {}) {
     setTimeout(() => dealNewHand(), 100);
   }, [players, dealNewHand]);
 
-  // ── Seat positions around oval table ──
-  // 6-max layout: positions are clock-like around an oval — spread wide to use table space
+  // ── Seat positions — horseshoe layout (open top for dealer bay) ──
   const seatPositions = useMemo(() => {
     const n = players.length;
     if (n <= 0) return [];
     const positions = [];
+    const startAngle = -Math.PI * 0.67;
+    const endAngle = Math.PI * 0.67;
+    const angleSpan = endAngle - startAngle;
     for (let i = 0; i < n; i++) {
-      const angle = (i / n) * 2 * Math.PI - Math.PI / 2; // Start from bottom
-      const rx = 34; // inside the table oval
-      const ry = 32; // inside the table oval
+      const t = n === 1 ? 0.5 : i / (n - 1);
+      const angle = startAngle + t * angleSpan;
+      const rx = 36, ry = 33;
       positions.push({
         left: 50 + rx * Math.sin(angle),
-        top: 50 + ry * Math.cos(angle),
+        top: 55 + ry * Math.cos(angle),
       });
     }
     return positions;
@@ -9089,18 +10887,14 @@ function App({ onExitToLobby } = {}) {
   const getBetChipPos = useCallback((seatIdx) => {
     if (!seatPositions[seatIdx]) return { left: "50%", top: "50%" };
     const seat = seatPositions[seatIdx];
-    // Position bet chips between seat and table center (lerp toward center)
-    const cx = 50, cy = 50;
-    const t = 0.38; // how far toward center (0 = at seat, 1 = at center)
-    return {
-      left: `${seat.left + (cx - seat.left) * t}%`,
-      top: `${seat.top + (cy - seat.top) * t}%`,
-    };
+    const cx = 50, cy = 42; // center of table (slightly above center due to dealer bay)
+    const t = 0.42;
+    return { left: `${seat.left + (cx - seat.left) * t}%`, top: `${seat.top + (cy - seat.top) * t}%` };
   }, [seatPositions]);
 
   // ── Compute available actions for human player ──
   const humanActions = useMemo(() => {
-    if (phase === PHASES.HAND_OVER || phase === PHASES.WAITING || phase === PHASES.SETUP) return [];
+    if (phase === PHASES.HAND_OVER || phase === PHASES.WAITING || phase === PHASES.SETUP || phase === PHASES.DEALING) return [];
     const p = players[activePlayerIdx];
     if (!p || !p.isHuman || p.isAutoPlay) return [];
     if (p.folded || p.allIn) return [];
@@ -9300,17 +11094,79 @@ function App({ onExitToLobby } = {}) {
             pointerEvents: "none",
           }} />
 
-          {/* Community Cards — larger, more prominent */}
+          {/* ═══ DEALER BAY — top-center semi-circular station ═══ */}
           <div style={{
-            position: "absolute", top: "35%", left: "50%", transform: "translate(-50%, -50%)",
+            position: "absolute", top: "-4%", left: "50%", transform: "translateX(-50%)",
+            width: "38%", height: "22%",
+            background: "linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.15) 70%, transparent 100%)",
+            borderRadius: "0 0 50% 50%",
+            border: "none",
+            borderBottom: "2px solid rgba(255,215,0,0.15)",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 20,
+            zIndex: 8, paddingTop: "2%",
+          }}>
+            <div style={{
+              position: "absolute", top: "15%", left: "50%", transform: "translateX(-50%)",
+              color: "rgba(255,215,0,0.5)", fontFamily: "'Rye', serif", fontSize: 10,
+              letterSpacing: 3, textTransform: "uppercase",
+            }}>DEALER</div>
+            <div style={{ position: "relative", marginTop: 16 }}>
+              {burnCards.length > 0 ? (
+                <div style={{ position: "relative", width: 44, height: 62 }}>
+                  {burnCards.map((_, i) => (
+                    <div key={i} style={{
+                      position: "absolute", top: -i * 1.5, left: i * 1.5,
+                      width: 44, height: 62, borderRadius: 5,
+                      background: "linear-gradient(135deg, #1a0a2e, #0d0518)",
+                      border: "0.5px solid rgba(255,215,0,0.2)",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.4)",
+                      opacity: 0.6, animation: "burnSlide 0.3s ease-out",
+                    }} />
+                  ))}
+                  <div style={{ position: "absolute", bottom: -14, left: "50%", transform: "translateX(-50%)", color: "rgba(255,255,255,0.25)", fontSize: 8, whiteSpace: "nowrap" }}>BURN</div>
+                </div>
+              ) : (
+                <div style={{ width: 44, height: 62, borderRadius: 5, border: "1px dashed rgba(255,215,0,0.1)" }}>
+                  <div style={{ position: "absolute", bottom: -14, left: "50%", transform: "translateX(-50%)", color: "rgba(255,255,255,0.15)", fontSize: 8, whiteSpace: "nowrap" }}>BURN</div>
+                </div>
+              )}
+            </div>
+            <div style={{ position: "relative", marginTop: 16 }}>
+              <div style={{ position: "relative", width: 50, height: 70 }}>
+                {[3, 2, 1, 0].map(i => (
+                  <CardBackSmall key={i} offset={i} />
+                ))}
+              </div>
+              <div style={{ textAlign: "center", color: "rgba(255,215,0,0.4)", fontSize: 9, fontFamily: "'Rye', serif", marginTop: 4, letterSpacing: 1 }}>DECK</div>
+            </div>
+            <div style={{ width: 44, marginTop: 16, textAlign: "center" }}>
+              <div style={{ color: "rgba(255,255,255,0.15)", fontSize: 10, fontFamily: "'Georgia', serif" }}>
+                {deck.length > 0 && <span>{deck.length}</span>}
+              </div>
+              <div style={{ color: "rgba(255,255,255,0.1)", fontSize: 7, marginTop: 2 }}>cards left</div>
+            </div>
+          </div>
+
+          {/* Community Cards — with flip animation from dealer bay */}
+          <div style={{
+            position: "absolute", top: "38%", left: "50%", transform: "translate(-50%, -50%)",
             display: "flex", gap: 6, alignItems: "center", zIndex: 5,
           }}>
             {communityCards.length > 0 ? (
-              communityCards.map((card, i) => (
-                <PokerCard key={i} card={card} small={false} style={{ animation: "dealSlide 0.4s ease-out" }} />
-              ))
+              communityCards.map((card, i) => {
+                const isFlipping = communityFlipping.includes(i);
+                return (
+                  <div key={i} style={{
+                    animation: isFlipping ? `communityDeal 0.5s ease-out ${i * 0.12}s both` : "none",
+                  }}>
+                    <PokerCard card={card} small={false} style={{
+                      transform: `perspective(400px) rotateX(2deg) rotateY(${(i - 2) * 1.5}deg)`,
+                    }} />
+                  </div>
+                );
+              })
             ) : (
-              phase !== PHASES.WAITING && phase !== PHASES.HAND_OVER && (
+              phase !== PHASES.WAITING && phase !== PHASES.HAND_OVER && phase !== PHASES.DEALING && (
                 <div style={{ color: "rgba(255,255,255,0.15)", fontSize: 15, fontStyle: "italic" }}>
                   {phase === PHASES.PREFLOP ? "Waiting for flop..." : ""}
                 </div>
@@ -9499,6 +11355,73 @@ function App({ onExitToLobby } = {}) {
           );
         })}
 
+        {/* ═══ DEALING ANIMATION — single flying card from dealer bay to seat ═══ */}
+        {dealingCards.map((entry) => {
+          const seatPos = seatPositions[entry.seatIdx];
+          if (!seatPos) return null;
+          return (
+            <div key={`deal-${entry.flyId}`} style={{
+              position: "absolute",
+              zIndex: 200,
+              animation: `flyToSeat${entry.seatIdx}_${entry.cardIdx} 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards`,
+              pointerEvents: "none",
+            }}>
+              <PokerCard card={null} faceDown={true} small={true}
+                style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.6)" }}
+              />
+            </div>
+          );
+        })}
+
+        {/* ═══ BET ACTION CHIPS — flying from player seat to bet position ═══ */}
+        {chipAnimations.map((anim) => {
+          const seat = seatPositions[anim.seatIdx];
+          if (!seat) return null;
+          return (
+            <div key={`betanim-${anim.id}`} style={{
+              position: "absolute",
+              left: `${seat.left}%`, top: `${seat.top}%`,
+              transform: "translate(-50%, -50%)",
+              zIndex: 100,
+              animation: `betChipFly${anim.seatIdx} 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards`,
+              pointerEvents: "none",
+            }}>
+              <ChipStack amount={anim.amount} size="small" />
+            </div>
+          );
+        })}
+
+        {/* ═══ CHIP-TO-POT ANIMATION ═══ */}
+        {chipsToPot.map((chip) => (
+          <div key={chip.id} style={{
+            position: "absolute", left: chip.fromLeft, top: chip.fromTop,
+            transform: "translate(-50%, -50%)",
+            zIndex: 100,
+            animation: "chipToPot 0.5s ease-in forwards",
+            pointerEvents: "none",
+          }}>
+            <ChipStack amount={chip.amount} size="small" />
+          </div>
+        ))}
+
+        {/* ═══ POT-TO-WINNER ANIMATION — chips sweep from center to winner ═══ */}
+        {potToWinner && seatPositions[potToWinner.winnerIdx] && (
+          <div style={{
+            position: "absolute",
+            left: "50%", top: "55%",
+            zIndex: 150,
+            animation: `potSweepToSeat${potToWinner.winnerIdx} 1.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards`,
+            pointerEvents: "none",
+          }}>
+            <div style={{
+              transform: "translate(-50%, -50%)",
+              filter: "drop-shadow(0 0 12px rgba(255,215,0,0.6))",
+            }}>
+              <ChipStack amount={potToWinner.amount} size="small" />
+            </div>
+          </div>
+        )}
+
         {/* ═══ PLAYER SEATS ═══ */}
         {players.map((p, i) => {
           const pos = seatPositions[i];
@@ -9597,27 +11520,44 @@ function App({ onExitToLobby } = {}) {
                   </div>
                 )}
 
-                {/* Hole cards — overlapping like blackjack */}
+                {/* Hole cards — with dealing animation support */}
                 <div style={{ display: "flex", justifyContent: "center", marginBottom: 6, position: "relative", height: 86 }}>
-                  {p.holeCards.length > 0 ? (
-                    p.holeCards.map((card, ci) => (
-                      <PokerCard key={ci} card={card} faceDown={!showCards} small={true}
-                        highlight={showdown && p.handResult?.cards?.some(c => c.rank === card.rank && c.suit === card.suit)}
-                        style={{
-                          position: "absolute",
-                          left: `calc(50% + ${(ci - 0.5) * 36}px - 29px)`,
-                          top: 0,
-                          zIndex: ci,
-                          transform: ci === 1 ? "rotate(4deg)" : "rotate(-3deg)",
-                          transition: "transform 0.2s ease",
-                        }}
-                      />
-                    ))
-                  ) : (
-                    <div style={{ height: 82, display: "flex", alignItems: "center", color: "rgba(255,255,255,0.2)", fontSize: 12 }}>
-                      {phase === PHASES.WAITING ? "—" : ""}
-                    </div>
-                  )}
+                  {(() => {
+                    const arrivedCards = dealtSeatCards[i] || [];
+                    if (phase === PHASES.DEALING) {
+                      return arrivedCards.length > 0 ? arrivedCards.map((card, ci) => (
+                        <PokerCard key={ci} card={card} faceDown={true} small={true}
+                          style={{
+                            position: "absolute",
+                            left: `calc(50% + ${(ci - 0.5) * 36}px - 29px)`,
+                            top: 0, zIndex: ci,
+                            transform: `rotate(${ci === 1 ? "4deg" : "-3deg"}) perspective(400px) rotateX(3deg)`,
+                            animation: "cardLand 0.2s ease-out",
+                          }}
+                        />
+                      )) : (
+                        <div style={{ height: 82, display: "flex", alignItems: "center", color: "rgba(255,255,255,0.2)", fontSize: 12 }}></div>
+                      );
+                    }
+                    return p.holeCards.length > 0 ? (
+                      p.holeCards.map((card, ci) => (
+                        <PokerCard key={ci} card={card} faceDown={!showCards} small={true}
+                          highlight={showdown && p.handResult?.cards?.some(c => c.rank === card.rank && c.suit === card.suit)}
+                          style={{
+                            position: "absolute",
+                            left: `calc(50% + ${(ci - 0.5) * 36}px - 29px)`,
+                            top: 0, zIndex: ci,
+                            transform: `rotate(${ci === 1 ? "4deg" : "-3deg"}) perspective(400px) rotateX(3deg)`,
+                            transition: "transform 0.2s ease",
+                          }}
+                        />
+                      ))
+                    ) : (
+                      <div style={{ height: 82, display: "flex", alignItems: "center", color: "rgba(255,255,255,0.2)", fontSize: 12 }}>
+                        {phase === PHASES.WAITING ? "—" : ""}
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* Player name */}
@@ -9891,8 +11831,37 @@ function App({ onExitToLobby } = {}) {
         </div>
       )}
 
+      {/* ── DYNAMIC PER-SEAT KEYFRAMES ── */}
+      <style>{`
+        ${seatPositions.map((pos, i) => `
+          @keyframes flyToSeat${i}_0 {
+            0% { left: 50%; top: 16%; opacity: 0.8; transform: scale(0.7) rotate(0deg); }
+            80% { opacity: 1; }
+            100% { left: calc(${pos.left}% - 10px); top: calc(${pos.top}% - 20px); opacity: 1; transform: scale(1) rotate(-3deg); }
+          }
+          @keyframes flyToSeat${i}_1 {
+            0% { left: 50%; top: 16%; opacity: 0.8; transform: scale(0.7) rotate(0deg); }
+            80% { opacity: 1; }
+            100% { left: calc(${pos.left}% + 10px); top: calc(${pos.top}% - 20px); opacity: 1; transform: scale(1) rotate(4deg); }
+          }
+          @keyframes potSweepToSeat${i} {
+            0% { left: 50%; top: 55%; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            40% { transform: translate(-50%, -50%) scale(1.3); }
+            100% { left: ${pos.left}%; top: ${pos.top}%; opacity: 0.3; transform: translate(-50%, -50%) scale(0.5); }
+          }
+          @keyframes betChipFly${i} {
+            0% { left: ${pos.left}%; top: ${pos.top}%; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { left: ${pos.left + (50 - pos.left) * 0.42}%; top: ${pos.top + (42 - pos.top) * 0.42}%; opacity: 1; transform: translate(-50%, -50%) scale(0.9); }
+          }
+        `).join("")}
+      `}</style>
+
       {/* ── ANIMATIONS ── */}
       <style>{`
+        @keyframes communityDeal {
+          0% { opacity: 0; transform: translateY(-60px) scale(0.5); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
         @keyframes dealSlide {
           0% { opacity: 0; transform: translateY(-40px) scale(0.5); }
           70% { opacity: 1; transform: translateY(2px) scale(1.02); }
@@ -9902,6 +11871,14 @@ function App({ onExitToLobby } = {}) {
           0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
           60% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
           100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes chipToPot {
+          from { opacity: 1; }
+          to { opacity: 0; left: 50%; top: 55%; }
+        }
+        @keyframes cardLand {
+          from { opacity: 0; transform: translateY(-20px) rotate(45deg); }
+          to { opacity: 1; transform: translateY(0) rotate(0deg); }
         }
         @keyframes winnerPop {
           0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
@@ -9919,6 +11896,14 @@ function App({ onExitToLobby } = {}) {
         @keyframes actionPop {
           0% { opacity: 0; transform: translateX(-50%) translateY(8px) scale(0.7); }
           100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+        }
+        @keyframes burnSlide {
+          from { opacity: 0; transform: translateX(-10px); }
+          to { opacity: 0.6; transform: translateX(0); }
+        }
+        @keyframes foldSweep {
+          from { opacity: 1; }
+          to { opacity: 0.6; transform: scale(0.9); }
         }
         @keyframes casinoShine {
           0%, 100% { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)) brightness(1); }
